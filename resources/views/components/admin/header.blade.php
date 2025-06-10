@@ -1,5 +1,5 @@
 <!-- Header -->
-<header class="bg-white shadow-sm border-b border-gray-200 px-4 py-3">
+<header class="bg-gray-100 shadow-sm border-b border-gray-200 px-4 py-3">
     <div class="flex items-center justify-between">
         <!-- Mobile Menu Button -->
         <button 
@@ -23,13 +23,16 @@
             <div class="relative">
                 <button 
                     id="profile-menu-button" 
-                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-200"
+                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
                 >
                     <div class="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center border-2 border-gray-200 shadow-sm">
                         <span class="text-white text-sm font-medium">SD</span>
                     </div>
                     <div class="hidden sm:block text-left leading-tight">
                         <p class="text-sm font-semibold text-gray-800 m-0">Super Admin</p>
+                        <p class="text-xs font-medium text-gray-500 truncate m-0">
+                           Admin
+                        </p>
                     </div>
                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />

@@ -3,7 +3,7 @@
     <input 
         type="text" 
         placeholder="Search..." 
-        class="w-32 sm:w-48 md:w-64 pl-10 pr-4 py-2 rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-400"
+        class="w-32 sm:w-48 md:w-64 pl-10 pr-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-300"
     >
     <div class="absolute left-3 top-2.5 text-gray-600">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

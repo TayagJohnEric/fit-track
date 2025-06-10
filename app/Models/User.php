@@ -20,7 +20,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
         'password',
+        'profile_image_url',
+        'role',
+        'remember_token',
     ];
 
     /**
@@ -44,5 +48,48 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // One-to-One: User has one UserProfile
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    // One-to-Many: User has many WeightHistory records
+    public function weightHistory()
+    {
+        return $this->hasMany(WeightHistory::class);
+    }
+
+    // One-to-Many: User has many UserNutritionGoals
+    public function nutritionGoals()
+    {
+        return $this->hasMany(UserNutritionGoal::class);
+    }
+
+    // One-to-Many: User has many UserMealLogs
+    public function mealLogs()
+    {
+        return $this->hasMany(UserMealLog::class);
+    }
+
+    // One-to-Many: User has many custom FoodItems
+    public function createdFoodItems()
+    {
+        return $this->hasMany(FoodItem::class, 'creator_user_id');
+    }
+
+    // One-to-Many: User has many UserWorkoutSchedules
+    public function workoutSchedules()
+    {
+        return $this->hasMany(UserWorkoutSchedule::class);
+    }
+
+    // Many-to-Many: User has many Allergies
+    public function allergies()
+    {
+        return $this->belongsToMany(Allergy::class, 'user_allergies')
+                    ->withTimestamps();
     }
 }
