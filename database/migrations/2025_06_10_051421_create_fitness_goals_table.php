@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('fitness_goals', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name'); //only "Weight Loss" and "Muscle Gain"
             $table->timestamps();
         });
     }

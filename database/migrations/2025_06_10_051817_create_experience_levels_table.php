@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('experience_levels', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name'); //only "Beginner", "Intermediate" and "Advanced"
             $table->timestamps();
         });
     }

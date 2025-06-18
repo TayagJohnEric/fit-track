@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('workout_types', function (Blueprint $table) {
+        Schema::create('fitness_facts', function (Blueprint $table) {
             $table->id();
-             $table->string('name'); //only "Weight Lifting" and "Home Workout"
+              $table->text('fact_text');
+            $table->string('category')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('workout_types');
+        Schema::dropIfExists('fitness_facts');
     }
 };
