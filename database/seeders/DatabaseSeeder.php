@@ -22,11 +22,10 @@ class DatabaseSeeder extends Seeder
             WorkoutTypeSeeder::class,
             AllergySeeder::class,
             ExerciseSeeder::class,
-             FoodItemSeeder::class,
-             FoodItemAllergiesSeeder::class,
-               FitnessFactSeeder::class,
-
-
+            FoodItemSeeder::class,
+            FoodItemAllergiesSeeder::class,
+            FitnessFactSeeder::class,
+            WorkoutTemplateSeeder::class,
         ]);
     }
 }
