@@ -4,12 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\WorkoutType;
 use App\Models\ExperienceLevel;
 use App\Models\WorkoutTemplate;
-
-
-
+use App\Models\WorkoutType;
 
 class WorkoutTemplateSeeder extends Seeder
 {
@@ -18,37 +15,70 @@ class WorkoutTemplateSeeder extends Seeder
      */
     public function run(): void
     {
-        $experienceLevels = ExperienceLevel::all()->keyBy('name');
-        $workoutTypes = WorkoutType::all()->keyBy('name');
+        
+    $weightLifting = WorkoutType::where('name', 'Weight Lifting')->first();
+        $homeWorkout = WorkoutType::where('name', 'Home Workout')->first();
+        
+        $beginner = ExperienceLevel::where('name', 'Beginner')->first();
+        $intermediate = ExperienceLevel::where('name', 'Intermediate')->first();
+        $advanced = ExperienceLevel::where('name', 'Advanced')->first();
 
         $templates = [
+            // Weight Lifting Templates
             [
-                'name' => 'Full Body Beginner',
-                'description' => 'A simple full body workout for those starting out.',
-                'experience_level' => 'Beginner',
-                'workout_type' => 'Home Workout',
+                'name' => 'Beginner Full Body Workout',
+                'description' => 'A comprehensive full-body workout perfect for beginners',
+                'workout_type_id' => $weightLifting->id,
+                'experience_level_id' => $beginner->id,
+                'duration_minutes' => 45,
+                'difficulty_level' => 2,
             ],
             [
-                'name' => 'Intermediate Push Day',
-                'description' => 'Push day focused on chest, shoulders, and triceps.',
-                'experience_level' => 'Intermediate',
-                'workout_type' => 'Weight Lifting',
+                'name' => 'Intermediate Push/Pull Split',
+                'description' => 'Push and pull exercises for intermediate lifters',
+                'workout_type_id' => $weightLifting->id,
+                'experience_level_id' => $intermediate->id,
+                'duration_minutes' => 60,
+                'difficulty_level' => 3,
             ],
             [
-                'name' => 'Advanced Leg Blast',
-                'description' => 'Intense leg workout for advanced athletes.',
-                'experience_level' => 'Advanced',
-                'workout_type' => 'Weight Lifting',
+                'name' => 'Advanced Powerlifting Program',
+                'description' => 'Intensive powerlifting routine for advanced athletes',
+                'workout_type_id' => $weightLifting->id,
+                'experience_level_id' => $advanced->id,
+                'duration_minutes' => 90,
+                'difficulty_level' => 5,
+            ],
+            
+            // Home Workout Templates
+            [
+                'name' => 'Beginner Bodyweight Basics',
+                'description' => 'Simple bodyweight exercises you can do at home',
+                'workout_type_id' => $homeWorkout->id,
+                'experience_level_id' => $beginner->id,
+                'duration_minutes' => 30,
+                'difficulty_level' => 1,
+            ],
+            [
+                'name' => 'Intermediate HIIT Circuit',
+                'description' => 'High-intensity interval training circuit',
+                'workout_type_id' => $homeWorkout->id,
+                'experience_level_id' => $intermediate->id,
+                'duration_minutes' => 40,
+                'difficulty_level' => 3,
+            ],
+            [
+                'name' => 'Advanced Calisthenics',
+                'description' => 'Advanced bodyweight movements and progressions',
+                'workout_type_id' => $homeWorkout->id,
+                'experience_level_id' => $advanced->id,
+                'duration_minutes' => 50,
+                'difficulty_level' => 4,
             ],
         ];
 
         foreach ($templates as $template) {
-            WorkoutTemplate::create([
-                'name' => $template['name'],
-                'description' => $template['description'],
-                'experience_level_id' => $experienceLevels[$template['experience_level']]->id,
-                'workout_type_id' => $workoutTypes[$template['workout_type']]->id,
-            ]);
+            WorkoutTemplate::create($template);
         }
     }
 }

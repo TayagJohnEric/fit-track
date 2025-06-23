@@ -6,13 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class WorkoutTemplate extends Model
 {
-    protected $table = 'workout_templates';
+   protected $table = 'workout_templates';
     
     protected $fillable = [
         'name',
         'description',
-        'experience_level_id',
         'workout_type_id',
+        'experience_level_id',
+        'duration_minutes',
+        'difficulty_level',
+    ];
+
+    protected $casts = [
+        'duration_minutes' => 'integer',
+        'difficulty_level' => 'integer',
     ];
 
     // One-to-Many: WorkoutTemplate has many UserWorkoutSchedules

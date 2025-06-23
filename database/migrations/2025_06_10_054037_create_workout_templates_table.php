@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('description');
             $table->foreignId('experience_level_id')->constrained()->onDelete('restrict');
             $table->foreignId('workout_type_id')->constrained()->onDelete('restrict');
+            $table->integer('duration_minutes')->default(30);
+            $table->integer('difficulty_level')->default(1); // 1-5
             $table->timestamps();
         });
     }
