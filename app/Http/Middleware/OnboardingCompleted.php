@@ -21,7 +21,7 @@ class OnboardingCompleted
             
             // If user doesn't have a profile, redirect to onboarding
             if (!$user->userProfile) {
-                return redirect()->route('onboarding.index');
+                return redirect()->route('onboarding.welcome');
             }
         }
 

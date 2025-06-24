@@ -16,8 +16,10 @@ use App\Models\WorkoutTemplate;
 use App\Models\WorkoutType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 use Carbon\Carbon;
-use App\Http\Controllers\Controller; // ✅ ADDED
+use App\Http\Controllers\Controller; 
 
 
 class OnboardingController extends Controller
@@ -30,10 +32,10 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
         
-        return redirect()->route('onboarding.index');
+        return redirect()->route('onboarding.welcome');
     }
 
-    public function index()
+    public function welcome()
     {
         $user = auth()->user();
         
@@ -42,12 +44,12 @@ class OnboardingController extends Controller
             return redirect()->route('dashboard');
         }
         
-        return view('onboarding.welcome');
+        return view('auth.onboarding.welcome');
     }
 
     public function stepOne()
     {
-        return view('onboarding.step1');
+        return view('auth.onboarding.step1');
     }
 
     public function storeStepOne(OnboardingStepOneRequest $request)
@@ -73,7 +75,7 @@ class OnboardingController extends Controller
         $experienceLevels = ExperienceLevel::all();
         $workoutTypes = WorkoutType::all();
 
-        return view('onboarding.step2', compact('fitnessGoals', 'experienceLevels', 'workoutTypes'));
+        return view('auth.onboarding.step2', compact('fitnessGoals', 'experienceLevels', 'workoutTypes'));
     }
 
     public function storeStepTwo(OnboardingStepTwoRequest $request)
@@ -100,7 +102,7 @@ class OnboardingController extends Controller
 
         $allergies = Allergy::all();
 
-        return view('onboarding.step3', compact('allergies'));
+        return view('auth.onboarding.step3', compact('allergies'));
     }
 
     public function storeStepThree(OnboardingStepThreeRequest $request)
@@ -163,7 +165,7 @@ class OnboardingController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Onboarding completion failed: ' . $e->getMessage());
+            Log::error('Onboarding completion failed: ' . $e->getMessage());
             
             return back()->with('error', 'Something went wrong. Please try again.');
         }
@@ -175,10 +177,10 @@ class OnboardingController extends Controller
         
         // Ensure user has completed onboarding
         if (!$user->userProfile) {
-            return redirect()->route('onboarding.index');
+            return redirect()->route('onboarding.welcome');
         }
 
-        return view('onboarding.complete');
+        return view('auth.onboarding.complete');
     }
 
     private function createNutritionGoals($user, $userProfile)

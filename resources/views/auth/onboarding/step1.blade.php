@@ -114,7 +114,7 @@
 
         <!-- Navigation Buttons -->
         <div class="flex justify-between pt-6">
-            <a href="{{ route('onboarding.index') }}" 
+            <a href="{{ route('onboarding.welcome') }}" 
                class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium">
                 ← Back
             </a>
