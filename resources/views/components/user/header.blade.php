@@ -1,6 +1,7 @@
 <!-- Header -->
 <header class="bg-gray-100 shadow-sm border-b border-gray-200 px-4 py-3">
     <div class="flex items-center justify-between">
+        
         <!-- Mobile Menu Button -->
         <button 
             id="sidebar-toggle" 
@@ -11,11 +12,12 @@
             </svg>
         </button>
 
-        <!-- Spacer (optional) -->
+        <!-- Spacer -->
         <div class="flex-1"></div>
 
         <!-- Header Actions -->
         <div class="flex items-center space-x-4">
+
             <!-- Search Bar -->
             @include('components.searchbar')
 
@@ -25,15 +27,36 @@
                     id="profile-menu-button" 
                     class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
                 >
-                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center border-2 border-gray-200 shadow-sm">
-                        <span class="text-white text-sm font-medium">JD</span>
-                    </div>
+                    @php
+                        $colors = ['bg-red-500', 'bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500'];
+                        $userIdentifier = Auth::user()->id;
+                        $colorIndex = crc32($userIdentifier) % count($colors);
+                        $assignedColor = $colors[$colorIndex];
+
+                        $firstInitial = strtoupper(substr(Auth::user()->userProfile->first_name ?? '', 0, 1));
+                        $lastInitial = strtoupper(substr(Auth::user()->userProfile->last_name ?? '', 0, 1));
+                    @endphp
+
+                    @if(Auth::user()->profile_image_url)
+                        <img 
+                            src="{{ asset('storage/' . Auth::user()->userProfile->profile_image_url) }}" 
+                            alt="User Profile" 
+                            class="h-10 w-10 rounded-full object-cover"
+                        >
+                    @else
+                        <div class="h-10 w-10 rounded-full {{ $assignedColor }} flex items-center justify-center text-sm font-semibold text-white">
+                            {{ $firstInitial }}{{ $lastInitial }}
+                        </div>
+                    @endif
+
                     <div class="hidden sm:block text-left leading-tight">
-                        <p class="text-sm font-semibold text-gray-800 m-0">John Doe</p>
+                        <p class="text-sm font-semibold text-gray-700 m-0">
+                            {{ Auth::user()->name }}
+                        </p>
+                        <p class="text-xs font-medium text-gray-500 truncate m-0">
+                            {{ Auth::user()->userProfile->first_name }} {{ Auth::user()->userProfile->last_name }}
+                        </p>
                     </div>
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
                 </button>
 
                 <!-- Profile Dropdown Menu -->
@@ -45,7 +68,7 @@
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help</a>
                         <hr class="my-1 border-gray-200">
-                        <form action="#" method="POST">
+                        <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

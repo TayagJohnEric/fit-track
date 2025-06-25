@@ -34,6 +34,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
 });
 
+
+
+
 // Dashboard route (after onboarding completion)
 Route::middleware(['auth', 'onboarding.completed'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\User\UserDashboardController::class, 'dashboard'])->name('dashboard');

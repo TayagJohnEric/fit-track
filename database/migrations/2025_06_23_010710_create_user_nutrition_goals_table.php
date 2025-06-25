@@ -12,14 +12,14 @@ class CreateUserNutritionGoalsTable extends Migration
     public function up(): void
     {
         Schema::create('user_nutrition_goals', function (Blueprint $table) {
-            $table->id(); // id: bigIncrements
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // FK to users.id
+            $table->id(); 
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
             $table->integer('target_calories');
             $table->integer('target_protein_grams');
             $table->integer('target_carb_grams');
             $table->integer('target_fat_grams');
-            $table->timestamp('last_updated')->nullable(); // optional timestamp
-            $table->timestamps(); // includes created_at and updated_at
+            $table->timestamp('last_updated')->nullable(); 
+            $table->timestamps(); 
         });
     }
 
