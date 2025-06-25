@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FitnessFact;
+use App\Models\FitnessMotivation;
 use App\Models\UserWorkoutSchedule;
 use App\Models\UserNutritionGoal;
 use App\Models\UserMealLog;
@@ -26,6 +27,9 @@ class UserDashboardController extends Controller
 
         // Get random fitness fact
         $fitnessFact = FitnessFact::inRandomOrder()->first();
+
+         // Get random fitness motivation
+        $fitnessMotivation = FitnessMotivation::inRandomOrder()->first();
 
         // Get today's workout schedule
         $todaysWorkout = UserWorkoutSchedule::where('user_id', $user->id)
@@ -56,7 +60,8 @@ class UserDashboardController extends Controller
             'nutritionGoals',
             'nutritionSummary',
             'todaysMealLogs',
-            'weeklyWorkoutStats'
+            'weeklyWorkoutStats',
+            'fitnessMotivation'
         ));
     }
 

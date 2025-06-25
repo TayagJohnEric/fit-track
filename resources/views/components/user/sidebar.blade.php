@@ -1,16 +1,19 @@
 <!-- Mobile Sidebar -->
 <div id="sidebar" class="sidebar-transition sidebar-mobile-closed md:sidebar-mobile-open fixed md:static top-0 left-0 z-50 w-64 h-full bg-gray-100 text-gray-700 shadow-lg md:shadow-sm">
     <!-- Sidebar Header -->
-    <div class="flex items-center justify-between h-16 px-4">
-        <img src="{{ asset('images/logo-black.png') }}" alt="Example" class="h-8 w-auto">
-        <!-- Close button (mobile only) -->
-        <button id="sidebar-close" class="md:hidden p-2 rounded-lg text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-200">
-            <i class="fas fa-times text-lg"></i>
-        </button>
-    </div>
+<div class="flex items-center justify-center h-16 px-4 relative">
+    <!-- Logo -->
+    <img src="{{ asset('images/logo-black.png') }}" alt="Example" class="h-8 w-auto mx-auto mt-3">
+    
+    <!-- Close button (mobile only) -->
+    <button id="sidebar-close" class="md:hidden p-2 rounded-lg text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-200 absolute right-4">
+        <i class="fas fa-times text-lg"></i>
+    </button>
+</div>
+
     
     <!-- Sidebar Navigation -->
-    <nav class="flex-1 overflow-y-auto py-4">
+    <nav class="mt-5 flex-1 overflow-y-auto py-4">
         <ul class="space-y-2 px-4">
             <!-- Dashboard -->
             <li>

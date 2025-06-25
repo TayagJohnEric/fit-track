@@ -25,10 +25,8 @@
                         <p class="text-sm text-gray-500 mt-1">Rest day</p>
                     @endif
                 </div>
-                <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
+                <div class="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-500 lucide lucide-dumbbell-icon lucide-dumbbell"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/></svg>
                 </div>
             </div>
         </div>
@@ -38,13 +36,11 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Weekly Progress</p>
-                    <p class="text-2xl font-bold text-green-600">{{ $weeklyWorkoutStats['completion_rate'] }}%</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ $weeklyWorkoutStats['completion_rate'] }}%</p>
                     <p class="text-sm text-gray-500 mt-1">{{ $weeklyWorkoutStats['completed'] }}/{{ $weeklyWorkoutStats['total'] }} workouts</p>
                 </div>
-                <div class="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
+                <div class="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-500 group-hover:lucide lucide-activity-icon lucide-activity"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>           
                 </div>
             </div>
         </div>
@@ -54,17 +50,15 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Calories Today</p>
-                    <p class="text-2xl font-bold text-orange-600">{{ $nutritionSummary['calories'] }}</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ $nutritionSummary['calories'] }}</p>
                     @if($nutritionGoals)
                         <p class="text-sm text-gray-500 mt-1">of {{ $nutritionGoals->target_calories }} goal</p>
                     @else
                         <p class="text-sm text-gray-500 mt-1">No goal set</p>
                     @endif
                 </div>
-                <div class="h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
-                    </svg>
+                <div class="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-500 lucide lucide-flame-icon lucide-flame"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
                 </div>
             </div>
         </div>
@@ -74,13 +68,11 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Meals Logged</p>
-                    <p class="text-2xl font-bold text-purple-600">{{ $todaysMealLogs->count() }}</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ $todaysMealLogs->count() }}</p>
                     <p class="text-sm text-gray-500 mt-1">Today</p>
                 </div>
-                <div class="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
+                <div class="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-500 lucide lucide-utensils-icon lucide-utensils"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
                 </div>
             </div>
         </div>
@@ -123,10 +115,10 @@
 
                         @if($todaysWorkout->status === 'Scheduled')
                             <div class="flex space-x-3">
-                                <button class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                <button class="flex-1 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
                                     Start Workout
                                 </button>
-                                <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                <button class="px-4 py-2 border border-gray-300 text-gray-800 rounded-lg hover:bg-gray-50 transition-colors">
                                     Skip Today
                                 </button>
                             </div>
@@ -151,7 +143,7 @@
                         </svg>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">No workout scheduled</h3>
                         <p class="text-gray-600 mb-4">Take a rest day or browse available workouts</p>
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <button class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
                             Browse Workouts
                         </button>
                     </div>
@@ -162,7 +154,14 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-gray-900">Today's Nutrition</h2>
-                    <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Details</button>
+<button class="flex items-center gap-1 text-gray-600 hover:text-gray-800 hover:bg-gray-100 text-sm font-medium px-3 py-2 rounded">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+  View Details
+</button>
+
                 </div>
 
                 @if($nutritionGoals)
@@ -174,7 +173,7 @@
                                 <span class="text-sm text-gray-600">{{ $nutritionSummary['calories'] }}/{{ $nutritionGoals->target_calories }}</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-orange-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['calories'] / $nutritionGoals->target_calories) * 100, 100) }}%"></div>
+                                <div class="bg-gray-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['calories'] / $nutritionGoals->target_calories) * 100, 100) }}%"></div>
                             </div>
                         </div>
 
@@ -185,7 +184,7 @@
                                 <span class="text-sm text-gray-600">{{ $nutritionSummary['protein'] }}g/{{ $nutritionGoals->target_protein_grams }}g</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['protein'] / $nutritionGoals->target_protein_grams) * 100, 100) }}%"></div>
+                                <div class="bg-gray-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['protein'] / $nutritionGoals->target_protein_grams) * 100, 100) }}%"></div>
                             </div>
                         </div>
 
@@ -196,7 +195,7 @@
                                 <span class="text-sm text-gray-600">{{ $nutritionSummary['carbs'] }}g/{{ $nutritionGoals->target_carb_grams }}g</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['carbs'] / $nutritionGoals->target_carb_grams) * 100, 100) }}%"></div>
+                                <div class="bg-gray-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['carbs'] / $nutritionGoals->target_carb_grams) * 100, 100) }}%"></div>
                             </div>
                         </div>
 
@@ -207,7 +206,7 @@
                                 <span class="text-sm text-gray-600">{{ $nutritionSummary['fat'] }}g/{{ $nutritionGoals->target_fat_grams }}g</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-purple-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['fat'] / $nutritionGoals->target_fat_grams) * 100, 100) }}%"></div>
+                                <div class="bg-gray-600 h-2 rounded-full" style="width: {{ min(($nutritionSummary['fat'] / $nutritionGoals->target_fat_grams) * 100, 100) }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -247,22 +246,22 @@
             </div>
         </div>
 
-        <!-- Right Column - Fitness Fact & Quick Actions -->
+        <!-- Right Column - Fitness Fact -->
         <div class="space-y-8">
             <!-- Fitness Fact Card -->
             @if($fitnessFact)
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl shadow-sm border border-blue-200 p-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <div class="flex items-start space-x-3">
-                        <div class="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-blue-900 mb-2">Fitness Tip</h3>
-                            <p class="text-blue-800 text-sm leading-relaxed">{{ $fitnessFact->fact_text }}</p>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Fitness Tip</h3>
+                            <p class="text-gray-800 text-sm leading-relaxed">{{ $fitnessFact->fact_text }}</p>
                             @if($fitnessFact->category)
-                                <span class="inline-block mt-3 px-2 py-1 bg-blue-200 text-blue-800 text-xs rounded-full">
+                                <span class="inline-block mt-3 px-2 py-1 bg-gray-200 text-gray-800 text-xs rounded-full">
                                     {{ $fitnessFact->category }}
                                 </span>
                             @endif
@@ -272,42 +271,27 @@
             @endif
 
             <!-- Motivational Quote Card -->
-            <div class="bg-gradient-to-br from-purple-50 to-pink-100 rounded-xl shadow-sm border border-purple-200 p-6">
-                <div class="text-center">
-                    <svg class="h-8 w-8 text-purple-600 mx-auto mb-3" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-                    </svg>
-                    <blockquote class="text-purple-800 font-medium text-sm italic mb-2">
-                        "The groundwork for all happiness is good health."
-                    </blockquote>
-                    <cite class="text-purple-600 text-xs">- Leigh Hunt</cite>
-                </div>
-            </div>
+@if($fitnessMotivation)
+<div class="bg-gray-100 rounded-xl shadow-sm border border-gray-200 p-6">
+    <div class="text-center">
+        <svg class="h-8 w-8 text-gray-600 mx-auto mb-3" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
+        </svg>
+        <blockquote class="text-gray-800 font-medium text-sm italic mb-2">
+            "{{ $fitnessMotivation->quote }}"
+        </blockquote>
+        @if($fitnessMotivation->author)
+            <cite class="text-gray-600 text-xs">- {{ $fitnessMotivation->author }}</cite>
+        @endif
+    </div>
+</div>
+@else
+<!-- Optional: Fallback if no quote is found -->
+<p class="text-center text-sm text-gray-500">No motivation found today. Try again later!</p>
+@endif
+
         </div>
     </div>
 
-    <!-- Bottom Action Buttons -->
-    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            <span>Log Food</span>
-        </button>
-        
-        <button class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-            </svg>
-            <span>Start Workout</span>
-        </button>
-        
-        <button class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-            </svg>
-            <span>View Progress</span>
-        </button>
-    </div>
 </div>
 @endsection
