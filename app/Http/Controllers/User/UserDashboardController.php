@@ -24,6 +24,9 @@ class UserDashboardController extends Controller
     {
         $user = Auth::user();
         $today = Carbon::today();
+        $showWelcomeMessage = $user->created_at->isToday();
+
+        
 
         // Get random fitness fact
         $fitnessFact = FitnessFact::inRandomOrder()->first();
@@ -61,7 +64,9 @@ class UserDashboardController extends Controller
             'nutritionSummary',
             'todaysMealLogs',
             'weeklyWorkoutStats',
-            'fitnessMotivation'
+            'fitnessMotivation',
+                'showWelcomeMessage' // 👈 Add this
+
         ));
     }
 

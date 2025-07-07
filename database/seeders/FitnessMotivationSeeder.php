@@ -98,5 +98,10 @@ class FitnessMotivationSeeder extends Seeder
             'quote' => 'Your body can stand almost anything. It’s your mind that you have to convince.',
             'author' => null,
         ]);
+
+        FitnessMotivation::create([
+            'quote' => 'Day 1 or 1 Day.',
+            'author' => null,
+        ]);
     }
 }

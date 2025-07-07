@@ -3,6 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\OnboardingController;
 use App\Http\Controllers\Auth\AuthUserController;
+use App\Http\Controllers\Auth\AuthAdminController;
+
+
+//Landing Page
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
 
 
 Route::middleware('guest')->group(function () {
@@ -35,20 +44,28 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-
-
 // Dashboard route (after onboarding completion)
-Route::middleware(['auth', 'onboarding.completed'])->group(function () {
+Route::middleware(['auth', 'onboarding.completed', 'role:user'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\User\UserDashboardController::class, 'dashboard'])->name('dashboard');
 });
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
-Route::get('/admin-dashboard', function () {
-    return view('admin.dashboard.dashboard');
+
+
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AuthAdminController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AuthAdminController::class, 'login']);
+    Route::get('/register', [AuthAdminController::class, 'showRegisterForm'])->name('admin.register');
+    Route::post('/register', [AuthAdminController::class, 'register']);
 });
+
+    Route::post('/logout', [AuthAdminController::class, 'logout'])->name('admin.logout');
+
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin-dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
+});
+
 

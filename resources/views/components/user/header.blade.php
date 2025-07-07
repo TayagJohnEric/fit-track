@@ -25,14 +25,10 @@
             <div class="relative">
                 <button 
                     id="profile-menu-button" 
-                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    class="border border-gray-200 bg-white flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
                 >
                     @php
-                        $colors = ['bg-red-500', 'bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500', 'bg-indigo-500'];
-                        $userIdentifier = Auth::user()->id;
-                        $colorIndex = crc32($userIdentifier) % count($colors);
-                        $assignedColor = $colors[$colorIndex];
-
+                        $assignedColor = 'bg-gray-800';     
                         $firstInitial = strtoupper(substr(Auth::user()->userProfile->first_name ?? '', 0, 1));
                         $lastInitial = strtoupper(substr(Auth::user()->userProfile->last_name ?? '', 0, 1));
                     @endphp

@@ -4,11 +4,14 @@
 
 @section('content')
 <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Welcome Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Welcome back, {{ auth()->user()->name }}!</h1>
-        <p class="text-gray-600 mt-2">Here's your fitness overview for {{ date('F j, Y') }}</p>
-    </div>
+   <!-- Welcome Header -->
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">
+        {{ $showWelcomeMessage ? 'Welcome to your dashboard, ' : 'Welcome back, ' }}{{ auth()->user()->name }}!
+    </h1>
+    <p class="text-gray-600 mt-2">Here's your fitness overview for {{ date('F j, Y') }}</p>
+</div>
+
 
     <!-- Quick Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -18,7 +21,7 @@
                 <div>
                     <p class="text-sm font-medium text-gray-600">Today's Workout</p>
                     @if($todaysWorkout)
-                        <p class="text-2xl font-bold text-blue-600">{{ $todaysWorkout->status }}</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ $todaysWorkout->status }}</p>
                         <p class="text-sm text-gray-500 mt-1">{{ $todaysWorkout->workoutTemplate->name ?? 'Workout Scheduled' }}</p>
                     @else
                         <p class="text-2xl font-bold text-gray-400">No Workout</p>
@@ -88,9 +91,9 @@
                     <h2 class="text-xl font-bold text-gray-900">Today's Workout</h2>
                     @if($todaysWorkout)
                         <span class="px-3 py-1 rounded-full text-sm font-medium
-                            @if($todaysWorkout->status === 'Completed') bg-green-100 text-green-800
-                            @elseif($todaysWorkout->status === 'Scheduled') bg-blue-100 text-blue-800
-                            @else bg-red-100 text-red-800 @endif">
+                            @if($todaysWorkout->status === 'Completed') bg-gray-200 text-gray-600
+                            @elseif($todaysWorkout->status === 'Scheduled') bg-gray-200 text-gray-600
+                            @else bg-gray-200 text-gray-800 @endif">
                             {{ $todaysWorkout->status }}
                         </span>
                     @endif
@@ -99,8 +102,8 @@
                 @if($todaysWorkout)
                     <div class="space-y-4">
                         <div class="flex items-start space-x-4">
-                            <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
                             </div>
@@ -123,15 +126,15 @@
                                 </button>
                             </div>
                         @elseif($todaysWorkout->status === 'Completed')
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="bg-green-50 border border-gray-200 rounded-lg p-4">
                                 <div class="flex items-center">
                                     <svg class="h-5 w-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
-                                    <span class="text-green-800 font-medium">Workout completed!</span>
+                                    <span class="text-gray-800 font-medium">Workout completed!</span>
                                 </div>
                                 @if($todaysWorkout->completion_date)
-                                    <p class="text-green-700 text-sm mt-1">Completed at {{ $todaysWorkout->completion_date->format('g:i A') }}</p>
+                                    <p class="text-gray-700 text-sm mt-1">Completed at {{ $todaysWorkout->completion_date->format('g:i A') }}</p>
                                 @endif
                             </div>
                         @endif
