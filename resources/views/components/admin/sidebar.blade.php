@@ -16,14 +16,14 @@
     <li class="px-3 py-2 text-xs font-semibold text-gray-400 uppercase">Admin Dashboard</li>
             <!-- Dashboard -->
             <li>
-                <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <a href="admin-dashboard" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-house">
                         <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>
                         <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                     </svg>
-                    <span class="ml-3 text-sm">Overview</span>
+                    <span class="ml-3 text-sm">Dashboard</span>
                 </a>
             </li>
             
@@ -33,7 +33,7 @@
 
             <!-- Exercises Management -->
             <li>
-                <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <a href="/exercises" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-activity">
@@ -45,7 +45,7 @@
 
             <!-- Food Items -->
             <li>
-                <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <a href="/food-items" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-beef">
@@ -59,7 +59,7 @@
 
             <!-- Workout Templates -->
             <li>
-                <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <a href="/workout-templates" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-dumbbell">
@@ -73,18 +73,26 @@
                 </a>
             </li>
 
-            <!-- Fitness Facts -->
+             <!-- Workout Templates Exercises -->
             <li>
-                <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <a href="/workout-template-exercises" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-400 lucide lucide-blocks-icon lucide-blocks"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>
+                    <span class="ml-3 text-sm">Workout Builder</span>
+                </a>
+            </li>
+
+            <!-- Fitness Motivation -->
+            <li>
+                <a href="/fitness-motivations" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-400 lucide lucide-biceps-flexed-icon lucide-biceps-flexed"><path d="M12.409 13.017A5 5 0 0 1 22 15c0 3.866-4 7-9 7-4.077 0-8.153-.82-10.371-2.462-.426-.316-.631-.832-.62-1.362C2.118 12.723 2.627 2 10 2a3 3 0 0 1 3 3 2 2 0 0 1-2 2c-1.105 0-1.64-.444-2-1"/><path d="M15 14a5 5 0 0 0-7.584 2"/><path d="M9.964 6.825C8.019 7.977 9.5 13 8 15"/></svg>     
                     <span class="ml-3 text-sm">Fitness Motivation</span>
                 </a>
             </li>
 
-            <!-- Fitness Motivation -->
+            <!-- Fitness Facts -->
 
             <li>
-                <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <a href="/fitness-facts" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class=" w-5 h-5 text-gray-400 lucide lucide-brain-icon lucide-brain"><path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/></svg>     
                     <span class="ml-3 text-sm">Fitness Facts</span>
                 </a>
@@ -95,7 +103,7 @@
 
              <!-- User Management -->
             <li>
-                <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
+                <a href="/users" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-user-cog">

@@ -23,33 +23,34 @@
 
             <!-- Profile Section -->
             <div class="relative">
-                <button 
-                    id="profile-menu-button" 
-                    class="border border-gray-200 bg-white flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
-                >
-                    @php
-                        $assignedColor = 'bg-gray-800';     
-                        $firstInitial = strtoupper(substr(Auth::user()->userProfile->name ?? '', 0, 1));
-                    @endphp
+               <button 
+    id="profile-menu-button" 
+    class="border border-gray-200 bg-white flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
+>
+    @php
+        $assignedColor = 'bg-gray-200';     
+        $firstInitial = strtoupper(substr(Auth::user()->userProfile->name ?? Auth::user()->name, 0, 1));
+    @endphp
 
-                    @if(Auth::user()->profile_image_url)
-                        <img 
-                            src="{{ asset('storage/' . Auth::user()->userProfile->profile_image_url) }}" 
-                            alt="User Profile" 
-                            class="h-10 w-10 rounded-full object-cover"
-                        >
-                    @else
-                        <div class="h-10 w-10 rounded-full {{ $assignedColor }} flex items-center justify-center text-sm font-semibold text-white">
-                            {{ $firstInitial }}
-                        </div>
-                    @endif
+    @if(Auth::user()->userProfile?->profile_image_url)
+        <img 
+            src="{{ asset('storage/' . Auth::user()->userProfile->profile_image_url) }}" 
+            alt="User Profile" 
+            class="h-10 w-10 rounded-full object-cover"
+        >
+    @else
+        <div class="h-10 w-10 rounded-full {{ $assignedColor }} flex items-center justify-center text-sm font-semibold text-gray-700">
+            {{ $firstInitial }}
+        </div>
+    @endif
 
-                    <div class="hidden sm:block text-left leading-tight">
-                        <p class="text-sm font-semibold text-gray-700 m-0">
-                            {{ Auth::user()->name }}
-                        </p>
-                    </div>
-                </button>
+    <div class="hidden sm:block text-left leading-tight">
+        <p class="text-sm font-semibold text-gray-700 m-0">
+            {{ Auth::user()->name }}
+        </p>
+    </div>
+</button>
+
 
                 <!-- Profile Dropdown Menu -->
                 <div 
