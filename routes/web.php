@@ -63,10 +63,16 @@ Route::prefix('admin')->group(function () {
 
     Route::post('/admin/logout', [AuthAdminController::class, 'logout'])->name('admin.logout');
 
-
+//Dashboard Contents
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin-dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'dashboard'])->name('admin.dashboard');
 });
+
+//Dashboard Contents
+Route::get('/new-signups', [App\Http\Controllers\Admin\AdminUserManagementController::class, 'newUsers'])->name('admin.new-signups');
+Route::get('/active-users', [App\Http\Controllers\Admin\AdminUserManagementController::class, 'activeUsers'])->name('admin.active-users');
+Route::get('/total-workouts', [App\Http\Controllers\Admin\AdminUserManagementController::class, 'totalWorkoutsLogged'])->name('admin.total-workouts');
+
 
 
 // Manage exercises

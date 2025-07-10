@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Models\UserMealLog;
+use App\Models\UserWorkoutSchedule;
+use Carbon\Carbon;
+
+
 
 class AdminUserManagementController extends Controller
 {
@@ -100,4 +105,84 @@ class AdminUserManagementController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
+
+    //New Signup Users
+
+    public function newUsers(Request $request)
+{
+    $filter = $request->query('filter', 'day'); // default to 'day'
+    $query = User::with('userProfile')->latest();
+
+    $now = Carbon::now();
+
+    switch ($filter) {
+        case 'week':
+            $query->where('created_at', '>=', $now->copy()->subWeek());
+            break;
+        case 'month':
+            $query->where('created_at', '>=', $now->copy()->subMonth());
+            break;
+        case 'day':
+        default:
+            $query->whereDate('created_at', $now->toDateString());
+            break;
+    }
+
+    $users = $query->paginate(10)->withQueryString();
+
+    return view('admin.dashboard.new_signups', compact('users', 'filter'));
+}
+
+
+//Daily Active Users
+public function activeUsers(Request $request)
+{
+    $filter = $request->query('filter', 'day');
+    $now = Carbon::now();
+
+    $startDate = match ($filter) {
+        'week' => $now->copy()->subWeek()->startOfDay(),
+        'month' => $now->copy()->subMonth()->startOfDay(),
+        default => $now->copy()->startOfDay(),
+    };
+
+    // Get user IDs from logs
+    $mealUserIds = UserMealLog::whereDate('log_date', '>=', $startDate)
+        ->pluck('user_id')->toArray();
+    
+    $workoutUserIds = UserWorkoutSchedule::where('status', 'Completed')
+        ->whereDate('completion_date', '>=', $startDate)
+        ->pluck('user_id')->toArray();
+
+    $activeUserIds = array_unique(array_merge($mealUserIds, $workoutUserIds));
+
+    $users = User::with('userProfile')
+        ->whereIn('id', $activeUserIds)
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('admin.dashboard.active_users', compact('users', 'filter'));
+}
+
+ public function totalWorkoutsLogged(Request $request)
+{
+    $filter = $request->query('filter', 'day');
+    $now = Carbon::now();
+
+    $startDate = match ($filter) {
+        'week' => $now->copy()->subWeek()->startOfDay(),
+        'month' => $now->copy()->subMonth()->startOfDay(),
+        default => $now->copy()->startOfDay(),
+    };
+
+    $workouts = UserWorkoutSchedule::with(['user.userProfile', 'template'])
+        ->where('status', 'Completed')
+        ->whereDate('completion_date', '>=', $startDate)
+        ->latest('completion_date')
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('admin.dashboard.total_workouts', compact('workouts', 'filter'));
+}
 }

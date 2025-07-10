@@ -27,18 +27,30 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard.dashboard', $data);
     }
 
-    private function getKeyStatistics()
-    {
-        $today = Carbon::today();
-        $weekAgo = Carbon::now()->subDays(7);
+   private function getKeyStatistics()
+{
+    $today = Carbon::today();
+    $weekAgo = Carbon::now()->subDays(7);
+    $lastWeekStart = Carbon::now()->subDays(14);
+    $lastWeekEnd = Carbon::now()->subDays(7);
+    $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+    $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
 
-        return [
-            'total_users' => User::count(),
-            'new_signups_this_week' => User::where('created_at', '>=', $weekAgo)->count(),
-            'daily_active_users' => $this->getDailyActiveUsers($today),
-            'total_workouts_logged' => UserWorkoutSchedule::where('status', 'Completed')->count(),
-        ];
-    }
+    return [
+        'total_users' => User::count(),
+                'total_users_last_month' => User::whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count(),
+
+        'new_signups_this_week' => User::where('created_at', '>=', $weekAgo)->count(),
+        'new_signups_last_week' => User::whereBetween('created_at', [$lastWeekStart, $lastWeekEnd])->count(),
+        'daily_active_users' => $this->getDailyActiveUsers($today),
+        'daily_active_yesterday' => $this->getDailyActiveUsers(Carbon::yesterday()),
+        'total_workouts_logged' => UserWorkoutSchedule::where('status', 'Completed')->count(),
+        'total_workouts_last_month' => UserWorkoutSchedule::where('status', 'Completed')
+            ->whereBetween('completion_date', [$lastMonthStart, $lastMonthEnd])
+            ->count(),
+    ];
+}
+
 
     private function getDailyActiveUsers($date)
     {
@@ -111,4 +123,7 @@ class AdminDashboardController extends Controller
                 ];
             });
     }
+
+    
+
 }
