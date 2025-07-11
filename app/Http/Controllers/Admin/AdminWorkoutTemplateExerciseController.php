@@ -32,13 +32,7 @@ class AdminWorkoutTemplateExerciseController extends Controller
         ]);
     }
 
-    public function create()
-{
-    return view('admin.workout-builder.create', [
-        'templates' => WorkoutTemplate::all(),
-        'allExercises' => Exercise::all()
-    ]);
-}
+  
 
     public function store(Request $request)
     {
@@ -57,14 +51,7 @@ class AdminWorkoutTemplateExerciseController extends Controller
          return redirect()->route('workout-template-exercises.index')->with('success', 'Exercise added to template.');
     }
 
-    public function edit(WorkoutTemplateExercise $workout_template_exercise)
-{
-    return view('admin.workout-builder.edit', [
-        'editing' => $workout_template_exercise,
-        'templates' => WorkoutTemplate::all(),
-        'allExercises' => Exercise::all()
-    ]);
-}
+
 
     public function update(Request $request, WorkoutTemplateExercise $workout_template_exercise)
     {

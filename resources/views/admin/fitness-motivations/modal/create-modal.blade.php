@@ -1,10 +1,10 @@
-@extends('layout.admin')
+<!-- Create Modal Wrapper -->
+<div id="create-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="modal-content bg-white rounded-lg p-6 max-w-xl w-full relative">
+        <!-- Close Button -->
+        <button onclick="closeCreateModal()" class="absolute top-3 right-3 text-gray-600 hover:text-black text-2xl font-bold">&times;</button>
 
-@section('title', 'Add Fitness Motivation')
-
-@section('content')
-<div class="max-w-[90rem] mx-auto">
-    <div class="bg-white rounded-lg shadow p-6">
+        <!-- Modal Content -->
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Fitness Motivation</h2>
 
         <form method="POST" action="{{ route('fitness-motivations.store') }}" class="space-y-4">
@@ -22,9 +22,8 @@
 
             <div class="flex gap-2">
                 <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Save</button>
-                <a href="{{ route('fitness-motivations.index') }}" class="text-gray-600 underline">Back</a>
+                <button type="button" onclick="closeCreateModal()" class="text-gray-600 underline">Cancel</button>
             </div>
         </form>
     </div>
 </div>
-@endsection

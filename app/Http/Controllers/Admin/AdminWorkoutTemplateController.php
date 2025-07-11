@@ -29,12 +29,7 @@ class AdminWorkoutTemplateController extends Controller
         return view('admin.workout-templates.index', compact('templates', 'search', 'level', 'type', 'levels', 'types'));
     }
 
-    public function create()
-    {
-        $levels = ExperienceLevel::pluck('name', 'id');
-        $types = WorkoutType::pluck('name', 'id');
-        return view('admin.workout-templates.create', compact('levels', 'types'));
-    }
+   
 
     public function store(Request $request)
     {
@@ -53,12 +48,7 @@ class AdminWorkoutTemplateController extends Controller
                          ->with('success', 'Workout template created successfully.');
     }
 
-    public function edit(WorkoutTemplate $workout_template)
-    {
-        $levels = ExperienceLevel::pluck('name', 'id');
-        $types = WorkoutType::pluck('name', 'id');
-        return view('admin.workout-templates.edit', compact('workout_template', 'levels', 'types'));
-    }
+    
 
     public function update(Request $request, WorkoutTemplate $workout_template)
     {

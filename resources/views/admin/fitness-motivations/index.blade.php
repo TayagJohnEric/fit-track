@@ -2,6 +2,41 @@
 
 @section('title', 'Fitness Motivation')
 
+<style>
+    /* Modal Animation Styles */
+    .modal-overlay {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-content {
+        transform: scale(0.7) translateY(-50px);
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    }
+
+    .modal-overlay.show .modal-content {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    .modal-overlay.closing {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .modal-overlay.closing .modal-content {
+        transform: scale(0.7) translateY(-50px);
+        opacity: 0;
+    }
+</style>
+
 @section('content')
 <div class="max-w-[90rem] mx-auto">
     <div class="bg-white rounded-lg shadow p-6">
@@ -22,10 +57,10 @@
             </form>
 
             <!-- Add Button -->
-            <a href="{{ route('fitness-motivations.create') }}"
+            <button onclick="openCreateModal()"
                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                 + Add Motivation
-            </a>
+        </button>
         </div>
 
         <!-- Table -->
@@ -45,18 +80,16 @@
                             <td class="p-3">{{ $motivation->author ?? '—' }}</td>
                             <td class="p-3 text-center space-x-2">
                                 <!-- Edit -->
-                                <a href="{{ route('fitness-motivations.edit', $motivation->id) }}"
-                                   class="text-blue-600 hover:underline">Edit</a>
+                                <button onclick="openEditModal({{ $motivation->id }})"
+                                   class="text-blue-600 hover:underline">Edit</button>
 
-                                <!-- Delete -->
-                                <form action="{{ route('fitness-motivations.destroy', $motivation->id) }}"
-                                      method="POST" class="inline"
-                                      onsubmit="return confirm('Are you sure you want to delete this motivation?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                                </form>
+                                <!-- Delete -->      
+                                    
+                                    <button onclick="openDeleteModal({{ $motivation->id }})" class="text-red-600 hover:underline">Delete</button>
+                                
                             </td>
+                              @include('admin.fitness-motivations.modal.edit-modal')
+                            @include('admin.fitness-motivations.modal.delete-modal')
                         </tr>
                     @empty
                         <tr>
@@ -73,4 +106,74 @@
         </div>
     </div>
 </div>
+
+                            @include('admin.fitness-motivations.modal.create-modal')
+
+
+<script>
+
+function openCreateModal() {
+    const modal = document.getElementById('create-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    // Trigger animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+function closeCreateModal() {
+    const modal = document.getElementById('create-modal');
+    modal.classList.add('closing');
+    modal.classList.remove('show');
+    // Hide modal after animation completes
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'closing');
+    }, 300);
+}
+
+ function openEditModal(id) {
+        const modal = document.getElementById('edit-modal-' + id);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Trigger animation
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+    }
+
+    function closeEditModal(id) {
+        const modal = document.getElementById('edit-modal-' + id);
+        modal.classList.add('closing');
+        modal.classList.remove('show');
+        // Hide modal after animation completes
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex', 'closing');
+        }, 300);
+    }
+
+    function openDeleteModal(id) {
+        const modal = document.getElementById('delete-modal-' + id);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Trigger animation
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+    }
+
+    function closeDeleteModal(id) {
+        const modal = document.getElementById('delete-modal-' + id);
+        modal.classList.add('closing');
+        modal.classList.remove('show');
+        // Hide modal after animation completes
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex', 'closing');
+        }, 300);
+    }
+</script>
+
 @endsection

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Exercise;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class AdminExerciseController extends Controller
@@ -22,45 +24,65 @@ class AdminExerciseController extends Controller
         return view('admin.exercises.index', compact('exercises', 'search'));
     }
 
-    public function create()
-    {
-        return view('admin.exercises.create');
+
+   public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'description' => 'required',
+        'muscle_group' => 'required',
+        'equipment_needed' => 'required',
+        'video' => 'nullable|file|mimes:mp4,mov,avi,webm|max:51200', // max 50MB
+    ]);
+
+    $videoPath = null;
+
+    if ($request->hasFile('video')) {
+        $videoPath = $request->file('video')->store('videos', 'public');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'muscle_group' => 'required',
-            'equipment_needed' => 'required',
-            'video_url' => 'nullable|url',
-        ]);
+    Exercise::create([
+        'name' => $request->name,
+        'description' => $request->description,
+        'muscle_group' => $request->muscle_group,
+        'equipment_needed' => $request->equipment_needed,
+        'video_url' => $videoPath, // stored path
+    ]);
 
-        Exercise::create($request->all());
+    return redirect()->route('exercises.index')->with('success', 'Exercise created successfully.');
+}
 
-        return redirect()->route('exercises.index')->with('success', 'Exercise created successfully.');
+  public function update(Request $request, Exercise $exercise)
+{
+    $request->validate([
+        'name' => 'required',
+        'description' => 'required',
+        'muscle_group' => 'required',
+        'equipment_needed' => 'required',
+        'video' => 'nullable|file|mimes:mp4,mov,avi,webm|max:51200',
+    ]);
+
+    $videoPath = $exercise->video_url;
+
+    if ($request->hasFile('video')) {
+        // Optional: delete old video file if exists
+        if ($exercise->video_url && Storage::disk('public')->exists($exercise->video_url)) {
+            Storage::disk('public')->delete($exercise->video_url);
+        }
+
+        $videoPath = $request->file('video')->store('videos', 'public');
     }
 
-    public function edit(Exercise $exercise)
-    {
-        return view('admin.exercises.edit', compact('exercise'));
-    }
+    $exercise->update([
+        'name' => $request->name,
+        'description' => $request->description,
+        'muscle_group' => $request->muscle_group,
+        'equipment_needed' => $request->equipment_needed,
+        'video_url' => $videoPath,
+    ]);
 
-    public function update(Request $request, Exercise $exercise)
-    {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'muscle_group' => 'required',
-            'equipment_needed' => 'required',
-            'video_url' => 'nullable|url',
-        ]);
-
-        $exercise->update($request->all());
-
-        return redirect()->route('exercises.index')->with('success', 'Exercise updated successfully.');
-    }
+    return redirect()->route('exercises.index')->with('success', 'Exercise updated successfully.');
+}
 
     public function destroy(Exercise $exercise)
     {

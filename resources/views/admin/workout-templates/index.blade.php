@@ -1,5 +1,40 @@
 @extends('layout.admin')
 @section('title', 'Workout Templates')
+
+<style>
+    /* Modal Animation Styles */
+    .modal-overlay {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-content {
+        transform: scale(0.7) translateY(-50px);
+        opacity: 0;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    }
+
+    .modal-overlay.show .modal-content {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    .modal-overlay.closing {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .modal-overlay.closing .modal-content {
+        transform: scale(0.7) translateY(-50px);
+        opacity: 0;
+    }
+</style>
 @section('content')
 <div class="max-w-[90rem] mx-auto">
   <div class="bg-white rounded-lg shadow p-6">
@@ -29,9 +64,9 @@
         </select>
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
       </form>
-      <a href="{{ route('workout_templates.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
+      <button onclick="openCreateModal()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
         Add New
-      </a>
+      </button>
     </div>
 
     <div class="overflow-x-auto">
@@ -55,12 +90,16 @@
               <td class="px-4 py-2 border">{{ $t->duration_minutes }} min</td>
               <td class="px-4 py-2 border">{{ $t->difficulty_level }}/5</td>
               <td class="px-4 py-2 border flex gap-2">
-                <a href="{{ route('workout_templates.edit', $t->id) }}" class="text-blue-600 hover:underline">Edit</a>
-                <form method="POST" action="{{ route('workout_templates.destroy', $t->id) }}">
-                  @csrf @method('DELETE')
-                  <button onclick="return confirm('Delete?')" class="text-red-600 hover:underline">Delete</button>
-                </form>
+              <button onclick="openEditModal({{ $t->id }})" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit </button>
+               <button  onclick="openDeleteModal({{ $t->id }})"
+                                            class="text-red-600 hover:underline">Delete</button>
               </td>
+
+              @include('admin.workout-templates.modal.edit-modal')
+                            @include('admin.workout-templates.modal.delete-modal')
+
+
+
             </tr>
           @empty
             <tr><td colspan="6" class="text-center py-4">No templates found.</td></tr>
@@ -72,4 +111,73 @@
     <div class="mt-4">{{ $templates->withQueryString()->links() }}</div>
   </div>
 </div>
+
+  @include('admin.workout-templates.modal.create-modal')
+
+
+<script>
+
+function openCreateModal() {
+    const modal = document.getElementById('create-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    // Trigger animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+function closeCreateModal() {
+    const modal = document.getElementById('create-modal');
+    modal.classList.add('closing');
+    modal.classList.remove('show');
+    // Hide modal after animation completes
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'closing');
+    }, 300);
+}
+
+ function openEditModal(id) {
+        const modal = document.getElementById('edit-modal-' + id);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Trigger animation
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+    }
+
+    function closeEditModal(id) {
+        const modal = document.getElementById('edit-modal-' + id);
+        modal.classList.add('closing');
+        modal.classList.remove('show');
+        // Hide modal after animation completes
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex', 'closing');
+        }, 300);
+    }
+
+    function openDeleteModal(id) {
+        const modal = document.getElementById('delete-modal-' + id);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Trigger animation
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+    }
+
+    function closeDeleteModal(id) {
+        const modal = document.getElementById('delete-modal-' + id);
+        modal.classList.add('closing');
+        modal.classList.remove('show');
+        // Hide modal after animation completes
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex', 'closing');
+        }, 300);
+    }
+</script>
 @endsection

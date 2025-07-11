@@ -1,10 +1,7 @@
-@extends('layout.admin')
+<div id="edit-modal-{{ $user->id }}" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="modal-content bg-white rounded-lg p-6 max-w-4xl w-full">
+            <button onclick="closeEditModal({{ $user->id }})" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-2xl">&times;</button>
 
-@section('title', 'Edit User')
-
-@section('content')
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Edit User</h2>
 
         <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
@@ -91,8 +88,10 @@
                 </div>
             </div>
 
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Update User</button>
+            <div class="flex justify-end gap-4">
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Update User</button>
+                <button type="button" onclick="closeCreateModal()" class="text-gray-600 hover:underline">Cancel</button>
+            </div>
         </form>
     </div>
 </div>
-@endsection

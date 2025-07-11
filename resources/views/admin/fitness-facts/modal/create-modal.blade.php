@@ -1,10 +1,5 @@
-@extends('layout.admin')
-
-@section('title', 'Add Fitness Fact')
-
-@section('content')
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-lg shadow p-6">
+<div id="create-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="modal-content bg-white rounded-lg p-6 max-w-4xl w-full">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Fitness Fact</h2>
 
         <form method="POST" action="{{ route('fitness-facts.store') }}">
@@ -24,9 +19,8 @@
                 <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                     Create
                 </button>
-                <a href="{{ route('fitness-facts.index') }}" class="text-gray-600 hover:underline">Cancel</a>
+                <button type="button" onclick="closeCreateModal()" class="text-gray-600 hover:underline">Cancel</button>
             </div>
         </form>
     </div>
 </div>
-@endsection

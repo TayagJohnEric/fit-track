@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\FoodItem;
+use Illuminate\Support\Facades\Storage;
+    
 
 
 class AdminFoodItemController extends Controller
@@ -21,59 +23,73 @@ class AdminFoodItemController extends Controller
         return view('admin.food-items.index', compact('foodItems', 'search'));
     }
 
-    public function create()
-    {
-        return view('admin.food-items.create');
+   
+
+   public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'serving_size_description' => 'required|string',
+        'serving_size_grams' => 'required|integer',
+        'calories_per_serving' => 'required|integer',
+        'protein_grams_per_serving' => 'required|numeric',
+        'carb_grams_per_serving' => 'required|numeric',
+        'fat_grams_per_serving' => 'required|numeric',
+        'estimated_cost' => 'required|numeric',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+    ]);
+
+    $imagePath = null;
+
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('food_images', 'public');
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'serving_size_description' => 'required|string',
-            'serving_size_grams' => 'required|integer',
-            'calories_per_serving' => 'required|integer',
-            'protein_grams_per_serving' => 'required|numeric',
-            'carb_grams_per_serving' => 'required|numeric',
-            'fat_grams_per_serving' => 'required|numeric',
-            'estimated_cost' => 'required|numeric',
-            'image_url' => 'nullable|url'
-        ]);
+    $validated['image_url'] = $imagePath;
+    $validated['creator_user_id'] = auth()->id();
 
-        $validated['creator_user_id'] = auth()->id();
+    FoodItem::create($validated);
 
-        FoodItem::create($validated);
+    return redirect()->route('food_items.index')->with('success', 'Food item added successfully.');
+}
+    
 
-        return redirect()->route('food_items.index')->with('success', 'Food item added successfully.');
+  public function update(Request $request, FoodItem $foodItem )
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'serving_size_description' => 'required|string',
+        'serving_size_grams' => 'required|integer',
+        'calories_per_serving' => 'required|integer',
+        'protein_grams_per_serving' => 'required|numeric',
+        'carb_grams_per_serving' => 'required|numeric',
+        'fat_grams_per_serving' => 'required|numeric',
+        'estimated_cost' => 'required|numeric',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    $imagePath = $foodItem->image_url;
+
+    if ($request->hasFile('image')) {
+        // Delete old image if it exists
+        if ($foodItem->image_url && Storage::disk('public')->exists($foodItem->image_url)) {
+            Storage::disk('public')->delete($foodItem->image_url);
+        }
+
+        // Store new image
+        $imagePath = $request->file('image')->store('food_images', 'public');
     }
 
-    public function edit(FoodItem $food_item)
+    $validated['image_url'] = $imagePath;
+    $validated['creator_user_id'] = auth()->id();
+
+    $foodItem->update($validated);
+
+    return redirect()->route('food_items.index')->with('success', 'Food item updated successfully.');
+}
+    public function destroy(FoodItem $foodItem)
     {
-        return view('admin.food-items.edit', compact('food_item'));
-    }
-
-    public function update(Request $request, FoodItem $food_item)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'serving_size_description' => 'required|string',
-            'serving_size_grams' => 'required|integer',
-            'calories_per_serving' => 'required|integer',
-            'protein_grams_per_serving' => 'required|numeric',
-            'carb_grams_per_serving' => 'required|numeric',
-            'fat_grams_per_serving' => 'required|numeric',
-            'estimated_cost' => 'required|numeric',
-            'image_url' => 'nullable|url'
-        ]);
-
-        $food_item->update($validated);
-
-        return redirect()->route('food_items.index')->with('success', 'Food item updated.');
-    }
-
-    public function destroy(FoodItem $food_item)
-    {
-        $food_item->delete();
+        $foodItem->delete();
 
         return redirect()->route('food_items.index')->with('success', 'Food item deleted.');
     }

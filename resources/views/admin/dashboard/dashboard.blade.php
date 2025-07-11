@@ -5,20 +5,21 @@
 <div class="min-h-screen">
     <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-     <!--Welcome Header -->
+   <!--Welcome Header -->
+   <!--Welcome Header -->
 <div class="relative bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8 group hover:shadow-2xl transition-all duration-500">
   <!-- Animated background gradient -->
   <div class="absolute inset-0 bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 opacity-95"></div>
-  
+
   <!-- Subtle animated overlay -->
   <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-blue-600/10 bg-[length:400%_400%] animate-pulse opacity-30"></div>
-  
+
   <!-- Glass morphism effect -->
   <div class="absolute inset-0 backdrop-blur-sm"></div>
-  
+
   <!-- Border glow effect -->
   <div class="absolute inset-0 rounded-2xl border border-white/10"></div>
-  
+
   <!-- Content -->
   <div class="relative px-6 py-8 sm:px-8 sm:py-12">
     <!-- Header with icon and actions -->
@@ -28,16 +29,16 @@
         <div class="p-3 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm group-hover:bg-white/10 transition-all duration-300">
          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-gray-300 group-hover:text-white transition-colors duration-300 lucide lucide-chart-spline-icon lucide-chart-spline"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 16c.5-2 1.5-7 4-7 2 0 2 3 4 3 2.5 0 4.5-5 5-7"/></svg>
         </div>
-        
+
         <!-- Title section -->
         <div>
-          <h1 class="text-xl sm:text-xl font-bold text-white mb-2 tracking-tight">
+          <h1 class="text-lg sm:text-lg font-bold text-white mb-2 tracking-tight">
             Fit-Track Admin
-            <span class="block text-xl sm:text-xl font-light text-gray-300 mt-1">Dashboard</span>
+            <span class="block text-base sm:text-base font-light text-gray-300 mt-1">Dashboard</span>
           </h1>
         </div>
       </div>
-      
+
       <!-- Quick actions -->
       <div class="hidden sm:flex items-center space-x-3">
         <div class="p-2 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 cursor-pointer">
@@ -53,14 +54,14 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Welcome message with enhanced typography -->
     <div class="space-y-4">
-      <p class="text-gray-300 text-lg sm:text-lg max-w-3xl leading-relaxed">
+      <p class="text-gray-300 text-base sm:text-base max-w-3xl leading-relaxed">
         Welcome back! Here's what's happening with your 
         <span class="text-white font-semibold">fitness platform</span> today.
       </p>
-      
+
       <!-- Status indicators -->
       <div class="flex items-center space-x-6 pt-1">
         <div class="flex items-center space-x-2">
@@ -74,7 +75,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Subtle bottom accent -->
   <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
 </div>

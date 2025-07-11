@@ -1,11 +1,10 @@
-@extends('layout.admin')
+<div id="create-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+  <div class="modal-content bg-white rounded-lg p-6 max-w-2xl w-full relative">
+    <button onclick="closeCreateModal()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+      &times;
+    </button>
 
-@section('title', 'Create Workout Template')
-
-@section('content')
-<div class="max-w-[90rem] mx-auto">
-  <div class="bg-white rounded-lg shadow p-6">
-    <h2 class="text-2xl font-bold mb-4">Create Workout Template</h2>
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">Create Workout Template</h2>
 
     <form method="POST" action="{{ route('workout_templates.store') }}">
       @csrf
@@ -60,4 +59,3 @@
     </form>
   </div>
 </div>
-@endsection

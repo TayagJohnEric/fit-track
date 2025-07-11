@@ -23,10 +23,7 @@ class AdminFitnessMotivationController extends Controller
         return view('admin.fitness-motivations.index', compact('motivations', 'search'));
     }
 
-    public function create()
-{
-    return view('admin.fitness-motivations.create');
-}
+   
 
     public function store(Request $request)
     {
@@ -40,11 +37,7 @@ class AdminFitnessMotivationController extends Controller
         return redirect()->route('fitness-motivations.index')->with('success', 'Motivation added!');
     }
 
-    public function edit(FitnessMotivation $fitnessMotivation)
-{
-    return view('admin.fitness-motivations.edit', compact('fitnessMotivation'));
-}
-
+   
     public function update(Request $request, FitnessMotivation $fitnessMotivation)
     {
         $request->validate([
