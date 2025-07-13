@@ -17,10 +17,10 @@
         <ul class="space-y-2 px-4">
             <!-- Dashboard -->
             <li>
-                <a href="#" class="group flex items-center  font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
+                <a href="{{ route('dashboard') }}" class="group flex items-center  font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                        class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-house">
+                        class="w-5 h-5 text-gray-400 lucide lucide-house">
                         <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/>
                         <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                     </svg>
@@ -30,10 +30,10 @@
 
             <!-- Log Meal -->
             <li>
-                <a href="#" class="group flex items-center  font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
+                <a href="{{ route('nutrition.index') }}" class="group flex items-center  font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                        class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-utensils">
+                        class="w-5 h-5 text-gray-400 lucide lucide-utensils">
                         <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
                         <path d="M7 2v20"/>
                         <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
@@ -44,10 +44,10 @@
 
             <!-- Today's Workout -->
             <li>
-                <a href="#" class="group flex items-center  font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
+                <a href="{{ route('workouts.today') }}" class="group flex items-center  font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                        class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-dumbbell">
+                        class="w-5 h-5 text-gray-400 lucide lucide-dumbbell">
                         <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/>
                         <path d="m2.5 21.5 1.4-1.4"/>
                         <path d="m20.1 3.9 1.4-1.4"/>
@@ -63,7 +63,7 @@
                 <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                        class="w-5 h-5 text-gray-400 group-hover:text-white lucide lucide-beef">
+                        class="w-5 h-5 text-gray-400 lucide lucide-beef">
                         <path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"/>
                         <path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"/>
                         <circle cx="12.5" cy="8.5" r="2.5"/>
@@ -75,8 +75,7 @@
                  <!-- My Progress -->
               <li>
                 <a href="#" class="group flex items-center font-semibold p-3 rounded-lg hover:bg-gray-800 hover:text-white transition-all duration-200">
-                                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-400 group-hover:lucide lucide-activity-icon lucide-activity"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>           
-
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-400 group-hover: lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined"><path d="M12 16v5"/><path d="M16 14v7"/><path d="M20 10v11"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18v3"/><path d="M8 14v7"/></svg>
                     <span class="ml-3 text-sm">My Progress</span>
                 </a>
             </li>

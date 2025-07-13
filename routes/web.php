@@ -13,7 +13,7 @@ Route::get('/', function () {
 
 
 
-
+//User Auth
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthUserController::class, 'showRegisterForm'])->name('register.form');
     Route::post('/register', [AuthUserController::class, 'register'])->name('register');
@@ -44,10 +44,58 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+
 // Dashboard route (after onboarding completion)
 Route::middleware(['auth', 'onboarding.completed', 'role:user'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\User\UserDashboardController::class, 'dashboard'])->name('dashboard');
 });
+
+// User Log Meal
+Route::middleware('auth', 'role:user')->group(function () {
+    // Nutrition Logging Routes
+    Route::prefix('nutrition')->name('nutrition.')->group(function () {
+        Route::get('/', [App\Http\Controllers\User\UserMealLogController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\User\UserMealLogController::class, 'create'])->name('create');
+        Route::post('/store', [App\Http\Controllers\User\UserMealLogController::class, 'store'])->name('store');
+        Route::delete('/entry/{entry}', [App\Http\Controllers\User\UserMealLogController::class, 'destroyEntry'])->name('entry.destroy');
+        
+        // Custom food routes
+        Route::get('/custom-food/create', [App\Http\Controllers\User\UserMealLogController::class, 'createCustomFood'])->name('custom-food.create');
+        Route::post('/custom-food/store', [App\Http\Controllers\User\UserMealLogController::class, 'storeCustomFood'])->name('custom-food.store');
+        
+        // AJAX routes
+        Route::get('/search-food', [App\Http\Controllers\User\UserMealLogController::class, 'searchFoodItems'])->name('search-food');
+    });
+});
+
+//User Workout 
+Route::middleware('auth')->group(function () {
+    // Today's workout
+    Route::get('/workouts/today', [App\Http\Controllers\User\UserWorkoutController::class, 'todaysWorkout'])->name('workouts.today');
+    
+    // Exercise detail view
+    Route::get('/workouts/{workoutScheduleId}/exercise/{exerciseId}', [App\Http\Controllers\User\UserWorkoutController::class, 'showExercise'])->name('workouts.exercise.show');
+    
+    // Complete workout
+    Route::post('/workouts/{workoutScheduleId}/complete', [App\Http\Controllers\User\UserWorkoutController::class, 'completeWorkout'])->name('workouts.complete');
+    
+    // Skip workout
+    Route::post('/workouts/{workoutScheduleId}/skip', [App\Http\Controllers\User\UserWorkoutController::class, 'skipWorkout'])->name('workouts.skip');
+
+    // Workout history
+    Route::get('/workouts/history', [App\Http\Controllers\User\UserWorkoutController::class, 'history'])->name('workouts.history');
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 
