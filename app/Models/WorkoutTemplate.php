@@ -41,13 +41,15 @@ class WorkoutTemplate extends Model
     }
 
     // Many-to-Many: WorkoutTemplate has many Exercises
-    public function exercises()
+  public function exercises()
 {
-    return $this->belongsToMany(Exercise::class, 'workout_template_exercises')
-        ->using(WorkoutTemplateExercise::class)
-        ->withPivot([
-            'sets', 'reps', 'duration_seconds', 'rest_seconds', 'order_in_workout'
-        ])
-        ->withTimestamps();
+    return $this->belongsToMany(Exercise::class, 'workout_template_exercises', 'template_id', 'exercise_id')
+                ->withPivot([
+                    'sets', 'reps', 'duration_seconds',
+                    'rest_seconds', 'order_in_workout'
+                ])
+                ->withTimestamps()
+                ->orderBy('workout_template_exercises.order_in_workout');
 }
+
 }

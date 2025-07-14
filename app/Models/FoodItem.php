@@ -35,10 +35,10 @@ class FoodItem extends Model
     }
 
     // One-to-Many: FoodItem has many UserMealLogEntries
-    public function mealLogEntries()
-    {
-        return $this->hasMany(UserMealLogEntry::class);
-    }
+   public function mealLogEntries()
+{
+    return $this->hasMany(UserMealLogEntry::class, 'food_item_id');
+}
 
     // Many-to-Many: FoodItem has many Allergies
     public function allergies()

@@ -26,8 +26,8 @@ class UserMealLog extends Model
     }
 
     // One-to-Many: UserMealLog has many UserMealLogEntries
-    public function mealLogEntries()
-    {
-        return $this->hasMany(UserMealLogEntry::class);
-    }
+   public function mealLogEntries()
+{
+    return $this->hasMany(UserMealLogEntry::class, 'meal_log_id');
+}
 }

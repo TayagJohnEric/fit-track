@@ -86,6 +86,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/workouts/history', [App\Http\Controllers\User\UserWorkoutController::class, 'history'])->name('workouts.history');
 });
 
+// Meal Ideas Routes
+    Route::prefix('meal-ideas')->middleware(['auth'])->name('meal-ideas.')->group(function () {
+        Route::get('/', [App\Http\Controllers\User\UserMealIdeasController::class, 'index'])->name('index');
+        Route::get('/details', [App\Http\Controllers\User\UserMealIdeasController::class, 'show'])->name('show');
+        Route::get('/log-form', [App\Http\Controllers\User\UserMealIdeasController::class, 'showLogForm'])->name('log-form');
+        Route::post('/log-meal', [App\Http\Controllers\User\UserMealIdeasController::class, 'logMeal'])->name('log-meal');
+    });
+    
+
+
+
 
 
 

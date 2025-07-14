@@ -25,8 +25,8 @@ class DatabaseSeeder extends Seeder
             FoodItemSeeder::class,
             FoodItemAllergiesSeeder::class,
             FitnessFactSeeder::class,
-            WorkoutTemplateExercisesSeeder::class,
             WorkoutTemplateSeeder::class,
+            WorkoutTemplateExercisesSeeder::class,
             FitnessMotivationSeeder::class,
 
         ]);

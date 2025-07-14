@@ -18,15 +18,13 @@ class UserMealLogEntry extends Model
         'quantity_consumed' => 'decimal:2',
     ];
 
-    // One-to-Many (Inverse): UserMealLogEntry belongs to UserMealLog
-    public function mealLog()
-    {
-        return $this->belongsTo(UserMealLog::class);
-    }
+  public function mealLog()
+{
+    return $this->belongsTo(UserMealLog::class, 'meal_log_id');
+}
 
-    // One-to-Many (Inverse): UserMealLogEntry belongs to FoodItem
-    public function foodItem()
-    {
-        return $this->belongsTo(FoodItem::class);
-    }
+public function foodItem()
+{
+    return $this->belongsTo(FoodItem::class, 'food_item_id');
+}
 }

@@ -17,14 +17,15 @@ class Exercise extends Model
     ];
 
     // Many-to-Many: Exercise belongs to many WorkoutTemplates
-    public function templates()
+   public function templates()
 {
-    return $this->belongsToMany(WorkoutTemplate::class, 'workout_template_exercises')
+    return $this->belongsToMany(WorkoutTemplate::class, 'workout_template_exercises', 'exercise_id', 'template_id')
         ->using(WorkoutTemplateExercise::class)
         ->withPivot([
             'sets', 'reps', 'duration_seconds', 'rest_seconds', 'order_in_workout'
         ])
         ->withTimestamps();
 }
+
 
 }
