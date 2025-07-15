@@ -94,6 +94,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/log-meal', [App\Http\Controllers\User\UserMealIdeasController::class, 'logMeal'])->name('log-meal');
     });
     
+//Progress Routes
+    Route::middleware(['auth'])->group(function () {
+    // Progress routes
+    Route::get('/progress', [App\Http\Controllers\User\UserProgressController::class, 'index'])->name('progress.index');
+    Route::post('/progress/log-weight', [App\Http\Controllers\User\UserProgressController::class, 'logWeight'])->name('progress.log-weight');
+});
 
 
 
