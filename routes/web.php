@@ -102,6 +102,20 @@ Route::middleware('auth')->group(function () {
 });
 
 
+// Profile routes 
+Route::middleware(['auth'])->group(function () {
+    
+    // Profile management routes
+    Route::get('/profile', [App\Http\Controllers\User\UserProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [App\Http\Controllers\User\UserProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\User\UserProfileController::class, 'update'])->name('profile.update');
+    
+    // Password change routes
+    Route::get('/profile/change-password', [App\Http\Controllers\User\UserProfileController::class, 'showChangePasswordForm'])->name('profile.change-password');
+    Route::put('/profile/change-password', [App\Http\Controllers\User\UserProfileController::class, 'updatePassword'])->name('profile.update-password');
+});
+
+
 
 
 
