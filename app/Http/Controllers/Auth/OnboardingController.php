@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+
 use Carbon\Carbon;
 use App\Http\Controllers\Controller; 
 
@@ -224,22 +225,28 @@ class OnboardingController extends Controller
     }
 
     private function assignInitialWorkout($user, $userProfile)
-    {
-        // Find a suitable workout template based on user preferences
-        $workoutTemplate = WorkoutTemplate::where('workout_type_id', $userProfile->preferred_workout_type_id)
-            ->where('experience_level_id', $userProfile->experience_level_id)
-            ->first();
+{
+    // Find a suitable workout template randomly from the matching ones
+    $workoutTemplate = WorkoutTemplate::where('workout_type_id', $userProfile->preferred_workout_type_id)
+        ->where('experience_level_id', $userProfile->experience_level_id)
+        ->inRandomOrder() // Adds variety
+        ->first();
 
-        if ($workoutTemplate) {
-            // Assign workout for the next 7 days
-            for ($i = 1; $i <= 7; $i++) {
-                UserWorkoutSchedule::create([
-                    'user_id' => $user->id,
-                    'template_id' => $workoutTemplate->id,
-                    'assigned_date' => now()->addDays($i)->toDateString(),
-                    'status' => 'Scheduled',
-                ]);
-            }
+    if ($workoutTemplate) {
+        // A more realistic schedule with rest days (e.g., Day 0, Day 2, Day 4)
+        $scheduleDays = [0, 2, 4]; 
+
+        foreach ($scheduleDays as $day) {
+            UserWorkoutSchedule::create([
+                'user_id'       => $user->id,
+                'template_id'   => $workoutTemplate->id,
+                'assigned_date' => now()->addDays($day)->toDateString(), // Starts today
+                'status'        => 'Scheduled',
+            ]);
         }
+    } else {
+        // Log a warning if no template is found so you can add one later
+        Log::warning('No workout template found for workout_type_id: ' . $userProfile->preferred_workout_type_id . ' and experience_level_id: ' . $userProfile->experience_level_id);
     }
+}
 }

@@ -105,7 +105,7 @@ class AdminDashboardController extends Controller
 
     private function getRecentCompletions()
     {
-        return UserWorkoutSchedule::with(['user.userProfile', 'template'])
+        return UserWorkoutSchedule::with(['user.userProfile', 'workoutTemplate'])
             ->where('status', 'Completed')
             ->latest('completion_date')
             ->take(5)
@@ -118,7 +118,7 @@ class AdminDashboardController extends Controller
                 
                 return [
                     'user_name' => $displayName,
-                    'workout_name' => $schedule->template->name,
+                    'workout_name' => $schedule->workoutTemplate->name,
                     'completion_date' => $schedule->completion_date,
                 ];
             });

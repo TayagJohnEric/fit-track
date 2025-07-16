@@ -128,59 +128,37 @@
                 </div>
             </div>
 
-            <!-- Physical Stats -->
+            <!-- Physical Stats (Read-only) -->
             <div class="bg-gray-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                     </svg>
                     Physical Stats
+                    <span class="ml-2 text-sm font-normal text-gray-500">(Read-only)</span>
                 </h3>
-                <div class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg p-4 border border-gray-200">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                         <div>
-                            <label for="height_cm" class="block text-sm font-medium text-gray-700 mb-1">Height (cm)</label>
-                            <input type="number" 
-                                   name="height_cm" 
-                                   id="height_cm" 
-                                   value="{{ old('height_cm', $userProfile->height_cm) }}"
-                                   step="0.1"
-                                   min="50"
-                                   max="300"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('height_cm') border-red-500 @enderror"
-                                   required>
-                            @error('height_cm')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <span class="font-medium text-gray-700">Height:</span>
+                            <span class="text-gray-600">{{ $userProfile->height_cm }} cm</span>
                         </div>
                         <div>
-                            <label for="current_weight_kg" class="block text-sm font-medium text-gray-700 mb-1">Current Weight (kg)</label>
-                            <input type="number" 
-                                   name="current_weight_kg" 
-                                   id="current_weight_kg" 
-                                   value="{{ old('current_weight_kg', $userProfile->current_weight_kg) }}"
-                                   step="0.1"
-                                   min="20"
-                                   max="500"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('current_weight_kg') border-red-500 @enderror"
-                                   required>
-                            @error('current_weight_kg')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <span class="font-medium text-gray-700">Current Weight:</span>
+                            <span class="text-gray-600">{{ $userProfile->current_weight_kg }} kg</span>
                         </div>
+                        @if($userProfile->daily_budget)
+                        <div>
+                            <span class="font-medium text-gray-700">Daily Budget:</span>
+                            <span class="text-gray-600">${{ number_format($userProfile->daily_budget, 2) }}</span>
+                        </div>
+                        @endif
                     </div>
-                    <div>
-                        <label for="daily_budget" class="block text-sm font-medium text-gray-700 mb-1">Daily Budget ($) <span class="text-gray-500">(optional)</span></label>
-                        <input type="number" 
-                               name="daily_budget" 
-                               id="daily_budget" 
-                               value="{{ old('daily_budget', $userProfile->daily_budget) }}"
-                               step="0.01"
-                               min="0"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('daily_budget') border-red-500 @enderror">
-                        @error('daily_budget')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <div class="mt-3 text-xs text-gray-500">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Physical stats can only be updated by an administrator to ensure accuracy.
                     </div>
                 </div>
             </div>
@@ -192,6 +170,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                     Fitness Preferences
+                    <span class="ml-2 text-sm font-normal text-orange-600">(Updates will affect your workout schedule)</span>
                 </h3>
                 <div class="space-y-4">
                     <div>
@@ -245,6 +224,17 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div class="text-sm text-blue-800">
+                                <p class="font-medium mb-1">Important Note:</p>
+                                <p>Changing your fitness preferences will automatically update your nutrition goals and workout schedule based on your new selections.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -252,46 +242,72 @@
             <div class="bg-gray-50 rounded-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.864-.833-2.634 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                     </svg>
-                    Allergies
+                    Allergies & Dietary Restrictions
                 </h3>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-3">Known Allergies</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                        @foreach($allergies as $allergy)
-                            <div class="flex items-center">
-                                <input type="checkbox" 
-                                       name="allergies[]" 
-                                       value="{{ $allergy->id }}"
-                                       id="allergy_{{ $allergy->id }}"
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                       {{ in_array($allergy->id, old('allergies', $userAllergies->pluck('id')->toArray())) ? 'checked' : '' }}>
-                                <label for="allergy_{{ $allergy->id }}" class="ml-2 text-sm text-gray-700">
-                                    {{ $allergy->name }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
+                <div class="space-y-4">
+                    <p class="text-sm text-gray-600">Select any allergies or dietary restrictions you have. This will help us customize your meal recommendations.</p>
+                    
+                    @if($allergies->count() > 0)
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            @foreach($allergies as $allergy)
+                                <div class="flex items-center">
+                                    <input type="checkbox" 
+                                           name="allergies[]" 
+                                           id="allergy_{{ $allergy->id }}" 
+                                           value="{{ $allergy->id }}"
+                                           class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                           {{ in_array($allergy->id, old('allergies', $userAllergies->pluck('id')->toArray())) ? 'checked' : '' }}>
+                                    <label for="allergy_{{ $allergy->id }}" class="ml-2 text-sm font-medium text-gray-700">
+                                        {{ $allergy->name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <p class="text-sm text-yellow-800">No allergies are currently available in the system. Please contact support if you need to add specific allergies.</p>
+                        </div>
+                    @endif
+                    
                     @error('allergies')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    @error('allergies.*')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
 
             <!-- Form Actions -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-gray-200">
-                <a href="{{ route('profile.show') }}" 
-                   class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 bg-white rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
-                    Cancel
-                </a>
-                <button type="submit" 
-                        class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    Save Changes
-                </button>
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-6 border-t border-gray-200">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="submit" 
+                            class="inline-flex items-center px-6 py-3 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Update Profile
+                    </button>
+                    <a href="{{ route('profile.show') }}" 
+                       class="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Cancel
+                    </button>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('profile.change-password') }}" 
+                       class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                        Change Password
+                    </a>
+                    <span class="text-gray-300">|</span>
+                    <p class="text-xs text-gray-500">
+                        Last updated: {{ $userProfile->last_profile_update ? $userProfile->last_profile_update->format('M j, Y g:i A') : 'Never' }}
+                    </p>
+                </div>
             </div>
         </form>
     </div>

@@ -8,6 +8,7 @@ use App\Models\UserProfile;
 use App\Models\FitnessGoal;
 use App\Models\ExperienceLevel;
 use App\Models\WorkoutType;
+use App\Models\WorkoutTemplate;
 use App\Models\Allergy;
 use App\Models\UserNutritionGoal;
 use App\Models\UserWorkoutSchedule;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 use Carbon\Carbon;
 
@@ -71,7 +73,7 @@ class UserProfileController extends Controller
     }
 
     /**
-     * Update the user's profile
+     * Update the user's profile    
      */
     public function update(Request $request)
     {
@@ -79,11 +81,11 @@ class UserProfileController extends Controller
         $userProfile = $user->userProfile;
         
         // Store original values to check for changes
-        $originalWeight = $userProfile->current_weight_kg;
         $originalFitnessGoal = $userProfile->fitness_goal_id;
         $originalExperienceLevel = $userProfile->experience_level_id;
+        $originalPreferredWorkoutType = $userProfile->preferred_workout_type_id;
         
-        // Validate the request
+        // Validate the request - removed physical stats validation
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -91,9 +93,6 @@ class UserProfileController extends Controller
             'last_name' => 'required|string|max:255',
             'date_of_birth' => 'required|date|before:today',
             'sex' => 'required|in:Male,Female,Other',
-            'height_cm' => 'required|numeric|between:50,300',
-            'current_weight_kg' => 'required|numeric|between:20,500',
-            'daily_budget' => 'nullable|numeric|min:0',
             'fitness_goal_id' => 'required|exists:fitness_goals,id',
             'experience_level_id' => 'required|exists:experience_levels,id',
             'preferred_workout_type_id' => 'required|exists:workout_types,id',
@@ -110,15 +109,12 @@ class UserProfileController extends Controller
                 'email' => $validatedData['email'],
             ]);
             
-            // Update user profile
+            // Update user profile - only editable fields
             $userProfile->update([
                 'first_name' => $validatedData['first_name'],
                 'last_name' => $validatedData['last_name'],
                 'date_of_birth' => $validatedData['date_of_birth'],
                 'sex' => $validatedData['sex'],
-                'height_cm' => $validatedData['height_cm'],
-                'current_weight_kg' => $validatedData['current_weight_kg'],
-                'daily_budget' => $validatedData['daily_budget'],
                 'fitness_goal_id' => $validatedData['fitness_goal_id'],
                 'experience_level_id' => $validatedData['experience_level_id'],
                 'preferred_workout_type_id' => $validatedData['preferred_workout_type_id'],
@@ -128,12 +124,19 @@ class UserProfileController extends Controller
             // Update allergies (sync will remove unchecked and add new ones)
             $user->allergies()->sync($request->input('allergies', []));
             
-            // Check if core metrics changed and trigger recalculation
-            if ($originalWeight != $validatedData['current_weight_kg'] || 
+            // Check if fitness preferences changed and trigger updates
+            $fitnessPreferencesChanged = (
                 $originalFitnessGoal != $validatedData['fitness_goal_id'] || 
-                $originalExperienceLevel != $validatedData['experience_level_id']) {
+                $originalExperienceLevel != $validatedData['experience_level_id'] || 
+                $originalPreferredWorkoutType != $validatedData['preferred_workout_type_id']
+            );
+            
+            if ($fitnessPreferencesChanged) {
+                // Recalculate nutrition goals
+                $this->updateNutritionGoals($user, $userProfile);
                 
-                $this->recalculateUserData($user);
+                // Update workout schedule
+                $this->updateWorkoutSchedule($user, $userProfile);
             }
             
             DB::commit();
@@ -179,9 +182,6 @@ class UserProfileController extends Controller
                 'password' => Hash::make($request->new_password),
             ]);
 
-            // Optional: Log out other sessions for security
-            // Auth::logoutOtherDevices($request->new_password);
-
             return redirect()->route('profile.show')
                 ->with('success', 'Password updated successfully!');
                 
@@ -191,105 +191,155 @@ class UserProfileController extends Controller
     }
 
     /**
-     * Recalculate user nutrition goals and potentially workout schedules
+     * Create or update nutrition goals for the user
      */
-    private function recalculateUserData(User $user)
+    private function updateNutritionGoals($user, $userProfile)
     {
-        // This is a placeholder for your nutrition calculation logic
-        // You would implement your actual calculation based on the user's profile
+        // Basic BMR calculation using Mifflin-St Jeor equation
+        $age = Carbon::parse($userProfile->date_of_birth)->age;
+        $heightCm = $userProfile->height_cm;
+        $weightKg = $userProfile->current_weight_kg;
+        $sex = $userProfile->sex;
         
-        $userProfile = $user->userProfile;
+        if ($sex === 'Male') {
+            $bmr = (10 * $weightKg) + (6.25 * $heightCm) - (5 * $age) + 5;
+        } else {
+            $bmr = (10 * $weightKg) + (6.25 * $heightCm) - (5 * $age) - 161;
+        }
         
-        // Example calculation (replace with your actual logic)
-        $bmr = $this->calculateBMR($userProfile);
-        $tdee = $this->calculateTDEE($bmr, $userProfile->experienceLevel->name);
-        $calories = $this->adjustCaloriesForGoal($tdee, $userProfile->fitnessGoal->name);
+        // Apply activity factor (moderate activity)
+        $tdee = $bmr * 1.55;
+        
+        // Adjust based on fitness goal
+        $fitnessGoal = $userProfile->fitnessGoal->name;
+        if ($fitnessGoal === 'Weight Loss') {
+            $targetCalories = $tdee - 500; // 500 calorie deficit
+        } else { // Muscle Gain
+            $targetCalories = $tdee + 300; // 300 calorie surplus
+        }
+        
+        // Calculate macros (protein: 25%, carbs: 45%, fat: 30%)
+        $targetProtein = ($targetCalories * 0.25) / 4; // 4 calories per gram
+        $targetCarbs = ($targetCalories * 0.45) / 4;
+        $targetFat = ($targetCalories * 0.30) / 9; // 9 calories per gram
         
         // Update or create nutrition goals
         UserNutritionGoal::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'target_calories' => $calories,
-                'target_protein_grams' => $this->calculateProtein($userProfile),
-                'target_carb_grams' => $this->calculateCarbs($calories),
-                'target_fat_grams' => $this->calculateFats($calories),
-                'last_updated' => Carbon::now(),
+                'target_calories' => round($targetCalories),
+                'target_protein_grams' => round($targetProtein),
+                'target_carb_grams' => round($targetCarbs),
+                'target_fat_grams' => round($targetFat),
+                'last_updated' => now(),
             ]
         );
-        
-        // You might also want to re-evaluate workout schedules here
-        // $this->updateWorkoutSchedules($user);
     }
 
     /**
-     * Calculate BMR (Basal Metabolic Rate)
+     * Update workout schedule when fitness preferences change
      */
-    private function calculateBMR(UserProfile $profile)
+    private function updateWorkoutSchedule($user, $userProfile)
     {
-        // Mifflin-St Jeor Equation
-        $age = Carbon::parse($profile->date_of_birth)->age;
-        
-        if ($profile->sex === 'Male') {
-            return (10 * $profile->current_weight_kg) + (6.25 * $profile->height_cm) - (5 * $age) + 5;
+        // Clear existing scheduled workouts (keep completed ones)
+        UserWorkoutSchedule::where('user_id', $user->id)
+            ->where('status', 'Scheduled')
+            ->where('assigned_date', '>=', now()->toDateString())
+            ->delete();
+
+        // Find a suitable workout template randomly from the matching ones
+        $workoutTemplate = WorkoutTemplate::where('workout_type_id', $userProfile->preferred_workout_type_id)
+            ->where('experience_level_id', $userProfile->experience_level_id)
+            ->inRandomOrder() // Adds variety
+            ->first();
+
+        if ($workoutTemplate) {
+            // A more realistic schedule with rest days (e.g., Day 0, Day 2, Day 4)
+            $scheduleDays = [0, 2, 4]; 
+            
+            foreach ($scheduleDays as $day) {
+                UserWorkoutSchedule::create([
+                    'user_id'       => $user->id,
+                    'template_id'   => $workoutTemplate->id,
+                    'assigned_date' => now()->addDays($day)->toDateString(),
+                    'status'        => 'Scheduled',
+                ]);
+            }
         } else {
-            return (10 * $profile->current_weight_kg) + (6.25 * $profile->height_cm) - (5 * $age) - 161;
+            // Log a warning if no template is found so you can add one later
+            Log::warning('No workout template found for workout_type_id: ' . $userProfile->preferred_workout_type_id . ' and experience_level_id: ' . $userProfile->experience_level_id);
         }
     }
 
     /**
-     * Calculate TDEE (Total Daily Energy Expenditure)
+     * Create nutrition goals for new users (reusable function)
      */
-    private function calculateTDEE($bmr, $experienceLevel)
+    private function createNutritionGoals($user, $userProfile)
     {
-        $activityMultipliers = [
-            'Beginner' => 1.4,
-            'Intermediate' => 1.6,
-            'Advanced' => 1.8,
-        ];
+        // Basic BMR calculation using Mifflin-St Jeor equation
+        $age = Carbon::parse($userProfile->date_of_birth)->age;
+        $heightCm = $userProfile->height_cm;
+        $weightKg = $userProfile->current_weight_kg;
+        $sex = $userProfile->sex;
         
-        return $bmr * ($activityMultipliers[$experienceLevel] ?? 1.5);
-    }
-
-    /**
-     * Adjust calories based on fitness goal
-     */
-    private function adjustCaloriesForGoal($tdee, $fitnessGoal)
-    {
-        switch ($fitnessGoal) {
-            case 'Weight Loss':
-                return $tdee - 500; // 500 calorie deficit
-            case 'Muscle Gain':
-                return $tdee + 300; // 300 calorie surplus
-            default:
-                return $tdee;
+        if ($sex === 'Male') {
+            $bmr = (10 * $weightKg) + (6.25 * $heightCm) - (5 * $age) + 5;
+        } else {
+            $bmr = (10 * $weightKg) + (6.25 * $heightCm) - (5 * $age) - 161;
         }
+        
+        // Apply activity factor (moderate activity)
+        $tdee = $bmr * 1.55;
+        
+        // Adjust based on fitness goal
+        $fitnessGoal = $userProfile->fitnessGoal->name;
+        if ($fitnessGoal === 'Weight Loss') {
+            $targetCalories = $tdee - 500; // 500 calorie deficit
+        } else { // Muscle Gain
+            $targetCalories = $tdee + 300; // 300 calorie surplus
+        }
+        
+        // Calculate macros (protein: 25%, carbs: 45%, fat: 30%)
+        $targetProtein = ($targetCalories * 0.25) / 4; // 4 calories per gram
+        $targetCarbs = ($targetCalories * 0.45) / 4;
+        $targetFat = ($targetCalories * 0.30) / 9; // 9 calories per gram
+        
+        UserNutritionGoal::create([
+            'user_id' => $user->id,
+            'target_calories' => round($targetCalories),
+            'target_protein_grams' => round($targetProtein),
+            'target_carb_grams' => round($targetCarbs),
+            'target_fat_grams' => round($targetFat),
+            'last_updated' => now(),
+        ]);
     }
 
     /**
-     * Calculate protein requirements
+     * Assign initial workout for new users (reusable function)
      */
-    private function calculateProtein(UserProfile $profile)
+    private function assignInitialWorkout($user, $userProfile)
     {
-        // 2g per kg of body weight for muscle gain, 1.6g for weight loss
-        $multiplier = $profile->fitnessGoal->name === 'Muscle Gain' ? 2.0 : 1.6;
-        return $profile->current_weight_kg * $multiplier;
-    }
-
-    /**
-     * Calculate carb requirements
-     */
-    private function calculateCarbs($calories)
-    {
-        // 40% of calories from carbs
-        return ($calories * 0.4) / 4; // 4 calories per gram of carbs
-    }
-
-    /**
-     * Calculate fat requirements
-     */
-    private function calculateFats($calories)
-    {
-        // 30% of calories from fats
-        return ($calories * 0.3) / 9; // 9 calories per gram of fat
+        // Find a suitable workout template randomly from the matching ones
+        $workoutTemplate = WorkoutTemplate::where('workout_type_id', $userProfile->preferred_workout_type_id)
+            ->where('experience_level_id', $userProfile->experience_level_id)
+            ->inRandomOrder() // Adds variety
+            ->first();
+            
+        if ($workoutTemplate) {
+            // A more realistic schedule with rest days (e.g., Day 0, Day 2, Day 4)
+            $scheduleDays = [0, 2, 4]; 
+            
+            foreach ($scheduleDays as $day) {
+                UserWorkoutSchedule::create([
+                    'user_id'       => $user->id,
+                    'template_id'   => $workoutTemplate->id,
+                    'assigned_date' => now()->addDays($day)->toDateString(), // Starts today
+                    'status'        => 'Scheduled',
+                ]);
+            }
+        } else {
+            // Log a warning if no template is found so you can add one later
+            Log::warning('No workout template found for workout_type_id: ' . $userProfile->preferred_workout_type_id . ' and experience_level_id: ' . $userProfile->experience_level_id);
+        }
     }
 }
