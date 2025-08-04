@@ -38,8 +38,7 @@ class AdminDashboardController extends Controller
 
     return [
         'total_users' => User::count(),
-                'total_users_last_month' => User::whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count(),
-
+        'total_users_last_month' => User::whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count(),
         'new_signups_this_week' => User::where('created_at', '>=', $weekAgo)->count(),
         'new_signups_last_week' => User::whereBetween('created_at', [$lastWeekStart, $lastWeekEnd])->count(),
         'daily_active_users' => $this->getDailyActiveUsers($today),
@@ -123,7 +122,4 @@ class AdminDashboardController extends Controller
                 ];
             });
     }
-
-    
-
 }

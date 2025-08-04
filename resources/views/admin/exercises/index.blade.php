@@ -4,39 +4,50 @@
 
 @section('content')
 <style>
-    /* Modal Animation Styles */
     .modal-overlay {
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
     }
-    
     .modal-overlay.show {
         opacity: 1;
         visibility: visible;
     }
-    
     .modal-content {
         transform: scale(0.7) translateY(-50px);
         opacity: 0;
         transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
     }
-    
     .modal-overlay.show .modal-content {
         transform: scale(1) translateY(0);
         opacity: 1;
     }
-    
     .modal-overlay.closing {
         opacity: 0;
         visibility: hidden;
     }
-    
     .modal-overlay.closing .modal-content {
         transform: scale(0.7) translateY(-50px);
         opacity: 0;
     }
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        display: none;
+    }
 </style>
+
+<div id="loading" class="loading-overlay">
+    <div class="text-gray-700 text-lg font-semibold">Loading...</div>
+</div>
 
 <div class="max-w-[90rem] mx-auto">
     <div class="bg-white rounded-lg shadow p-6">
@@ -54,9 +65,9 @@
                     class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gray-300">
             </form>
           <button onclick="openCreateModal()" 
-        class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-    Add Exercise
-</button>
+            class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Add Exercise
+          </button>
         </div>
 
         <div class="overflow-x-auto">
@@ -77,16 +88,10 @@
                             <td class="px-4 py-2 border">{{ $exercise->equipment_needed }}</td>
                             <td class="px-4 py-2 border flex space-x-2">
                                <button onclick="openEditModal({{ $exercise->id }})" class="text-blue-600 hover:underline">Edit</button>
-
-                               <button 
-                                    type="button" 
-                                    class="text-red-600 hover:underline"
-                                    onclick="openDeleteModal({{ $exercise->id }})">
-                                    Delete
-                                </button>
+                               <button type="button" class="text-red-600 hover:underline" onclick="openDeleteModal({{ $exercise->id }})">Delete</button>
                             </td>
-                              @include('admin.exercises.modal.edit-modal', ['exercise' => $exercise])
-                               @include('admin.exercises.modal.delete-modal', ['exercise' => $exercise])
+                            @include('admin.exercises.modal.edit-modal', ['exercise' => $exercise])
+                            @include('admin.exercises.modal.delete-modal', ['exercise' => $exercise])
                         </tr>          
                     @empty
                         <tr>
@@ -103,14 +108,28 @@
     </div>
 </div>
 
-  @include('admin.exercises.modal.create-modal')
+@include('admin.exercises.modal.create-modal')
 
 <script>
-     function openCreateModal() {
+    function showLoading() {
+        document.getElementById('loading').style.display = 'flex';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            if (form.method.toLowerCase() === 'post') {
+                form.addEventListener('submit', () => {
+                    showLoading();
+                });
+            }
+        });
+    });
+
+    function openCreateModal() {
         const modal = document.getElementById('create-modal');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        // Trigger animation
         setTimeout(() => {
             modal.classList.add('show');
         }, 10);
@@ -120,7 +139,6 @@
         const modal = document.getElementById('create-modal');
         modal.classList.add('closing');
         modal.classList.remove('show');
-        // Hide modal after animation completes
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex', 'closing');
@@ -131,7 +149,6 @@
         const modal = document.getElementById('edit-modal-' + id);
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        // Trigger animation
         setTimeout(() => {
             modal.classList.add('show');
         }, 10);
@@ -141,18 +158,16 @@
         const modal = document.getElementById('edit-modal-' + id);
         modal.classList.add('closing');
         modal.classList.remove('show');
-        // Hide modal after animation completes
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex', 'closing');
         }, 300);
     }
 
-     function openDeleteModal(id) {
+    function openDeleteModal(id) {
         const modal = document.getElementById('delete-modal-' + id);
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        // Trigger animation
         setTimeout(() => {
             modal.classList.add('show');
         }, 10);
@@ -162,7 +177,6 @@
         const modal = document.getElementById('delete-modal-' + id);
         modal.classList.add('closing');
         modal.classList.remove('show');
-        // Hide modal after animation completes
         setTimeout(() => {
             modal.classList.add('hidden');
             modal.classList.remove('flex', 'closing');
