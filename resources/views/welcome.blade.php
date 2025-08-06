@@ -126,7 +126,7 @@
    <!-- Full-width background wrapper -->
 <div class="w-full">
   <!-- Background wrapper with image support -->
-  <div class="relative bg-cover bg-center bg-no-repeat" style="background-image: url('fit-track-hero3.png');">
+  <div class="relative bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/hero-bg.png') }}');">
     <!-- Dark overlay to match gym-themed palette -->
     <div class="absolute inset-0 bg-black/70"></div>
 
