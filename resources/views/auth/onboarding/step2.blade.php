@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Step Header -->
-    <div class="text-center">
+    <div class="mb-8">
         <h2 class="text-xl font-bold text-gray-900">Fitness Preferences</h2>
         <p class="text-sm text-gray-600 mt-1">Step 2 of 3</p>
     </div>
@@ -39,9 +39,9 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:bg-primary-500 peer-checked:border-primary-500 transition-colors"></div>
                         </div>
                     </div>
+
                 </label>
                 @endforeach
             </div>
@@ -76,9 +76,9 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:bg-primary-500 peer-checked:border-primary-500 transition-colors"></div>
                         </div>
                     </div>
+
                 </label>
                 @endforeach
             </div>
@@ -111,9 +111,9 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="w-4 h-4 border-2 border-gray-300 rounded-full peer-checked:bg-primary-500 peer-checked:border-primary-500 transition-colors"></div>
                         </div>
                     </div>
+
                 </label>
                 @endforeach
             </div>
@@ -122,16 +122,23 @@
             @enderror
         </div>
 
-        <!-- Navigation Buttons -->
-        <div class="flex justify-between pt-6">
+          <div class="flex justify-between pt-6">
             <a href="{{ route('onboarding.step1') }}" 
-               class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium">
-                ← Previous
+            class="flex items-center text-sm gap-2 px-4 py-2 border border-gray-300 bg-gray-100 rounded-lg text-gray-600 hover:bg-gray-900 hover:text-white font-bold transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 19-7-7 7-7"/>
+                    <path d="M19 12H5"/>
+                </svg>
+                Previous
             </a>
 
             <button type="submit" 
-                    class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition duration-200">
-                Next Step →
+                    class="flex items-center text-sm gap-2 px-6 py-2 bg-primary-600 hover:bg-primary-500 text-white font-bold rounded-lg transition duration-200">
+                Next Step
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="m12 5 7 7-7 7"/>
+                </svg>
             </button>
         </div>
     </form>

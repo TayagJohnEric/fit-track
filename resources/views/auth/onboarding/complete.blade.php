@@ -7,9 +7,7 @@
 <div class="text-center space-y-6">
     <!-- Success Icon -->
     <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-green-600 lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
     </div>
 
     <!-- Success Message -->
@@ -23,23 +21,23 @@
     </div>
 
     <!-- What's Next -->
-    <div class="bg-blue-50 rounded-lg p-6 text-left">
-        <h3 class="font-semibold text-blue-900 mb-3">What happens next?</h3>
-        <div class="space-y-2 text-sm text-blue-800">
+    <div class="bg-orange-50 rounded-lg p-6 text-left">
+        <h3 class="font-semibold text-gray-900 mb-3">What happens next?</h3>
+        <div class="space-y-2 text-sm text-gray-600">
             <div class="flex items-center space-x-2">
-                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
                 <span>Your personalized workout schedule has been created</span>
             </div>
             <div class="flex items-center space-x-2">
-                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
                 <span>Your nutrition goals have been calculated</span>
             </div>
             <div class="flex items-center space-x-2">
-                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
                 <span>Meal recommendations will consider your allergies and budget</span>
@@ -75,7 +73,7 @@
     <!-- Action Buttons -->
     <div class="space-y-3">
         <a href="{{ route('dashboard') }}" 
-           class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 block text-center">
+           class="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-2 px-6 rounded-lg transition duration-200 block text-center">
             Go to Dashboard
         </a>
         
