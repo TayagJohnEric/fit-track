@@ -26,32 +26,37 @@
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
 
     <div class="w-full max-w-md mx-auto">
-        <div class="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+        <div class="p-8">
             <!-- Header -->
             <div class="text-center mb-8">
                   <!--Logo here-->
-                <h2 class="text-2xl font-bold text-gray-900 mb-1">Create Account</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">Let's create your account today!</h2>
                 <p class="text-gray-600 text-sm">Join Fit-Track to start your fitness journey today.</p>
             </div>
 
+            <!-- Error Message -->
+            <div id="error-message" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg hidden">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-red-700 text-sm font-medium" id="error-text">Error message here</span>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="success-message" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg hidden">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-green-700 text-sm font-medium" id="success-text">Success message here</span>
+                </div>
+            </div>
+
             <!-- Register Form -->
-            <form method="POST" action="{{ route('register') }}" class="space-y-6">
-                @csrf
-                
-                @if ($errors->any())
-                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="text-red-700 text-sm font-medium">
-                                @foreach ($errors->all() as $error)
-                                    {{ $error }}<br>
-                                @endforeach
-                            </span>
-                        </div>
-                    </div>
-                @endif
+            <form id="registerForm" class="space-y-6">
+                <meta name="csrf-token" content="{{ csrf_token() }}">
                 
                 <!-- Name Field -->
                 <div>
@@ -63,7 +68,6 @@
                             type="text" 
                             id="name"
                             name="name" 
-                            value="{{ old('name') }}"
                             required
                             autocomplete="name"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:border-brand-orange transition-colors duration-200 bg-gray-50 focus:bg-white"
@@ -75,6 +79,7 @@
                             </svg>
                         </div>
                     </div>
+                    <div id="name-error" class="mt-1 text-sm text-red-600 hidden"></div>
                 </div>
 
                 <!-- Email Field -->
@@ -87,7 +92,6 @@
                             type="email" 
                             id="email"
                             name="email" 
-                            value="{{ old('email') }}"
                             required
                             autocomplete="email"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:border-brand-orange transition-colors duration-200 bg-gray-50 focus:bg-white"
@@ -100,6 +104,7 @@
                             </svg>
                         </div>
                     </div>
+                    <div id="email-error" class="mt-1 text-sm text-red-600 hidden"></div>
                 </div>
 
                 <!-- Password Field -->
@@ -134,6 +139,10 @@
                                 <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"></path>
                             </svg>
                         </button>
+                    </div>
+                    <div id="password-error" class="mt-1 text-sm text-red-600 hidden"></div>
+                    <div class="mt-1 text-xs text-gray-500">
+                        Password must be at least 6 characters long
                     </div>
                 </div>
 
@@ -170,15 +179,21 @@
                             </svg>
                         </button>
                     </div>
+                    <div id="password_confirmation-error" class="mt-1 text-sm text-red-600 hidden"></div>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="pt-2">
                     <button 
                         type="submit"
-                        class="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 shadow-lg hover:shadow-xl"
+                        id="registerButton"
+                        class="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:bg-brand-orange"
                     >
-                        Create Account
+                        <span id="buttonText">Create Account</span>
+                        <svg id="loadingSpinner" class="hidden animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
                     </button>
                 </div>
             </form>
@@ -219,6 +234,167 @@
                 eyeSlashIcon.classList.add('hidden');
             }
         }
+
+        function showMessage(type, message) {
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            
+            // Hide both messages first
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            
+            if (type === 'error') {
+                document.getElementById('error-text').textContent = message;
+                errorDiv.classList.remove('hidden');
+            } else if (type === 'success') {
+                document.getElementById('success-text').textContent = message;
+                successDiv.classList.remove('hidden');
+            }
+        }
+
+        function clearFieldErrors() {
+            const fields = ['name', 'email', 'password', 'password_confirmation'];
+            
+            fields.forEach(field => {
+                const errorDiv = document.getElementById(field + '-error');
+                const input = document.getElementById(field);
+                
+                errorDiv.classList.add('hidden');
+                input.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                input.classList.add('border-gray-300', 'focus:ring-brand-orange', 'focus:border-brand-orange');
+            });
+        }
+
+        function showFieldError(field, message) {
+            const errorDiv = document.getElementById(field + '-error');
+            const input = document.getElementById(field);
+            
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            
+            // Add error styles to input
+            input.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+            input.classList.remove('border-gray-300', 'focus:ring-brand-orange', 'focus:border-brand-orange');
+        }
+
+        function setLoadingState(loading) {
+            const button = document.getElementById('registerButton');
+            const buttonText = document.getElementById('buttonText');
+            const spinner = document.getElementById('loadingSpinner');
+            const form = document.getElementById('registerForm');
+            
+            if (loading) {
+                button.disabled = true;
+                buttonText.textContent = 'Creating Account...';
+                spinner.classList.remove('hidden');
+                form.classList.add('pointer-events-none');
+            } else {
+                button.disabled = false;
+                buttonText.textContent = 'Create Account';
+                spinner.classList.add('hidden');
+                form.classList.remove('pointer-events-none');
+            }
+        }
+
+        function validatePasswords() {
+            const password = document.getElementById('password').value;
+            const passwordConfirmation = document.getElementById('password_confirmation').value;
+            
+            // Clear previous confirmation error
+            const confirmErrorDiv = document.getElementById('password_confirmation-error');
+            const confirmInput = document.getElementById('password_confirmation');
+            
+            if (passwordConfirmation && password !== passwordConfirmation) {
+                showFieldError('password_confirmation', 'Passwords do not match');
+                return false;
+            } else if (confirmErrorDiv.textContent === 'Passwords do not match') {
+                confirmErrorDiv.classList.add('hidden');
+                confirmInput.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                confirmInput.classList.add('border-gray-300', 'focus:ring-brand-orange', 'focus:border-brand-orange');
+            }
+            
+            return true;
+        }
+
+        // Real-time password confirmation validation
+        document.getElementById('password').addEventListener('input', validatePasswords);
+        document.getElementById('password_confirmation').addEventListener('input', validatePasswords);
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            clearFieldErrors();
+            showMessage('', '');
+            
+            // Client-side password validation
+            if (!validatePasswords()) {
+                return;
+            }
+            
+            // Set loading state
+            setLoadingState(true);
+            
+            const formData = new FormData(this);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            fetch('{{ route("register") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                setLoadingState(false);
+                
+                if (data.success) {
+                    showMessage('success', data.message || 'Account created successfully! Redirecting...');
+                    
+                    // Clear form
+                    document.getElementById('registerForm').reset();
+                    
+                    // Redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url;
+                    }, 1500);
+                } else {
+                    // Handle validation errors
+                    if (data.errors) {
+                        for (const [field, messages] of Object.entries(data.errors)) {
+                            if (['name', 'email', 'password', 'password_confirmation'].includes(field)) {
+                                showFieldError(field, messages[0]);
+                            } else {
+                                showMessage('error', messages[0]);
+                            }
+                        }
+                    } else if (data.message) {
+                        showMessage('error', data.message);
+                    } else {
+                        showMessage('error', 'An unexpected error occurred. Please try again.');
+                    }
+                }
+            })
+            .catch(error => {
+                setLoadingState(false);
+                console.error('Registration error:', error);
+                showMessage('error', 'Network error. Please check your connection and try again.');
+            });
+        });
+
+        // Clear field errors when user starts typing
+        const fields = ['name', 'email', 'password', 'password_confirmation'];
+        fields.forEach(fieldName => {
+            document.getElementById(fieldName).addEventListener('input', function() {
+                if (!this.classList.contains('border-red-500')) return;
+                
+                this.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                this.classList.add('border-gray-300', 'focus:ring-brand-orange', 'focus:border-brand-orange');
+                document.getElementById(fieldName + '-error').classList.add('hidden');
+            });
+        });
     </script>
 
 </body>
