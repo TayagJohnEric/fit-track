@@ -17,22 +17,26 @@ class AuthUserController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
-        ]);
+        try {
+            $request->validate([
+                'name'     => 'required|string|max:255',
+                'email'    => 'required|email|unique:users,email',
+                'password' => 'required|confirmed|min:6',
+            ]);
 
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => 'user',
-        ]);
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+                'role'     => 'user',
+            ]);
 
-        Auth::login($user);
+            Auth::login($user);
 
-        return redirect()->route('dashboard'); // You must define this route
+            return redirect()->route('onboarding.welcome');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Registration failed: ' . $e->getMessage()]);
+        }
     }
 
     public function showLoginForm()
@@ -42,22 +46,32 @@ class AuthUserController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+        try {
+            $credentials = $request->validate([
+                'email'    => 'required|email',
+                'password' => 'required',
+            ]);
 
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->role !== 'user') {
-                Auth::logout();
-                return back()->withErrors(['email' => 'Unauthorized.']);
+            if (Auth::attempt($credentials)) {
+                if (Auth::user()->role !== 'user') {
+                    Auth::logout();
+                    return back()->withErrors(['email' => 'Unauthorized access.']);
+                }
+
+                $request->session()->regenerate();
+                
+                // Check if user has completed onboarding
+                if (Auth::user()->userProfile) {
+                    return redirect()->route('dashboard');
+                } else {
+                    return redirect()->route('onboarding.welcome');
+                }
             }
 
-            $request->session()->regenerate();
-            return redirect()->route('dashboard'); // Adjust route
+            return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Login failed: ' . $e->getMessage()]);
         }
-
-        return back()->withErrors(['email' => 'The provided credentials do not match.']);
     }
 
     public function logout(Request $request)

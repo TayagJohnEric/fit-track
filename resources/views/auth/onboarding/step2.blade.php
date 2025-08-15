@@ -8,7 +8,7 @@
     <!-- Step Header -->
     <div class="mb-8">
         <h2 class="text-xl font-bold text-gray-900">Fitness Preferences</h2>
-        <p class="text-sm text-gray-600 mt-1">Step 2 of 3</p>
+        <p class="text-sm text-gray-600 mt-1"> Share your goals and preferences to get workouts that fit your lifestyle.</p>
     </div>
 
     <!-- Form -->

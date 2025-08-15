@@ -6,10 +6,12 @@
 @section('content')
 <div class="space-y-6">
     <!-- Step Header -->
-    <div class="mb-8">
+    <div class="mb-12">
         <h2 class="text-xl font-bold text-gray-900">Personal Information</h2>
-        <p class="text-sm text-gray-600 mt-1">Step 1 of 3</p>
-    </div>
+            <p class="text-sm text-gray-600 mt-1">
+                Please provide accurate personal details to help us set up your profile correctly.
+            </p>
+       </div>
 
     <!-- Form -->
     <form method="POST" action="{{ route('onboarding.store.step1') }}" class="space-y-4">

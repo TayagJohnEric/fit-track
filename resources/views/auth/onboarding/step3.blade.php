@@ -8,7 +8,7 @@
     <!-- Step Header -->
     <div class="mb-8">
         <h2 class="text-xl font-bold text-gray-900">Final Details</h2>
-        <p class="text-sm text-gray-600 mt-1">Step 3 of 3</p>
+        <p class="text-sm text-gray-600 mt-1">Add any last preferences so we can fine-tune your plan for you.</p>
     </div>
 
     <!-- Form -->
