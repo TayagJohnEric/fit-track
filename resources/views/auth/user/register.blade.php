@@ -61,7 +61,7 @@
                 <!-- Name Field -->
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
+                        Username
                     </label>
                     <div class="relative">
                         <input 
