@@ -57,7 +57,7 @@ class UserDashboardController extends Controller
         // Get weekly workout completion stats
         $weeklyWorkoutStats = $this->getWeeklyWorkoutStats($user->id);
 
-        return view('user.dashboard.dashboard', compact(
+        return view('user.dashboard.index', compact(
             'fitnessFact',
             'todaysWorkout',
             'nutritionGoals',

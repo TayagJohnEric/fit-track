@@ -1,5 +1,5 @@
 <!-- Header -->
-<header class="bg-gray-100 shadow-sm border-b border-gray-200 px-4 py-3">
+<header class="bg-gray-100 px-4 py-3">
     <div class="flex items-center justify-between">
         
         <!-- Mobile Menu Button -->
@@ -25,7 +25,7 @@
             <div class="relative">
                 <button 
                     id="profile-menu-button" 
-                    class="border border-gray-200 bg-white flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
+                    class=" flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200"
                 >
                     @php
                         $assignedColor = 'bg-gray-800';     
@@ -44,15 +44,6 @@
                             {{ $firstInitial }}{{ $lastInitial }}
                         </div>
                     @endif
-
-                    <div class="hidden sm:block text-left leading-tight">
-                        <p class="text-sm font-semibold text-gray-700 m-0">
-                            {{ Auth::user()->name }}
-                        </p>
-                        <p class="text-xs font-medium text-gray-500 truncate m-0">
-                            {{ Auth::user()->userProfile->first_name }} {{ Auth::user()->userProfile->last_name }}
-                        </p>
-                    </div>
                 </button>
 
                 <!-- Profile Dropdown Menu -->

@@ -1,5 +1,5 @@
 <!-- Mobile Sidebar -->
-<div id="sidebar" class="sidebar-transition sidebar-mobile-closed md:sidebar-mobile-open fixed md:static top-0 left-0 z-50 w-64 h-full bg-gray-100 text-gray-700 shadow-lg md:shadow-sm">
+<div id="sidebar" class="sidebar-transition sidebar-mobile-closed md:sidebar-mobile-open fixed md:static top-0 left-0 z-50 w-64 h-full bg-gray-100 text-gray-700">
     <!-- Sidebar Header -->
     <div class="flex items-center justify-between h-16 px-4">
     <img src="{{ asset('images/logo-black.png') }}" alt="Example" class="h-8 w-auto mx-auto mt-3">

@@ -1,5 +1,5 @@
 <!-- Header -->
-<header class="bg-gray-100 shadow-sm border-b border-gray-200 px-4 py-3">
+<header class="bg-gray-100 px-4 py-3">
     <div class="flex items-center justify-between">
         
         <!-- Mobile Menu Button -->

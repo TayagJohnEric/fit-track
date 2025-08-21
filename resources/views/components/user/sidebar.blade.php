@@ -1,5 +1,5 @@
 <!-- Mobile Sidebar -->
-<div id="sidebar" class="sidebar-transition sidebar-mobile-closed md:sidebar-mobile-open fixed md:static top-0 left-0 z-50 w-64 h-full bg-gray-100 text-orange-900 shadow-lg md:shadow-sm border-r">
+<div id="sidebar" class="sidebar-transition sidebar-mobile-closed md:sidebar-mobile-open fixed md:static top-0 left-0 z-50 w-64 h-full bg-gray-100 text-orange-900 ">
     <!-- Sidebar Header -->
     <div class="flex items-center justify-center h-16 px-4 relative">
         <!-- Logo -->
