@@ -51,6 +51,10 @@ public function index(Request $request)
     public function show(Request $request)
     {
         $itemIds = $request->input('items', []);
+        // Normalize `items` to an array (links pass comma-separated ids)
+        if (is_string($itemIds)) {
+            $itemIds = array_filter(array_map('intval', explode(',', $itemIds)));
+        }
         $budget = $request->input('budget', 0);
         
         // Validate that we have item IDs
@@ -133,6 +137,10 @@ public function index(Request $request)
     public function showLogForm(Request $request)
     {
         $itemIds = $request->input('items', []);
+        // Normalize `items` to an array (links pass comma-separated ids)
+        if (is_string($itemIds)) {
+            $itemIds = array_filter(array_map('intval', explode(',', $itemIds)));
+        }
         $budget = $request->input('budget', 0);
         
         // Validate that we have item IDs
