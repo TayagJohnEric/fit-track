@@ -71,7 +71,7 @@
                             required
                             autocomplete="name"
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-orange focus:border-brand-orange transition-colors duration-200 bg-gray-50 focus:bg-white"
-                            placeholder="Enter your full name"
+                            placeholder="Enter your username"
                         >
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">

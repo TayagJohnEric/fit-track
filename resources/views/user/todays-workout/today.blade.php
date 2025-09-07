@@ -101,82 +101,73 @@
         </div>
     </div>
 
-    <!-- Exercise List -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xl font-bold text-gray-900">Exercise List</h3>
-            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                {{ $scheduledWorkout->workoutTemplate->exercises->count() }} exercises
-            </span>
-        </div>
-        
-        @if($scheduledWorkout->workoutTemplate->exercises->count() > 0)
-            <div class="space-y-4">
-                @foreach($scheduledWorkout->workoutTemplate->exercises as $exercise)
-                    <div class="border border-gray-200 rounded-xl p-5 hover:border-orange-200 hover:bg-orange-50/30 transition-all duration-200 group">
-                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between mb-3">
-                                    <h4 class="font-semibold text-gray-900 text-lg group-hover:text-orange-700 transition-colors">{{ $exercise->name }}</h4>
-                                    <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                                        {{ $exercise->muscle_group }}
-                                    </span>
-                                </div>
-                                
-                                <p class="text-gray-600 mb-4 text-sm leading-relaxed">{{ Str::limit($exercise->description, 100) }}</p>
-                                
-                                <!-- Exercise Details -->
-                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                                    <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
-                                        <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                        </svg>
-                                        <span class="font-medium">{{ $exercise->pivot->sets }} sets</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
-                                        <svg class="w-4 h-4 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                        </svg>
-                                        <span class="font-medium">{{ $exercise->pivot->reps }} reps</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
-                                        <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        <span class="font-medium">{{ $exercise->pivot->rest_seconds }}s rest</span>
-                                    </div>
-                                    <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
-                                        <svg class="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                                        </svg>
-                                        <span class="font-medium">{{ $exercise->equipment_needed }}</span>
-                                    </div>
-                                </div>
+   <!-- Exercise List -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-900">Exercise List</h3>
+        <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+            {{ $scheduledWorkout->workoutTemplate->exercises->count() }} exercises
+        </span>
+    </div>
+    
+    @if($scheduledWorkout->workoutTemplate->exercises->count() > 0)
+        <div class="space-y-4">
+            @foreach($scheduledWorkout->workoutTemplate->exercises as $exercise)
+                <a href="{{ route('workouts.exercise.show', [$scheduledWorkout->id, $exercise->id]) }}" class="block bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 p-6 group">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between mb-3">
+                                <h4 class="font-semibold text-gray-900 text-lg group-hover:text-orange-700 transition-colors">{{ $exercise->name }}</h4>
+                                <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                    {{ $exercise->muscle_group }}
+                                </span>
                             </div>
                             
-                            <div class="flex-shrink-0 sm:ml-4">
-                                <a href="{{ route('workouts.exercise.show', [$scheduledWorkout->id, $exercise->id]) }}" 
-                                   class="inline-flex items-center px-4 py-2.5 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 shadow-sm w-full sm:w-auto justify-center">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            <p class="text-gray-600 mb-4 text-sm leading-relaxed">{{ Str::limit($exercise->description, 100) }}</p>
+                            
+                            <!-- Exercise Details -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                                <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+                                    <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                     </svg>
-                                    View Details
-                                </a>
+                                    <span class="font-medium">{{ $exercise->pivot->sets }} sets</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+                                    <svg class="w-4 h-4 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                    </svg>
+                                    <span class="font-medium">{{ $exercise->pivot->reps }} reps</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+                                    <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <span class="font-medium">{{ $exercise->pivot->rest_seconds }}s rest</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+                                    <svg class="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                    <span class="font-medium">{{ $exercise->equipment_needed }}</span>
+                                </div>
                             </div>
                         </div>
+                        
+                        
                     </div>
-                @endforeach
-            </div>
-        @else
-            <div class="text-center py-12">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">No exercises found</h3>
-                <p class="mt-1 text-sm text-gray-500">No exercises found for this workout.</p>
-            </div>
-        @endif
-    </div>
+                </a>
+            @endforeach
+        </div>
+    @else
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No exercises found</h3>
+            <p class="mt-1 text-sm text-gray-500">No exercises found for this workout.</p>
+        </div>
+    @endif
+</div>
 </div>
 @endsection
