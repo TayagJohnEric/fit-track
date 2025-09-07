@@ -3,6 +3,7 @@
 @section('title', 'Exercise List')
 
 @section('content')
+
 <style>
     .modal-overlay {
         opacity: 0;
@@ -45,7 +46,7 @@
     }
 </style>
 
-<div id="loading" class="loading-overlay">
+<div id="loading" class="loading-overlay hidden fixed inset-0 bg-white bg-opacity-80 flex items-center justify-center z-50">
     <div class="text-gray-700 text-lg font-semibold">Loading...</div>
 </div>
 
@@ -73,7 +74,8 @@
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white border rounded">
                 <thead>
-                    <tr class="bg-gray-100">
+                    <tr class="bg-gray-100 text-left">
+                        <th class="px-4 py-2 border">Thumbnail</th>
                         <th class="px-4 py-2 border">Name</th>
                         <th class="px-4 py-2 border">Muscle Group</th>
                         <th class="px-4 py-2 border">Equipment</th>
@@ -82,11 +84,20 @@
                 </thead>
                 <tbody>
                     @forelse($exercises as $exercise)
-                        <tr>
-                            <td class="px-4 py-2 border">{{ $exercise->name }}</td>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-2 border text-center">
+                                @if($exercise->thumbnail_url)
+                                    <a href="{{ $exercise->video_url }}" target="_blank">
+                                        <img src="{{ $exercise->thumbnail_url }}" alt="Thumbnail" class="w-20 h-12 object-cover rounded">
+                                    </a>
+                                @else
+                                    <span class="text-gray-400 text-sm">No image</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-2 border font-semibold text-gray-700">{{ $exercise->name }}</td>
                             <td class="px-4 py-2 border">{{ $exercise->muscle_group }}</td>
                             <td class="px-4 py-2 border">{{ $exercise->equipment_needed }}</td>
-                            <td class="px-4 py-2 border flex space-x-2">
+                            <td class="px-4 py-2 border flex space-x-3">
                                <button onclick="openEditModal({{ $exercise->id }})" class="text-blue-600 hover:underline">Edit</button>
                                <button type="button" class="text-red-600 hover:underline" onclick="openDeleteModal({{ $exercise->id }})">Delete</button>
                             </td>
@@ -95,7 +106,7 @@
                         </tr>          
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-gray-500">No exercises found.</td>
+                            <td colspan="5" class="text-center py-4 text-gray-500">No exercises found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -112,7 +123,7 @@
 
 <script>
     function showLoading() {
-        document.getElementById('loading').style.display = 'flex';
+        document.getElementById('loading').classList.remove('hidden');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -130,9 +141,7 @@
         const modal = document.getElementById('create-modal');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
+        setTimeout(() => modal.classList.add('show'), 10);
     }
 
     function closeCreateModal() {
@@ -149,9 +158,7 @@
         const modal = document.getElementById('edit-modal-' + id);
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
+        setTimeout(() => modal.classList.add('show'), 10);
     }
 
     function closeEditModal(id) {
@@ -168,9 +175,7 @@
         const modal = document.getElementById('delete-modal-' + id);
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
+        setTimeout(() => modal.classList.add('show'), 10);
     }
 
     function closeDeleteModal(id) {

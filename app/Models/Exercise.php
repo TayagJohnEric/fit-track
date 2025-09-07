@@ -14,6 +14,7 @@ class Exercise extends Model
         'muscle_group',
         'equipment_needed',
         'video_url',
+        'image_url', // Added for YouTube thumbnail or custom image
     ];
 
     // Many-to-Many: Exercise belongs to many WorkoutTemplates

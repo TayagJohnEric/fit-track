@@ -60,50 +60,40 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Exercise Video -->
+        <!-- Exercise Video / Thumbnail -->
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">Exercise Demonstration</h3>
-            
+
             @if($exercise->video_url)
-                <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-4">
-                    @if(str_contains($exercise->video_url, 'youtube.com') || str_contains($exercise->video_url, 'youtu.be'))
-                        @php
-                            $videoId = '';
-                            if (str_contains($exercise->video_url, 'youtube.com/watch?v=')) {
-                                $videoId = substr($exercise->video_url, strpos($exercise->video_url, 'v=') + 2);
-                                $videoId = strpos($videoId, '&') ? substr($videoId, 0, strpos($videoId, '&')) : $videoId;
-                            } elseif (str_contains($exercise->video_url, 'youtu.be/')) {
-                                $videoId = substr($exercise->video_url, strpos($exercise->video_url, 'youtu.be/') + 9);
-                                $videoId = strpos($videoId, '?') ? substr($videoId, 0, strpos($videoId, '?')) : $videoId;
-                            }
-                        @endphp
-                        @if($videoId)
-                            <iframe 
-                                src="https://www.youtube.com/embed/{{ $videoId }}" 
-                                frameborder="0" 
-                                allowfullscreen
-                                class="w-full h-full">
-                            </iframe>
-                        @else
-                            <div class="flex items-center justify-center h-full">
-                                <a href="{{ $exercise->video_url }}" target="_blank" 
-                                   class="text-blue-600 hover:text-blue-800 underline">
-                                    Watch Video
-                                </a>
-                            </div>
-                        @endif
-                    @else
-                        <div class="flex items-center justify-center h-full">
-                            <a href="{{ $exercise->video_url }}" target="_blank" 
-                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m2-10l-2 2m0 0l-2-2m2 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h8l2 2z"></path>
-                                </svg>
-                                Watch Video
-                            </a>
+                @php
+                    $videoId = '';
+                    if (str_contains($exercise->video_url, 'youtube.com/watch?v=')) {
+                        $videoId = substr($exercise->video_url, strpos($exercise->video_url, 'v=') + 2);
+                        $videoId = strpos($videoId, '&') ? substr($videoId, 0, strpos($videoId, '&')) : $videoId;
+                    } elseif (str_contains($exercise->video_url, 'youtu.be/')) {
+                        $videoId = substr($exercise->video_url, strpos($exercise->video_url, 'youtu.be/') + 9);
+                        $videoId = strpos($videoId, '?') ? substr($videoId, 0, strpos($videoId, '?')) : $videoId;
+                    }
+                @endphp
+
+                @if($videoId)
+                    <a href="https://www.youtube.com/watch?v={{ $videoId }}" target="_blank" class="block relative group">
+                        <img src="https://img.youtube.com/vi/{{ $videoId }}/hqdefault.jpg" 
+                             alt="{{ $exercise->name }} Thumbnail" 
+                             class="w-full rounded-lg shadow-md group-hover:opacity-90 transition">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white drop-shadow-lg group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
                         </div>
-                    @endif
-                </div>
+                    </a>
+                @else
+                    <div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                        <a href="{{ $exercise->video_url }}" target="_blank" class="text-blue-600 hover:underline">
+                            Watch Video
+                        </a>
+                    </div>
+                @endif
             @else
                 <div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-4">
                     <div class="text-center text-gray-500">
@@ -147,7 +137,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Action Buttons -->
     <div class="mt-8 bg-white rounded-lg shadow p-6">
         <div class="flex gap-4">

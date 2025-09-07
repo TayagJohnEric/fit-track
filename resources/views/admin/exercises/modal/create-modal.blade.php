@@ -3,7 +3,7 @@
         <button onclick="closeCreateModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Add Exercise</h2>
 
-        <form method="POST" action="{{ route('exercises.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('exercises.store') }}">
             @csrf
 
             <div class="mb-4">
@@ -31,9 +31,16 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700">Upload Exercise Video (optional)</label>
-                <input type="file" name="video" accept="video/*" class="w-full px-4 py-2 border rounded">
-                @error('video') <div class="text-red-500 text-sm">{{ $message }}</div> @enderror
+<label class="block text-gray-700">YouTube Video URL (optional)</label>
+<input type="url" name="video_url" value="{{ old('video_url') }}" placeholder="https://www.youtube.com/watch?v=..."
+class="w-full px-4 py-2 border rounded">
+@error('video_url') <div class="text-red-500 text-sm">{{ $message }}</div> @enderror
+</div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700">Thumbnail Image URL (optional)</label>
+                <input type="url" name="image_url" value="{{ old('image_url') }}" class="w-full px-4 py-2 border rounded" placeholder="https://img.youtube.com/vi/xxxxxxx/hqdefault.jpg">
+                @error('image_url') <div class="text-red-500 text-sm">{{ $message }}</div> @enderror
             </div>
 
             <div class="flex justify-end">

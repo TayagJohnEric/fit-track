@@ -4,7 +4,7 @@
         <button onclick="closeEditModal({{ $exercise->id }})" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Edit Exercise</h2>
 
-        <form method="POST" action="{{ route('exercises.update', $exercise->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('exercises.update', $exercise->id) }}">
             @csrf
             @method('PUT')
 
@@ -33,16 +33,26 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700">Replace Exercise Video (optional)</label>
-                <input type="file" name="video" accept="video/*" class="w-full px-4 py-2 border rounded">
-                @error('video') <div class="text-red-500 text-sm">{{ $message }}</div> @enderror
+<label class="block text-gray-700">YouTube Video URL (optional)</label>
+<input type="url" name="video_url" value="{{ old('video_url', $exercise->video_url) }}"
+class="w-full px-4 py-2 border rounded">
+@error('video_url') <div class="text-red-500 text-sm">{{ $message }}</div> @enderror
 
-                @if ($exercise->video_url)
-                    <p class="text-sm text-gray-500 mt-2">Current Video:</p>
-                    <video width="320" height="240" controls class="mt-1">
-                        <source src="{{ asset('storage/' . $exercise->video_url) }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+
+@if ($exercise->video_url)
+<p class="text-sm text-gray-500 mt-2">Current Video:</p>
+<iframe width="320" height="240" src="https://www.youtube.com/embed/{{ \Illuminate\Support\Str::after($exercise->video_url, 'v=') }}" frameborder="0" allowfullscreen></iframe>
+@endif
+</div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700">Thumbnail Image URL (optional)</label>
+                <input type="url" name="image_url" value="{{ old('image_url', $exercise->image_url) }}" placeholder="https://img.youtube.com/..." class="w-full px-4 py-2 border rounded">
+                @error('image_url') <div class="text-red-500 text-sm">{{ $message }}</div> @enderror
+
+                @if ($exercise->image_url)
+                    <p class="text-sm text-gray-500 mt-2">Current Thumbnail:</p>
+                    <img src="{{ $exercise->image_url }}" alt="Thumbnail" class="w-40 h-auto mt-1 rounded border">
                 @endif
             </div>
 

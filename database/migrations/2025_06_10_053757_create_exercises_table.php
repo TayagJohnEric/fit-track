@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('muscle_group');
             $table->string('equipment_needed');
             $table->string('video_url')->nullable();
+            $table->string('image_url')->nullable(); // YouTube thumbnail or custom image
             $table->timestamps();
         });
     }
