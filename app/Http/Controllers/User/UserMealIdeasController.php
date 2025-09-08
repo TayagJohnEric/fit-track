@@ -80,94 +80,16 @@ public function index(Request $request)
             'fats' => $items->sum('fat_grams_per_serving'),
         ];
         
-        return view('user.meal-ideas.show', compact('items', 'totals', 'budget'));
+        // If this is an AJAX request, return the modal partial directly
+        if ($request->ajax()) {
+            return response()->view('user.meal-ideas.modal.show', compact('items', 'totals', 'budget'));
+        }
+
+        // For non-AJAX requests, also render the modal partial so page still shows meaningful content
+        return view('user.meal-ideas.modal.show', compact('items', 'totals', 'budget'));
     }
     
-    /**
-     * Handle logging a meal from meal ideas
-     */
-    public function logMeal(Request $request)
-    {
-        $request->validate([
-            'items' => 'required|array|min:1',
-            'items.*' => 'exists:food_items,id',
-            'meal_type' => 'required|in:Breakfast,Lunch,Dinner,Snack',
-            'log_date' => 'required|date',
-            'quantities' => 'array',
-            'quantities.*' => 'numeric|min:0.01',
-        ]);
-        
-        DB::beginTransaction();
-        
-        try {
-            // Create or find existing meal log
-            $mealLog = UserMealLog::firstOrCreate([
-                'user_id' => Auth::id(),
-                'log_date' => $request->log_date,
-                'meal_type' => $request->meal_type,
-            ]);
-            
-            // Add food items to the meal log
-            foreach ($request->items as $index => $foodItemId) {
-                $quantity = $request->quantities[$index] ?? 1; // Default to 1 serving
-                
-                UserMealLogEntry::create([
-                    'meal_log_id' => $mealLog->id,
-                    'food_item_id' => $foodItemId,
-                    'quantity_consumed' => $quantity,
-                ]);
-            }
-            
-            DB::commit();
-            
-            return redirect()->route('nutrition.index')
-                ->with('success', 'Meal logged successfully!');
-                
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Error logging meal. Please try again.')
-                ->withInput();
-        }
-    }
-    
-    /**
-     * Show the log meal form for meal ideas
-     */
-    public function showLogForm(Request $request)
-    {
-        $itemIds = $request->input('items', []);
-        // Normalize `items` to an array (links pass comma-separated ids)
-        if (is_string($itemIds)) {
-            $itemIds = array_filter(array_map('intval', explode(',', $itemIds)));
-        }
-        $budget = $request->input('budget', 0);
-        
-        // Validate that we have item IDs
-        if (empty($itemIds)) {
-            return redirect()->route('meal-ideas.index')
-                ->with('error', 'No meal items selected.');
-        }
-        
-        // Get the food items
-        $items = FoodItem::whereIn('id', $itemIds)->get();
-        
-        if ($items->isEmpty()) {
-            return redirect()->route('meal-ideas.index')
-                ->with('error', 'Selected meal items not found.');
-        }
-        
-        // Calculate totals
-        $totals = [
-            'cost' => $items->sum('estimated_cost'),
-            'calories' => $items->sum('calories_per_serving'),
-            'protein' => $items->sum('protein_grams_per_serving'),
-            'carbs' => $items->sum('carb_grams_per_serving'),
-            'fats' => $items->sum('fat_grams_per_serving'),
-        ];
-        
-        return view('user.meal-ideas.log-form', compact('items', 'totals', 'budget'));
-    }
+   
     
     /**
  * Generate meal ideas based on budget and user allergies

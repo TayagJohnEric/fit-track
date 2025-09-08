@@ -276,23 +276,13 @@ $(document).ready(function() {
                         <div class="flex gap-3">
                             <a 
                                 href="{{ route('meal-ideas.show') }}?items=${itemIds}&budget=${budget}" 
-                                class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-600 font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm text-center flex items-center justify-center gap-2"
+                                class="open-meal-details flex-1 bg-gray-200 hover:bg-gray-300 text-gray-600 font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm text-center flex items-center justify-center gap-2"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                                 </svg>
                                 View Details
-                            </a>
-                            <a 
-                                href="{{ route('meal-ideas.log-form') }}?items=${itemIds}&budget=${budget}" 
-                                class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm text-center flex items-center justify-center gap-2"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M5 12h14"/>
-                                    <path d="M12 5v14"/>
-                                </svg>
-                                Log Meal
                             </a>
                         </div>
                     </div>
@@ -334,6 +324,51 @@ $(document).ready(function() {
                     Try ${formattedSuggestedBudget}
                 </button>
             </div>`;
+    }
+
+    // Open details modal via AJAX when clicking View Details
+    $(document).on('click', 'a.open-meal-details', function(e) {
+        e.preventDefault();
+        const url = $(this).attr('href');
+        const $btn = $(this);
+        const originalHtml = $btn.html();
+        $btn.prop('disabled', true).addClass('opacity-70 cursor-wait');
+
+        $.get(url)
+            .done(function(html) {
+                // Remove existing modal if any
+                $('#meal-details-modal').remove();
+                // Append new modal to body
+                $('body').append(html);
+                bindMealDetailsModalHandlers();
+            })
+            .fail(function() {
+                alert('Failed to load meal details. Please try again.');
+            })
+            .always(function() {
+                $btn.prop('disabled', false).removeClass('opacity-70 cursor-wait').html(originalHtml);
+            });
+    });
+
+    function bindMealDetailsModalHandlers() {
+        const $modal = $('#meal-details-modal');
+        // Close on button
+        $modal.on('click', '#close-meal-details', function() {
+            $modal.remove();
+        });
+        // Close on backdrop click
+        $modal.on('click', function(e) {
+            if (e.target === this) {
+                $modal.remove();
+            }
+        });
+        // Close on ESC
+        $(document).on('keydown.mealmodal', function(e) {
+            if (e.key === 'Escape') {
+                $modal.remove();
+                $(document).off('keydown.mealmodal');
+            }
+        });
     }
 });
 </script>

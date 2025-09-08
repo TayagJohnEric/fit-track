@@ -65,7 +65,7 @@ class UserDashboardController extends Controller
             'todaysMealLogs',
             'weeklyWorkoutStats',
             'fitnessMotivation',
-            'showWelcomeMessage' // 👈 Add this
+            'showWelcomeMessage' 
 
         ));
     }
