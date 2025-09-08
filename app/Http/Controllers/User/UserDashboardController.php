@@ -75,9 +75,12 @@ class UserDashboardController extends Controller
      */
     private function calculateTodaysNutrition($userId, $date)
     {
-        $mealLogs = UserMealLog::where('user_id', $userId)
-            ->whereDate('log_date', $date)
-            ->with(['mealLogEntries.foodItem'])
+        // Mirror logic from UserMealLogController::calculateDailyTotals
+        $entries = UserMealLogEntry::whereHas('mealLog', function ($query) use ($userId, $date) {
+                $query->where('user_id', $userId)
+                      ->where('log_date', $date);
+            })
+            ->with('foodItem')
             ->get();
 
         $totalCalories = 0;
@@ -85,24 +88,25 @@ class UserDashboardController extends Controller
         $totalCarbs = 0;
         $totalFat = 0;
 
-        foreach ($mealLogs as $mealLog) {
-            foreach ($mealLog->mealLogEntries as $entry) {
-                if ($entry->foodItem) {
-                    // Assuming FoodItem has nutritional values per 100g
-                    $multiplier = $entry->quantity_consumed / 100;
-                    $totalCalories += ($entry->foodItem->calories ?? 0) * $multiplier;
-                    $totalProtein += ($entry->foodItem->protein_grams ?? 0) * $multiplier;
-                    $totalCarbs += ($entry->foodItem->carb_grams ?? 0) * $multiplier;
-                    $totalFat += ($entry->foodItem->fat_grams ?? 0) * $multiplier;
-                }
+        foreach ($entries as $entry) {
+            if (!$entry->foodItem) {
+                continue;
             }
+
+            $quantity = (float) ($entry->quantity_consumed ?? 0); // treated as servings
+            $food = $entry->foodItem;
+
+            $totalCalories += ((float) ($food->calories_per_serving ?? 0)) * $quantity;
+            $totalProtein  += ((float) ($food->protein_grams_per_serving ?? 0)) * $quantity;
+            $totalCarbs    += ((float) ($food->carb_grams_per_serving ?? 0)) * $quantity;
+            $totalFat      += ((float) ($food->fat_grams_per_serving ?? 0)) * $quantity;
         }
 
         return [
             'calories' => round($totalCalories),
-            'protein' => round($totalProtein, 1),
-            'carbs' => round($totalCarbs, 1),
-            'fat' => round($totalFat, 1),
+            'protein'  => round($totalProtein, 1),
+            'carbs'    => round($totalCarbs, 1),
+            'fat'      => round($totalFat, 1),
         ];
     }
 

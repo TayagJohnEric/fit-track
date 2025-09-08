@@ -35,7 +35,7 @@
             <!-- User Info -->
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-semibold text-gray-800 truncate">
-                    {{ Auth::user()->userProfile->first_name ?? '' }} {{ Auth::user()->userProfile->last_name ?? '' }}
+                    {{ Auth::user()->name}}
                 </p>
                 <p class="text-xs text-gray-600 truncate">
                     {{ Auth::user()->email }}

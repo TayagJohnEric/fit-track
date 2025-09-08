@@ -20,6 +20,9 @@ class UserWorkoutController extends Controller
         $user = Auth::user();
         $today = Carbon::today();
         
+        // Auto-skip previous incomplete workouts before showing today's workout
+        $this->autoSkipIncompleteWorkouts($user->id);
+        
         // Get today's scheduled workout
         $scheduledWorkout = UserWorkoutSchedule::where('user_id', $user->id)
             ->where('assigned_date', $today)
@@ -85,6 +88,9 @@ class UserWorkoutController extends Controller
     {
         $user = Auth::user();
         
+        // Auto-skip incomplete workouts before showing history
+        $this->autoSkipIncompleteWorkouts($user->id);
+        
         $workoutHistory = UserWorkoutSchedule::where('user_id', $user->id)
             ->with('workoutTemplate')
             ->orderBy('assigned_date', 'desc')
@@ -105,10 +111,96 @@ class UserWorkoutController extends Controller
             ->firstOrFail();
         
         $scheduledWorkout->update([
-            'status' => 'Skipped'
+            'status' => 'Skipped',
+            'skipped_date' => Carbon::now() // Track when it was skipped
         ]);
         
         return redirect()->route('workouts.today')
             ->with('info', 'Workout marked as skipped. Don\'t worry, you can get back on track tomorrow!');
+    }
+    
+    /**
+     * Automatically mark incomplete workouts as skipped
+     * This method should be called at strategic points or via scheduled task
+     */
+    public function autoSkipIncompleteWorkouts($userId = null)
+    {
+        $query = UserWorkoutSchedule::query()
+            ->where('assigned_date', '<', Carbon::today()) // Only past dates
+            ->whereIn('status', ['Pending', 'In Progress', null]); // Incomplete statuses
+        
+        if ($userId) {
+            $query->where('user_id', $userId);
+        }
+        
+        $incompleteWorkouts = $query->get();
+        
+        foreach ($incompleteWorkouts as $workout) {
+            $workout->update([
+                'status' => 'Auto-Skipped',
+                'skipped_date' => Carbon::now(),
+                'user_notes' => ($workout->user_notes ?? '') . ' [Auto-skipped due to inactivity]'
+            ]);
+        }
+        
+        return $incompleteWorkouts->count();
+    }
+    
+    /**
+     * Manual endpoint to trigger auto-skip for all users (for admin use)
+     */
+    public function triggerAutoSkip()
+    {
+        // You might want to add authorization check here
+        $skippedCount = $this->autoSkipIncompleteWorkouts();
+        
+        return response()->json([
+            'message' => "Auto-skipped {$skippedCount} incomplete workouts",
+            'count' => $skippedCount
+        ]);
+    }
+    
+    /**
+     * Get workout statistics including auto-skipped workouts
+     */
+    public function getWorkoutStats()
+    {
+        $user = Auth::user();
+        
+        // Auto-skip incomplete workouts first
+        $this->autoSkipIncompleteWorkouts($user->id);
+        
+        $stats = [
+            'completed' => UserWorkoutSchedule::where('user_id', $user->id)
+                ->where('status', 'Completed')
+                ->count(),
+            'manually_skipped' => UserWorkoutSchedule::where('user_id', $user->id)
+                ->where('status', 'Skipped')
+                ->count(),
+            'auto_skipped' => UserWorkoutSchedule::where('user_id', $user->id)
+                ->where('status', 'Auto-Skipped')
+                ->count(),
+            'pending' => UserWorkoutSchedule::where('user_id', $user->id)
+                ->whereIn('status', ['Pending', 'In Progress', null])
+                ->where('assigned_date', '>=', Carbon::today())
+                ->count()
+        ];
+        
+        return response()->json($stats);
+    }
+    
+    /**
+     * Check if there are any workouts that need to be auto-skipped for current user
+     */
+    public function checkPendingAutoSkips()
+    {
+        $user = Auth::user();
+        
+        $pendingAutoSkips = UserWorkoutSchedule::where('user_id', $user->id)
+            ->where('assigned_date', '<', Carbon::today())
+            ->whereIn('status', ['Pending', 'In Progress', null])
+            ->count();
+        
+        return response()->json(['pending_auto_skips' => $pendingAutoSkips]);
     }
 }
