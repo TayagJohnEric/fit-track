@@ -4,9 +4,6 @@
         <div class="mt-3">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-medium text-gray-900 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
                     Log Weight
                 </h3>
                 <button onclick="closeWeightModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
@@ -18,6 +15,7 @@
             
             <form method="POST" action="{{ route('progress.log-weight') }}" id="weightForm">
                 @csrf
+                <input type="hidden" name="date_range" value="{{ request('date_range', $dateRange ?? '30') }}">
                 <div class="mb-4">
                     <label for="weight" class="block text-sm font-medium text-gray-700 mb-2">Weight (kg)</label>
                     <input type="number" id="weight" name="weight" step="0.1" min="20" max="500" required
@@ -39,7 +37,7 @@
                         Cancel
                     </button>
                     <button type="submit" 
-                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors flex items-center gap-2">
+                            class="px-4 py-2 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-md transition-colors flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>

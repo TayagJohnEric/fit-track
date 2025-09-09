@@ -28,13 +28,7 @@
                     @endif
                 </div>
                 <div class="h-12 w-12 bg-orange-50 rounded-lg flex items-center justify-center ml-4 flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-orange-600">
-                        <path d="m14.5 6.5-1 1 1 1-1 1 1 1-1 1 1 1"/>
-                        <path d="M2 15.5 7 19l4-7 7 4-3.5 5.5"/>
-                        <path d="m8 9 1-1 1 1-1 1Z"/>
-                        <circle cx="9.5" cy="5.5" r="0.5" fill="currentColor"/>
-                        <circle cx="18.5" cy="12.5" r="0.5" fill="currentColor"/>
-                    </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-orange-600 lucide lucide-calendar-icon lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
                 </div>
             </div>
         </div>
@@ -134,11 +128,11 @@
                         @if($todaysWorkout->status === 'Scheduled')
                             <div class="flex flex-col sm:flex-row gap-3 pt-2">
                                <a href="{{ route('workouts.today') }}" class="flex-1 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-center">
-    Start Workout
-</a>
-<a href="{{ route('workouts.today') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-center">
-    Skip Today
-</a>
+                                    Start Workout
+                                </a>
+                                <a href="{{ route('workouts.today') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-center">
+                                    Skip Today
+                                </a>
 
                             </div>
                         @elseif($todaysWorkout->status === 'Completed')
@@ -175,13 +169,6 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-gray-900">Today's Nutrition</h2>
-                    <button class="flex items-center gap-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 text-sm font-medium px-3 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        View Details
-                    </button>
                 </div>
 
                 @if($nutritionGoals)

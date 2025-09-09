@@ -5,30 +5,39 @@
 @section('content')
 <div class="max-w-[90rem] mx-auto">
     <!-- Header Section -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-6 mb-6 text-white">
+        <div class="rounded-lg p-6 mb-6 text-black">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-bold flex items-center gap-2">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
+                 <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
                     My Progress
                 </h1>
-                <p class="text-blue-100 mt-1">Track your journey and celebrate your achievements</p>
+                <p class="text-gray-600 text-sm sm:text-md">Track your journey and celebrate your achievements</p>
             </div>
             
             <!-- Controls -->
             <div class="flex flex-col sm:flex-row gap-3">
                 <form method="GET" action="{{ route('progress.index') }}" class="flex gap-2">
-                    <select name="date_range" onchange="this.form.submit()" class="px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-white focus:border-transparent bg-white/10 text-white backdrop-blur-sm">
-                        <option value="7" {{ $dateRange == '7' ? 'selected' : '' }}>Last 7 Days</option>
-                        <option value="30" {{ $dateRange == '30' ? 'selected' : '' }}>Last 30 Days</option>
-                        <option value="90" {{ $dateRange == '90' ? 'selected' : '' }}>Last 3 Months</option>
-                        <option value="all" {{ $dateRange == 'all' ? 'selected' : '' }}>All Time</option>
-                    </select>
+                   <div class="relative inline-block">
+                        <svg class="text-gray-800 absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" 
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 2v4"/>
+                            <path d="M16 2v4"/>
+                            <rect width="18" height="18" x="3" y="4" rx="2"/>
+                            <path d="M3 10h18"/>
+                        </svg>
+
+                        <select name="date_range" onchange="this.form.submit()"
+                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-black appearance-none">
+                            <option value="7" {{ $dateRange == '7' ? 'selected' : '' }}>Last 7 Days</option>
+                            <option value="30" {{ $dateRange == '30' ? 'selected' : '' }}>Last 30 Days</option>
+                            <option value="90" {{ $dateRange == '90' ? 'selected' : '' }}>Last 3 Months</option>
+                            <option value="all" {{ $dateRange == 'all' ? 'selected' : '' }}>All Time</option>
+                        </select>
+                    </div>
                 </form>
                 
-                <button onclick="openWeightModal()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-medium transition-all backdrop-blur-sm flex items-center gap-2">
+                <button onclick="openWeightModal()" class="text-white bg-gray-900 hover:bg-gray-800 text-black px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -37,6 +46,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Success Message -->
     @if(session('success'))
@@ -50,23 +60,29 @@
 
     <!-- Quick Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center">
-                <div class="p-2 bg-blue-100 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2 bg-orange-100 rounded-lg">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-gray-600">Weight Change</p>
-                    <p class="text-lg font-semibold {{ $weightData['weight_change'] <= 0 ? 'text-green-600' : 'text-red-600' }}">
-                        {{ $weightData['weight_change'] >= 0 ? '+' : '' }}{{ number_format($weightData['weight_change'], 1) }} kg
+                    @php
+                        $displayChange = $weightData['weight_change'];
+                        if (isset($weightData['recent_change']) && $weightData['recent_change'] !== null && (float) $displayChange === 0.0) {
+                            $displayChange = $weightData['recent_change'];
+                        }
+                    @endphp
+                    <p class="text-lg font-semibold {{ $displayChange <= 0 ? 'text-green-600' : 'text-red-600' }}">
+                        {{ $displayChange >= 0 ? '+' : '' }}{{ number_format($displayChange, 1) }} kg
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center">
                 <div class="p-2 bg-orange-100 rounded-lg">
                     <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,35 +91,35 @@
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-gray-600">Nutrition Consistency</p>
-                    <p class="text-lg font-semibold text-orange-600">{{ $nutritionData['consistency_score'] }}%</p>
+                    <p class="text-lg font-semibold text-gray-800">{{ $nutritionData['consistency_score'] }}%</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center">
-                <div class="p-2 bg-purple-100 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2 bg-orange-100 rounded-lg">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-gray-600">Workout Adherence</p>
-                    <p class="text-lg font-semibold text-purple-600">{{ $workoutData['adherence_rate'] }}%</p>
+                    <p class="text-lg font-semibold  text-gray-800">{{ $workoutData['adherence_rate'] }}%</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
             <div class="flex items-center">
-                <div class="p-2 bg-green-100 rounded-lg">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2 bg-orange-100 rounded-lg">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-gray-600">Days Tracked</p>
-                    <p class="text-lg font-semibold text-green-600">{{ $nutritionData['total_days'] }}</p>
+                    <p class="text-lg font-semibold  text-gray-800">{{ $nutritionData['total_days'] }}</p>
                 </div>
             </div>
         </div>
@@ -113,12 +129,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Weight & Body Composition Section -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
                         Weight & Body Composition
                     </h2>
                     <div class="flex gap-2">
@@ -131,27 +144,33 @@
                 
                 <!-- Weight Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
-                        <div class="text-blue-600 text-sm font-medium">Starting Weight</div>
-                        <div class="text-2xl font-bold text-blue-800">{{ number_format($weightData['starting_weight'], 1) }} kg</div>
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                        <div class="text-orange-600 text-sm font-medium">Starting Weight</div>
+                        <div class="text-2xl font-bold text-orange-800">{{ number_format($weightData['starting_weight'], 1) }} kg</div>
                         @if($weightData['has_height'])
-                        <div class="text-sm text-blue-600">BMI: {{ number_format($weightData['starting_bmi'], 1) }}</div>
+                        <div class="text-sm text-orange-600">BMI: {{ number_format($weightData['starting_bmi'], 1) }}</div>
                         @endif
                     </div>
-                    <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
-                        <div class="text-green-600 text-sm font-medium">Current Weight</div>
-                        <div class="text-2xl font-bold text-green-800">{{ number_format($weightData['current_weight'], 1) }} kg</div>
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                        <div class="text-orange-600 text-sm font-medium">Current Weight</div>
+                        <div class="text-2xl font-bold text-orange-800">{{ number_format($weightData['current_weight'], 1) }} kg</div>
                         @if($weightData['has_height'])
-                        <div class="text-sm text-green-600">BMI: {{ number_format($weightData['current_bmi'], 1) }}</div>
+                        <div class="text-sm text-orange-600">BMI: {{ number_format($weightData['current_bmi'], 1) }}</div>
                         @endif
                     </div>
-                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
-                        <div class="text-purple-600 text-sm font-medium">Total Change</div>
-                        <div class="text-2xl font-bold {{ $weightData['weight_change'] <= 0 ? 'text-green-800' : 'text-red-800' }}">
-                            {{ $weightData['weight_change'] >= 0 ? '+' : '' }}{{ number_format($weightData['weight_change'], 1) }} kg
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                        <div class="text-orange-600 text-sm font-medium">Total Change</div>
+                        @php
+                            $displayChange = $weightData['weight_change'];
+                            if (isset($weightData['recent_change']) && $weightData['recent_change'] !== null && (float) $displayChange === 0.0) {
+                                $displayChange = $weightData['recent_change'];
+                            }
+                        @endphp
+                        <div class="text-2xl font-bold {{ $displayChange <= 0 ? 'text-orange-800' : 'text-red-800' }}">
+                            {{ $displayChange >= 0 ? '+' : '' }}{{ number_format($displayChange, 1) }} kg
                         </div>
-                        <div class="text-sm text-purple-600">
-                            {{ $weightData['weight_change'] >= 0 ? 'Gained' : 'Lost' }} weight
+                        <div class="text-sm text-orange-600">
+                            {{ $displayChange >= 0 ? 'Gained' : 'Lost' }} weight
                         </div>
                     </div>
                 </div>
@@ -182,7 +201,7 @@
         <!-- Right Column -->
         <div class="space-y-6">
             <!-- Nutrition Goal Adherence -->
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                     <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -214,10 +233,10 @@
                     <div class="space-y-4">
                         @php
                             $macros = [
-                                'calories' => ['color' => 'red', 'unit' => 'kcal'],
-                                'protein' => ['color' => 'blue', 'unit' => 'g'],
-                                'carbs' => ['color' => 'yellow', 'unit' => 'g'],
-                                'fat' => ['color' => 'green', 'unit' => 'g']
+                                'calories' => ['color' => 'orange', 'unit' => 'kcal'],
+                                'protein' => ['color' => 'orange', 'unit' => 'g'],
+                                'carbs' => ['color' => 'orange', 'unit' => 'g'],
+                                'fat' => ['color' => 'orange', 'unit' => 'g']
                             ];
                         @endphp
                         
@@ -253,22 +272,22 @@
             </div>
 
             <!-- Workout Summary -->
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     Workout Summary
                 </h2>
                 
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-3">
-                        <div class="text-purple-600 text-sm font-medium">Completed</div>
-                        <div class="text-xl font-bold text-purple-800">{{ $workoutData['completed_workouts'] }}</div>
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3">
+                        <div class="text-orange-600 text-sm font-medium">Completed</div>
+                        <div class="text-xl font-bold text-orange-800">{{ $workoutData['completed_workouts'] }}</div>
                     </div>
-                    <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-3">
-                        <div class="text-red-600 text-sm font-medium">Skipped</div>
-                        <div class="text-xl font-bold text-red-800">{{ $workoutData['skipped_workouts'] }}</div>
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3">
+                        <div class="text-orange-600 text-sm font-medium">Skipped</div>
+                        <div class="text-xl font-bold text-orange-800">{{ $workoutData['skipped_workouts'] }}</div>
                     </div>
                 </div>
                 
@@ -289,21 +308,21 @@
 
             <!-- Workout Streaks -->
             @if(isset($streak))
-            <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     Workout Streaks
                 </h2>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-4">
-                        <div class="text-indigo-600 text-sm font-medium">Current Streak</div>
-                        <div class="text-2xl font-bold text-indigo-800">{{ $streak['current_streak'] ?? 0 }} days</div>
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                        <div class="text-orange-600 text-sm font-medium">Current Streak</div>
+                        <div class="text-2xl font-bold text-orange-800">{{ $streak['current_streak'] ?? 0 }} days</div>
                     </div>
-                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
-                        <div class="text-blue-600 text-sm font-medium">Longest Streak</div>
-                        <div class="text-2xl font-bold text-blue-800">{{ $streak['longest_streak'] ?? 0 }} days</div>
+                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                        <div class="text-orange-600 text-sm font-medium">Longest Streak</div>
+                        <div class="text-2xl font-bold text-orange-800">{{ $streak['longest_streak'] ?? 0 }} days</div>
                     </div>
                 </div>
             </div>
@@ -311,7 +330,7 @@
 
             <!-- Progress Insights -->
             @if(isset($insights) && count($insights) > 0)
-            <div class="bg-white rounded-lg shadow-md p-6">
+           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                     <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />

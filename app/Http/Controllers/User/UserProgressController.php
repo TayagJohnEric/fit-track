@@ -71,7 +71,9 @@ class UserProgressController extends Controller
             $user->userProfile->update(['current_weight_kg' => $request->weight]);
         }
 
-        return redirect()->route('progress.index')->with('success', 'Weight logged successfully!');
+        return redirect()
+            ->route('progress.index', ['date_range' => $request->input('date_range', '30')])
+            ->with('success', 'Weight logged successfully!');
     }
 
     private function getStartDate($dateRange, $endDate, $userId)
@@ -109,9 +111,9 @@ class UserProgressController extends Controller
 
     private function getWeightData($userId, $startDate, $endDate)
     {
-        // Get weight history
+        // Get weight history (use date-only boundaries to avoid time casting issues)
         $weightHistory = WeightHistory::where('user_id', $userId)
-            ->whereBetween('log_date', [$startDate, $endDate])
+            ->whereBetween('log_date', [$startDate->toDateString(), $endDate->toDateString()])
             ->orderBy('log_date')
             ->get();
 
@@ -131,16 +133,52 @@ class UserProgressController extends Controller
         }
 
         // Calculate weight statistics
-        $startingWeight = $weightHistory->first()?->weight_kg ?? 0;
-        $currentWeight = $weightHistory->last()?->weight_kg ?? 0;
+        // Use the last weight BEFORE the period as baseline if available, so change reflects the whole selected period
+        $previousWeight = WeightHistory::where('user_id', $userId)
+            ->where('log_date', '<', $startDate->toDateString())
+            ->orderBy('log_date', 'desc')
+            ->first();
+
+        $firstInRangeWeight = $weightHistory->first()?->weight_kg;
+        $currentWeight = $weightHistory->last()?->weight_kg;
+
+        // Baseline preference: previous before range, otherwise first within range, otherwise null
+        $baselineWeight = $previousWeight->weight_kg
+            ?? ($firstInRangeWeight ?? null);
+
+        // Normalize values so math behaves predictably
+        if ($baselineWeight === null && $currentWeight === null) {
+            // No data at all
+            $baselineWeight = 0.0;
+            $currentWeight = 0.0;
+        } elseif ($baselineWeight === null && $currentWeight !== null) {
+            // Only one point (in-range) exists; set baseline to current for 0 change
+            $baselineWeight = (float) $currentWeight;
+        } elseif ($baselineWeight !== null && $currentWeight === null) {
+            // Only a baseline exists before the range; treat as no change within range
+            $currentWeight = (float) $baselineWeight;
+        }
+
+        $startingWeight = (float) $baselineWeight;
+        $currentWeight = (float) $currentWeight;
         $weightChange = $currentWeight - $startingWeight;
 
         // Centralized BMI values for cards
         $startingBmi = null;
         $currentBmi = null;
         if ($userProfile && $userProfile->height_cm) {
-            $startingBmi = ProgressService::calculateBMI($startingWeight, $userProfile->height_cm);
-            $currentBmi = ProgressService::calculateBMI($currentWeight, $userProfile->height_cm);
+            $startingBmi = ProgressService::calculateBMI($startingWeight, (float) $userProfile->height_cm);
+            $currentBmi = ProgressService::calculateBMI($currentWeight, (float) $userProfile->height_cm);
+        }
+
+        // Recent change (global, regardless of range) - helpful when the range only has one entry
+        $latestTwo = WeightHistory::where('user_id', $userId)
+            ->orderBy('log_date', 'desc')
+            ->limit(2)
+            ->get();
+        $recentChange = null;
+        if ($latestTwo->count() >= 2) {
+            $recentChange = (float) $latestTwo[0]->weight_kg - (float) $latestTwo[1]->weight_kg;
         }
 
         return [
@@ -157,6 +195,8 @@ class UserProgressController extends Controller
             'has_height' => $userProfile && $userProfile->height_cm,
             'starting_bmi' => $startingBmi,
             'current_bmi' => $currentBmi,
+            // extra helpers
+            'recent_change' => $recentChange,
         ];
     }
 

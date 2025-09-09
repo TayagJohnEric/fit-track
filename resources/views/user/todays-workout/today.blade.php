@@ -156,7 +156,7 @@
         <!-- Right Column: Action Panel (1/4 width on xl screens) -->
         @if($scheduledWorkout->status == 'Scheduled')
             <div class="xl:col-span-1">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
+                <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 sticky top-8">
                     <h3 class="text-lg font-bold text-gray-900 mb-6">Workout Actions</h3>
                     
                     <!-- Complete Workout Form -->

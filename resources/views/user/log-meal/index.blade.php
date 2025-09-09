@@ -182,16 +182,16 @@
                                                         Quantity: {{ $entry->quantity_consumed }} × {{ $entry->foodItem->serving_size_description }}
                                                     </div>
                                                     <div class="flex flex-wrap gap-1 sm:gap-2 text-xs">
-                                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full border border-blue-200 text-xs">
+                                                        <span class="bg-white text-gray-800 px-2 py-1 rounded-full border border-blue-200 text-xs">
                                                             <strong>{{ number_format($entry->foodItem->calories_per_serving * $entry->quantity_consumed) }}</strong> cal
                                                         </span>
-                                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full border border-green-200 text-xs">
+                                                        <span class="bg-white text-gray-800 px-2 py-1 rounded-full border border-green-200 text-xs">
                                                             P: {{ number_format($entry->foodItem->protein_grams_per_serving * $entry->quantity_consumed, 1) }}g
                                                         </span>
-                                                        <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full border border-yellow-200 text-xs">
+                                                        <span class="bg-white text-gray-800 px-2 py-1 rounded-full border border-yellow-200 text-xs">
                                                             C: {{ number_format($entry->foodItem->carb_grams_per_serving * $entry->quantity_consumed, 1) }}g
                                                         </span>
-                                                        <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full border border-purple-200 text-xs">
+                                                        <span class="bg-white text-gray-800 px-2 py-1 rounded-full border border-purple-200 text-xs">
                                                             F: {{ number_format($entry->foodItem->fat_grams_per_serving * $entry->quantity_consumed, 1) }}g
                                                         </span>
                                                     </div>

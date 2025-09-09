@@ -213,22 +213,6 @@ $(document).ready(function() {
                                 ${totalCost}
                             </span>
                         </div>
-                        
-                        <!-- Nutrition Summary -->
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="text-center bg-gray-100 rounded-lg p-2 shadow-sm">
-                                <div class="text-gray-700 font-bold text-lg">${meal.total_calories}</div>
-                                <div class="text-gray-500 text-xs font-medium">Calories</div>
-                            </div>
-                            <div class="text-center bg-gray-100 rounded-lg p-2 shadow-sm">
-                                <div class="text-gray-700 font-bold text-lg">${parseFloat(meal.total_protein).toFixed(1)}g</div>
-                                <div class="text-gray-500 text-xs font-medium">Protein</div>
-                            </div>
-                            <div class="text-center bg-gray-100 rounded-lg p-2 shadow-sm">
-                                <div class="text-gray-700 font-bold text-lg">${parseFloat(meal.total_carbs).toFixed(1)}g</div>
-                                <div class="text-gray-500 text-xs font-medium">Carbs</div>
-                            </div>
-                        </div>
                     </div>
                     
                     <!-- Food Items -->
