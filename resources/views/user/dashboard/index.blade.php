@@ -133,12 +133,13 @@
 
                         @if($todaysWorkout->status === 'Scheduled')
                             <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                                <button class="flex-1 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
-                                    Start Workout
-                                </button>
-                                <button class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
-                                    Skip Today
-                                </button>
+                               <a href="{{ route('workouts.today') }}" class="flex-1 bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-center">
+    Start Workout
+</a>
+<a href="{{ route('workouts.today') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-center">
+    Skip Today
+</a>
+
                             </div>
                         @elseif($todaysWorkout->status === 'Completed')
                             <div class="bg-green-50 border border-green-200 rounded-lg p-4">

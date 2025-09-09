@@ -36,7 +36,7 @@
                         </div>
 
                         <!-- Nutrition Info -->
-                        <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm bg-gray-50 rounded-lg p-3">
+                        <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm bg-gray-100 rounded-lg p-3">
                             <div class="text-center">
                                 <div class="text-gray-700 font-bold text-lg">{{ $item->calories_per_serving }}</div>
                                 <div class="text-gray-500">Calories</div>

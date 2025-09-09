@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Models\WeightHistory;
 use App\Models\UserNutritionGoal;
 use App\Models\UserWorkoutSchedule;
+use App\Services\ProgressService;
 
 class UserProgressController extends Controller
 {
@@ -20,18 +21,24 @@ class UserProgressController extends Controller
         
         // Calculate date range
         $endDate = Carbon::now();
-        $startDate = $this->getStartDate($dateRange, $endDate);
+        $startDate = $this->getStartDate($dateRange, $endDate, $user->id);
         
         // Get progress data
         $weightData = $this->getWeightData($user->id, $startDate, $endDate);
         $nutritionData = $this->getNutritionData($user->id, $startDate, $endDate);
         $workoutData = $this->getWorkoutData($user->id, $startDate, $endDate);
+        // Build insights for the UI
+        $insights = ProgressService::getProgressInsights($weightData, $nutritionData, $workoutData);
+        // Workout streaks
+        $streak = ProgressService::getWorkoutStreak($user->id);
         
         return view('user.my-progress.index', compact(
             'weightData',
             'nutritionData', 
             'workoutData',
-            'dateRange'
+            'dateRange',
+            'insights',
+            'streak'
         ));
     }
 
@@ -67,7 +74,7 @@ class UserProgressController extends Controller
         return redirect()->route('progress.index')->with('success', 'Weight logged successfully!');
     }
 
-    private function getStartDate($dateRange, $endDate)
+    private function getStartDate($dateRange, $endDate, $userId)
     {
         switch ($dateRange) {
             case '7':
@@ -77,7 +84,24 @@ class UserProgressController extends Controller
             case '90':
                 return $endDate->copy()->subDays(90);
             case 'all':
-                return Carbon::create(2020, 1, 1); // Far back date
+                // Determine earliest available date from user data
+                $earliestWeight = WeightHistory::where('user_id', $userId)->min('log_date');
+                $earliestMeal = DB::table('user_meal_logs')->where('user_id', $userId)->min('log_date');
+                $earliestWorkout = UserWorkoutSchedule::where('user_id', $userId)->min('assigned_date');
+
+                $candidates = array_filter([
+                    $earliestWeight,
+                    $earliestMeal,
+                    $earliestWorkout,
+                ]);
+
+                if (empty($candidates)) {
+                    return $endDate->copy()->subDays(30);
+                }
+
+                // Convert to Carbon instances and return the minimum
+                $carbonDates = array_map(function ($d) { return Carbon::parse($d); }, $candidates);
+                return collect($carbonDates)->min();
             default:
                 return $endDate->copy()->subDays(30);
         }
@@ -111,6 +135,14 @@ class UserProgressController extends Controller
         $currentWeight = $weightHistory->last()?->weight_kg ?? 0;
         $weightChange = $currentWeight - $startingWeight;
 
+        // Centralized BMI values for cards
+        $startingBmi = null;
+        $currentBmi = null;
+        if ($userProfile && $userProfile->height_cm) {
+            $startingBmi = ProgressService::calculateBMI($startingWeight, $userProfile->height_cm);
+            $currentBmi = ProgressService::calculateBMI($currentWeight, $userProfile->height_cm);
+        }
+
         return [
             'history' => $weightHistory->map(function($weight) {
                 return [
@@ -122,7 +154,9 @@ class UserProgressController extends Controller
             'starting_weight' => $startingWeight,
             'current_weight' => $currentWeight,
             'weight_change' => $weightChange,
-            'has_height' => $userProfile && $userProfile->height_cm
+            'has_height' => $userProfile && $userProfile->height_cm,
+            'starting_bmi' => $startingBmi,
+            'current_bmi' => $currentBmi,
         ];
     }
 

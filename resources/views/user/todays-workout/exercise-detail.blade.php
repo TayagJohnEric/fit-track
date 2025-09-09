@@ -137,25 +137,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Action Buttons -->
-    <div class="mt-8 bg-white rounded-lg shadow p-6">
-        <div class="flex gap-4">
-            <a href="{{ route('workouts.today') }}" 
-               class="flex-1 bg-gray-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-700 transition-colors text-center">
-                Back to Workout
-            </a>
-            
-            @if($scheduledWorkout->status == 'Scheduled')
-                <form action="{{ route('workouts.complete', $scheduledWorkout->id) }}" method="POST" class="flex-1">
-                    @csrf
-                    <button type="submit" 
-                            class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition-colors">
-                        Mark Workout as Complete
-                    </button>
-                </form>
-            @endif
-        </div>
-    </div>
 </div>
 @endsection

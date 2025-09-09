@@ -59,7 +59,7 @@
                 </div>
                 <div class="ml-3">
                     <p class="text-sm text-gray-600">Weight Change</p>
-                    <p class="text-lg font-semibold {{ $weightData['weight_change'] >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                    <p class="text-lg font-semibold {{ $weightData['weight_change'] <= 0 ? 'text-green-600' : 'text-red-600' }}">
                         {{ $weightData['weight_change'] >= 0 ? '+' : '' }}{{ number_format($weightData['weight_change'], 1) }} kg
                     </p>
                 </div>
@@ -135,19 +135,19 @@
                         <div class="text-blue-600 text-sm font-medium">Starting Weight</div>
                         <div class="text-2xl font-bold text-blue-800">{{ number_format($weightData['starting_weight'], 1) }} kg</div>
                         @if($weightData['has_height'])
-                        <div class="text-sm text-blue-600">BMI: {{ number_format($weightData['starting_weight'] / (pow(Auth::user()->userProfile->height_cm/100, 2)), 1) }}</div>
+                        <div class="text-sm text-blue-600">BMI: {{ number_format($weightData['starting_bmi'], 1) }}</div>
                         @endif
                     </div>
                     <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
                         <div class="text-green-600 text-sm font-medium">Current Weight</div>
                         <div class="text-2xl font-bold text-green-800">{{ number_format($weightData['current_weight'], 1) }} kg</div>
                         @if($weightData['has_height'])
-                        <div class="text-sm text-green-600">BMI: {{ number_format($weightData['current_weight'] / (pow(Auth::user()->userProfile->height_cm/100, 2)), 1) }}</div>
+                        <div class="text-sm text-green-600">BMI: {{ number_format($weightData['current_bmi'], 1) }}</div>
                         @endif
                     </div>
                     <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
                         <div class="text-purple-600 text-sm font-medium">Total Change</div>
-                        <div class="text-2xl font-bold {{ $weightData['weight_change'] >= 0 ? 'text-green-800' : 'text-red-800' }}">
+                        <div class="text-2xl font-bold {{ $weightData['weight_change'] <= 0 ? 'text-green-800' : 'text-red-800' }}">
                             {{ $weightData['weight_change'] >= 0 ? '+' : '' }}{{ number_format($weightData['weight_change'], 1) }} kg
                         </div>
                         <div class="text-sm text-purple-600">
@@ -286,6 +286,28 @@
                     {{ $workoutData['completed_workouts'] }} of {{ $workoutData['total_workouts'] }} workouts completed
                 </div>
             </div>
+
+            <!-- Workout Streaks -->
+            @if(isset($streak))
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Workout Streaks
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-4">
+                        <div class="text-indigo-600 text-sm font-medium">Current Streak</div>
+                        <div class="text-2xl font-bold text-indigo-800">{{ $streak['current_streak'] ?? 0 }} days</div>
+                    </div>
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
+                        <div class="text-blue-600 text-sm font-medium">Longest Streak</div>
+                        <div class="text-2xl font-bold text-blue-800">{{ $streak['longest_streak'] ?? 0 }} days</div>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Progress Insights -->
             @if(isset($insights) && count($insights) > 0)
