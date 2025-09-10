@@ -216,7 +216,7 @@ class UserProgressController extends Controller
             ];
         }
 
-        // Get daily nutrition totals
+        // Get daily nutrition totals for selected range
         $dailyTotals = DB::table('user_meal_logs')
             ->join('user_meal_log_entries', 'user_meal_logs.id', '=', 'user_meal_log_entries.meal_log_id')
             ->join('food_items', 'user_meal_log_entries.food_item_id', '=', 'food_items.id')
@@ -240,13 +240,39 @@ class UserProgressController extends Controller
             'fat' => $dailyTotals->avg('total_fat') ?? 0
         ];
 
-        // Calculate consistency score (days within ±100 calories of target)
+        // Calculate consistency score (days within ±100 calories of target) across the selected range
         $consistentDays = $dailyTotals->filter(function($day) use ($nutritionGoals) {
             return abs($day->total_calories - $nutritionGoals->target_calories) <= 100;
         })->count();
 
         $totalDays = $dailyTotals->count();
         $consistencyScore = $totalDays > 0 ? ($consistentDays / $totalDays) * 100 : 0;
+
+        // Compute today's adherence (resets daily)
+        $today = Carbon::today();
+        $todayTotals = DB::table('user_meal_logs')
+            ->join('user_meal_log_entries', 'user_meal_logs.id', '=', 'user_meal_log_entries.meal_log_id')
+            ->join('food_items', 'user_meal_log_entries.food_item_id', '=', 'food_items.id')
+            ->where('user_meal_logs.user_id', $userId)
+            ->whereDate('user_meal_logs.log_date', $today)
+            ->select(
+                DB::raw('COALESCE(SUM(food_items.calories_per_serving * user_meal_log_entries.quantity_consumed),0) as total_calories'),
+                DB::raw('COALESCE(SUM(food_items.protein_grams_per_serving * user_meal_log_entries.quantity_consumed),0) as total_protein'),
+                DB::raw('COALESCE(SUM(food_items.carb_grams_per_serving * user_meal_log_entries.quantity_consumed),0) as total_carbs'),
+                DB::raw('COALESCE(SUM(food_items.fat_grams_per_serving * user_meal_log_entries.quantity_consumed),0) as total_fat')
+            )
+            ->first();
+
+        $todayCalories = (float)($todayTotals->total_calories ?? 0);
+        $todayProtein = (float)($todayTotals->total_protein ?? 0);
+        $todayCarbs   = (float)($todayTotals->total_carbs ?? 0);
+        $todayFat     = (float)($todayTotals->total_fat ?? 0);
+
+        // Use ProgressService helper to compute adherence with 10% tolerance by default
+        $todayCaloriesAdherence = ProgressService::getNutritionAdherence($todayCalories, (float)$nutritionGoals->target_calories, 0.10);
+        $todayProteinAdherence  = ProgressService::getNutritionAdherence($todayProtein, (float)$nutritionGoals->target_protein_grams, 0.10);
+        $todayCarbsAdherence    = ProgressService::getNutritionAdherence($todayCarbs, (float)$nutritionGoals->target_carb_grams, 0.10);
+        $todayFatAdherence      = ProgressService::getNutritionAdherence($todayFat, (float)$nutritionGoals->target_fat_grams, 0.10);
 
         return [
             'has_goals' => true,
@@ -259,7 +285,20 @@ class UserProgressController extends Controller
             ],
             'consistency_score' => round($consistencyScore, 1),
             'consistent_days' => $consistentDays,
-            'total_days' => $totalDays
+            'total_days' => $totalDays,
+            // Today's adherence (resets automatically each day)
+            'today' => [
+                'calories' => $todayCalories,
+                'protein' => $todayProtein,
+                'carbs' => $todayCarbs,
+                'fat' => $todayFat,
+                'adherence' => [
+                    'calories' => round($todayCaloriesAdherence, 1),
+                    'protein'  => round($todayProteinAdherence, 1),
+                    'carbs'    => round($todayCarbsAdherence, 1),
+                    'fat'      => round($todayFatAdherence, 1),
+                ],
+            ],
         ];
     }
 

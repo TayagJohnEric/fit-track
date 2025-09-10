@@ -229,6 +229,46 @@
                         </div>
                     </div>
 
+                    <!-- Today's Adherence (resets daily) -->
+                    @if(isset($nutritionData['today']))
+                    <div class="bg-white border border-orange-100 rounded-lg p-4 mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div>
+                                <div class="text-orange-600 text-sm font-medium">Today's Adherence</div>
+                                <div class="text-xs text-gray-500">Resets automatically every day</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-600">Calories</div>
+                                <div class="text-lg font-semibold text-orange-800">{{ $nutritionData['today']['adherence']['calories'] ?? 0 }}%</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="bg-orange-50 rounded-lg p-3">
+                                <div class="flex justify-between text-sm text-gray-700">
+                                    <span>Protein</span>
+                                    <span class="font-semibold text-orange-800">{{ $nutritionData['today']['adherence']['protein'] ?? 0 }}%</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">{{ number_format($nutritionData['today']['protein'] ?? 0, 0) }} / {{ number_format($nutritionData['goals']['protein'] ?? 0, 0) }} g</div>
+                            </div>
+                            <div class="bg-orange-50 rounded-lg p-3">
+                                <div class="flex justify-between text-sm text-gray-700">
+                                    <span>Carbs</span>
+                                    <span class="font-semibold text-orange-800">{{ $nutritionData['today']['adherence']['carbs'] ?? 0 }}%</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">{{ number_format($nutritionData['today']['carbs'] ?? 0, 0) }} / {{ number_format($nutritionData['goals']['carbs'] ?? 0, 0) }} g</div>
+                            </div>
+                            <div class="bg-orange-50 rounded-lg p-3">
+                                <div class="flex justify-between text-sm text-gray-700">
+                                    <span>Fat</span>
+                                    <span class="font-semibold text-orange-800">{{ $nutritionData['today']['adherence']['fat'] ?? 0 }}%</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">{{ number_format($nutritionData['today']['fat'] ?? 0, 0) }} / {{ number_format($nutritionData['goals']['fat'] ?? 0, 0) }} g</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
                     <!-- Progress Bars -->
                     <div class="space-y-4">
                         @php
@@ -271,40 +311,6 @@
                 @endif
             </div>
 
-            <!-- Workout Summary -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Workout Summary
-                </h2>
-                
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3">
-                        <div class="text-orange-600 text-sm font-medium">Completed</div>
-                        <div class="text-xl font-bold text-orange-800">{{ $workoutData['completed_workouts'] }}</div>
-                    </div>
-                    <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3">
-                        <div class="text-orange-600 text-sm font-medium">Skipped</div>
-                        <div class="text-xl font-bold text-orange-800">{{ $workoutData['skipped_workouts'] }}</div>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Adherence Rate</span>
-                        <span class="text-sm text-gray-500">{{ $workoutData['adherence_rate'] }}%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-3">
-                        <div class="bg-purple-500 h-3 rounded-full transition-all duration-300" style="width: {{ $workoutData['adherence_rate'] }}%"></div>
-                    </div>
-                </div>
-                
-                <div class="text-center text-sm text-gray-600">
-                    {{ $workoutData['completed_workouts'] }} of {{ $workoutData['total_workouts'] }} workouts completed
-                </div>
-            </div>
 
             <!-- Workout Streaks -->
             @if(isset($streak))

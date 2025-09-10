@@ -14,6 +14,7 @@ class UserWorkoutSchedule extends Model
         'assigned_date',
         'status',
         'completion_date',
+        'skipped_date',
         'user_notes',
     ];
 
@@ -21,6 +22,7 @@ class UserWorkoutSchedule extends Model
         'assigned_date' => 'date',
         'status' => 'string',
         'completion_date' => 'datetime',
+        'skipped_date' => 'datetime',
     ];
 
     // One-to-Many (Inverse): UserWorkoutSchedule belongs to User

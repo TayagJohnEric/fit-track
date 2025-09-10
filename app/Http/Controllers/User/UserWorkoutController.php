@@ -127,7 +127,7 @@ class UserWorkoutController extends Controller
     {
         $query = UserWorkoutSchedule::query()
             ->where('assigned_date', '<', Carbon::today()) // Only past dates
-            ->whereIn('status', ['Pending', 'In Progress', null]); // Incomplete statuses
+            ->whereIn('status', ['Scheduled', 'Pending', 'In Progress', null]); // Incomplete statuses
         
         if ($userId) {
             $query->where('user_id', $userId);
@@ -181,7 +181,7 @@ class UserWorkoutController extends Controller
                 ->where('status', 'Auto-Skipped')
                 ->count(),
             'pending' => UserWorkoutSchedule::where('user_id', $user->id)
-                ->whereIn('status', ['Pending', 'In Progress', null])
+                ->whereIn('status', ['Scheduled', 'Pending', 'In Progress', null])
                 ->where('assigned_date', '>=', Carbon::today())
                 ->count()
         ];
@@ -198,7 +198,7 @@ class UserWorkoutController extends Controller
         
         $pendingAutoSkips = UserWorkoutSchedule::where('user_id', $user->id)
             ->where('assigned_date', '<', Carbon::today())
-            ->whereIn('status', ['Pending', 'In Progress', null])
+            ->whereIn('status', ['Scheduled', 'Pending', 'In Progress', null])
             ->count();
         
         return response()->json(['pending_auto_skips' => $pendingAutoSkips]);
