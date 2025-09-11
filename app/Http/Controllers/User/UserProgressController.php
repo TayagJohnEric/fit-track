@@ -10,18 +10,34 @@ use Carbon\Carbon;
 use App\Models\WeightHistory;
 use App\Models\UserProfile;
 use App\Models\UserWorkoutSchedule;
+use App\Models\UserMealLog;
+use App\Models\UserNutritionGoal;
+
 
 
 class UserProgressController extends Controller
 {
-    /**
+     /**
      * Display the main progress dashboard
      * Shows weight overview, BMI trends, and progress metrics
      */
-    public function index(Request $request)
+    public function index(Request $request, $id = null)
     {
         $user = Auth::user();
         $userProfile = $user->userProfile;
+
+        // Handle edit request via modal (no separate view)
+    if ($id) {
+        $weightEntry = WeightHistory::where('user_id', $user->id)
+            ->findOrFail($id);
+
+        if ($request->ajax()) {
+            return response()->json(['weightEntry' => $weightEntry]);
+        }
+
+        // If not AJAX, fallback to index view but prefill modal data
+        return redirect()->route('progress.index')->with('editEntryId', $id);
+    }
         
         // Get date range filter (default to last 30 days)
         $startDate = $request->get('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
@@ -42,6 +58,19 @@ class UserProgressController extends Controller
         // Generate insights
         $insights = $this->generateInsights($user, $weightHistory, $progressMetrics);
         
+        // NEW ENHANCED FEATURES
+        // Get workout streak data
+        $workoutStreakData = $this->getWorkoutStreakData($user, $startDate, $endDate);
+        
+        // Get goal adherence data
+        $goalAdherenceData = $this->getGoalAdherenceData($user, $startDate, $endDate);
+        
+        // Get nutrition consistency data
+        $nutritionConsistency = $this->getNutritionConsistencyData($user, $startDate, $endDate);
+        
+        // Get weekly progress summary
+        $weeklyProgress = $this->getWeeklyProgressSummary($user, $startDate, $endDate);
+        
         return view('user.my-progress.index', compact(
             'userProfile',
             'weightHistory',
@@ -49,7 +78,12 @@ class UserProgressController extends Controller
             'chartData',
             'insights',
             'startDate',
-            'endDate'
+            'endDate',
+            // New data
+            'workoutStreakData',
+            'goalAdherenceData',
+            'nutritionConsistency',
+            'weeklyProgress'
         ));
     }
     
@@ -268,6 +302,141 @@ class UserProgressController extends Controller
     }
     
     /**
+     * NEW FEATURE: Get detailed workout streak information
+     */
+    public function getWorkoutStreakData($user, $startDate, $endDate)
+    {
+        // Get all workout schedules within date range
+        $workouts = UserWorkoutSchedule::where('user_id', $user->id)
+            ->whereBetween('assigned_date', [$startDate, $endDate])
+            ->orderBy('assigned_date', 'desc')
+            ->get();
+        
+        $currentStreak = $this->calculateCurrentWorkoutStreak($user);
+        $longestStreak = $this->calculateLongestWorkoutStreak($user);
+        $completionRate = $workouts->count() > 0 ? 
+            round(($workouts->where('status', 'Completed')->count() / $workouts->count()) * 100, 1) : 0;
+        
+        return [
+            'current_streak' => $currentStreak,
+            'longest_streak' => $longestStreak,
+            'completion_rate' => $completionRate,
+            'total_workouts' => $workouts->count(),
+            'completed_workouts' => $workouts->where('status', 'Completed')->count(),
+            'skipped_workouts' => $workouts->whereIn('status', ['Skipped', 'Auto-Skipped'])->count(),
+            'recent_workouts' => $workouts->take(7) // Last 7 workouts for mini calendar view
+        ];
+    }
+    
+    /**
+     * NEW FEATURE: Calculate goal adherence metrics
+     */
+    public function getGoalAdherenceData($user, $startDate, $endDate)
+    {
+        $userProfile = $user->userProfile;
+        
+        if (!$userProfile || !$userProfile->fitnessGoal) {
+            return [
+                'goal_type' => null,
+                'weight_progress' => 0,
+                'target_rate' => 0,
+                'actual_rate' => 0,
+                'adherence_percentage' => 0,
+                'status' => 'No Goal Set'
+            ];
+        }
+        
+        $fitnessGoal = $userProfile->fitnessGoal->name;
+        $weightData = $this->calculateWeightProgress($user, $startDate, $endDate);
+        
+        // Calculate target vs actual progress based on goal
+        $targetRate = $fitnessGoal === 'Weight Loss' ? -0.5 : 0.3; // kg per week
+        $actualRate = $weightData['weekly_rate'];
+        
+        $adherencePercentage = $this->calculateGoalAdherence($fitnessGoal, $targetRate, $actualRate);
+        
+        return [
+            'goal_type' => $fitnessGoal,
+            'weight_progress' => $weightData['total_change'],
+            'target_rate' => $targetRate,
+            'actual_rate' => $actualRate,
+            'adherence_percentage' => $adherencePercentage,
+            'status' => $this->getGoalStatus($adherencePercentage)
+        ];
+    }
+    
+    /**
+     * NEW FEATURE: Get nutrition consistency data
+     */
+    public function getNutritionConsistencyData($user, $startDate, $endDate)
+    {
+        $mealLogs = UserMealLog::where('user_id', $user->id)
+            ->whereBetween('log_date', [$startDate, $endDate])
+            ->with('mealLogEntries.foodItem')
+            ->get();
+        
+        $nutritionGoals = UserNutritionGoal::where('user_id', $user->id)
+            ->latest()
+            ->first();
+        
+        $daysInRange = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)) + 1;
+        $daysLogged = $mealLogs->groupBy('log_date')->count();
+        $consistencyRate = $daysInRange > 0 ? round(($daysLogged / $daysInRange) * 100, 1) : 0;
+        
+        // Calculate average daily nutrients
+        $avgNutrients = $this->calculateAverageNutrients($mealLogs);
+        
+        return [
+            'consistency_rate' => $consistencyRate,
+            'days_logged' => $daysLogged,
+            'total_days' => $daysInRange,
+            'avg_calories' => $avgNutrients['calories'],
+            'avg_protein' => $avgNutrients['protein'],
+            'avg_carbs' => $avgNutrients['carbs'],
+            'avg_fat' => $avgNutrients['fat'],
+            'has_goals' => $nutritionGoals !== null,
+            'goals' => $nutritionGoals ? [
+                'calories' => $nutritionGoals->target_calories,
+                'protein' => $nutritionGoals->target_protein_grams,
+                'carbs' => $nutritionGoals->target_carb_grams,
+                'fat' => $nutritionGoals->target_fat_grams
+            ] : null
+        ];
+    }
+    
+    /**
+     * NEW FEATURE: Get weekly progress summary
+     */
+    public function getWeeklyProgressSummary($user, $startDate, $endDate)
+    {
+        $weeks = [];
+        $currentDate = Carbon::parse($startDate)->startOfWeek();
+        $endDate = Carbon::parse($endDate);
+        
+        while ($currentDate->lte($endDate)) {
+            $weekEnd = $currentDate->copy()->endOfWeek();
+            if ($weekEnd->gt($endDate)) {
+                $weekEnd = $endDate;
+            }
+            
+            $weekData = $this->calculateWeekData($user, $currentDate, $weekEnd);
+            $weeks[] = [
+                'week_start' => $currentDate->format('M j'),
+                'week_end' => $weekEnd->format('M j'),
+                'weight_change' => $weekData['weight_change'],
+                'workouts_completed' => $weekData['workouts_completed'],
+                'workouts_scheduled' => $weekData['workouts_scheduled'],
+                'nutrition_days' => $weekData['nutrition_days'],
+                'week_score' => $this->calculateWeekScore($weekData)
+            ];
+            
+            $currentDate->addWeek();
+        }
+        
+        return array_reverse($weeks); // Most recent first
+    }
+    
+    /**
      * Calculate comprehensive progress metrics
      */
     private function calculateProgressMetrics($user, $weightHistory)
@@ -421,6 +590,187 @@ class UserProgressController extends Controller
             'current_streak' => $currentStreak,
             'total_completed' => $completedWorkouts->count()
         ];
+    }
+    
+    // NEW PRIVATE HELPER METHODS
+    
+    private function calculateCurrentWorkoutStreak($user)
+    {
+        $workouts = UserWorkoutSchedule::where('user_id', $user->id)
+            ->where('status', 'Completed')
+            ->orderBy('assigned_date', 'desc')
+            ->take(30) // Check last 30 workouts
+            ->get();
+            
+        $streak = 0;
+        $lastDate = Carbon::now();
+        
+        foreach ($workouts as $workout) {
+            $daysDiff = $lastDate->diffInDays($workout->assigned_date);
+            if ($daysDiff <= 1) {
+                $streak++;
+                $lastDate = $workout->assigned_date;
+            } else {
+                break;
+            }
+        }
+        
+        return $streak;
+    }
+    
+    private function calculateLongestWorkoutStreak($user)
+    {
+        $workouts = UserWorkoutSchedule::where('user_id', $user->id)
+            ->where('status', 'Completed')
+            ->orderBy('assigned_date', 'asc')
+            ->get();
+            
+        $longestStreak = 0;
+        $currentStreak = 0;
+        $previousDate = null;
+        
+        foreach ($workouts as $workout) {
+            if ($previousDate === null || $previousDate->diffInDays($workout->assigned_date) <= 1) {
+                $currentStreak++;
+            } else {
+                $longestStreak = max($longestStreak, $currentStreak);
+                $currentStreak = 1;
+            }
+            $previousDate = $workout->assigned_date;
+        }
+        
+        return max($longestStreak, $currentStreak);
+    }
+    
+    private function calculateWeightProgress($user, $startDate, $endDate)
+    {
+        $weights = WeightHistory::where('user_id', $user->id)
+            ->whereBetween('log_date', [$startDate, $endDate])
+            ->orderBy('log_date', 'asc')
+            ->get();
+            
+        if ($weights->count() < 2) {
+            return ['total_change' => 0, 'weekly_rate' => 0];
+        }
+        
+        $startWeight = $weights->first()->weight_kg;
+        $endWeight = $weights->last()->weight_kg;
+        $totalChange = $endWeight - $startWeight;
+        
+        $days = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate));
+        $weeks = max($days / 7, 1);
+        $weeklyRate = $totalChange / $weeks;
+        
+        return [
+            'total_change' => $totalChange,
+            'weekly_rate' => $weeklyRate
+        ];
+    }
+    
+    private function calculateGoalAdherence($goalType, $targetRate, $actualRate)
+    {
+        if ($targetRate == 0) return 100;
+        
+        $adherence = ($actualRate / $targetRate) * 100;
+        
+        // For weight loss, negative rates are good
+        if ($goalType === 'Weight Loss') {
+            $adherence = abs($adherence);
+        }
+        
+        return min(100, max(0, $adherence));
+    }
+    
+    private function getGoalStatus($adherencePercentage)
+    {
+        if ($adherencePercentage >= 80) return 'On Track';
+        if ($adherencePercentage >= 60) return 'Close';
+        if ($adherencePercentage >= 40) return 'Needs Work';
+        return 'Off Track';
+    }
+    
+    private function calculateAverageNutrients($mealLogs)
+    {
+        $totalCalories = 0;
+        $totalProtein = 0;
+        $totalCarbs = 0;
+        $totalFat = 0;
+        $dayCount = $mealLogs->groupBy('log_date')->count();
+        
+        if ($dayCount === 0) {
+            return ['calories' => 0, 'protein' => 0, 'carbs' => 0, 'fat' => 0];
+        }
+        
+        foreach ($mealLogs as $mealLog) {
+            foreach ($mealLog->mealLogEntries as $entry) {
+                $foodItem = $entry->foodItem;
+                $multiplier = $entry->quantity_consumed;
+                
+                $totalCalories += $foodItem->calories_per_serving * $multiplier;
+                $totalProtein += $foodItem->protein_grams_per_serving * $multiplier;
+                $totalCarbs += $foodItem->carb_grams_per_serving * $multiplier;
+                $totalFat += $foodItem->fat_grams_per_serving * $multiplier;
+            }
+        }
+        
+        return [
+            'calories' => round($totalCalories / $dayCount),
+            'protein' => round($totalProtein / $dayCount, 1),
+            'carbs' => round($totalCarbs / $dayCount, 1),
+            'fat' => round($totalFat / $dayCount, 1)
+        ];
+    }
+    
+    private function calculateWeekData($user, $weekStart, $weekEnd)
+    {
+        // Weight change for the week
+        $weekWeights = WeightHistory::where('user_id', $user->id)
+            ->whereBetween('log_date', [$weekStart, $weekEnd])
+            ->orderBy('log_date', 'asc')
+            ->get();
+            
+        $weightChange = 0;
+        if ($weekWeights->count() >= 2) {
+            $weightChange = $weekWeights->last()->weight_kg - $weekWeights->first()->weight_kg;
+        }
+        
+        // Workout data
+        $workouts = UserWorkoutSchedule::where('user_id', $user->id)
+            ->whereBetween('assigned_date', [$weekStart, $weekEnd])
+            ->get();
+            
+        // Nutrition data
+        $nutritionDays = UserMealLog::where('user_id', $user->id)
+            ->whereBetween('log_date', [$weekStart, $weekEnd])
+            ->distinct('log_date')
+            ->count();
+        
+        return [
+            'weight_change' => $weightChange,
+            'workouts_completed' => $workouts->where('status', 'Completed')->count(),
+            'workouts_scheduled' => $workouts->count(),
+            'nutrition_days' => $nutritionDays
+        ];
+    }
+    
+    private function calculateWeekScore($weekData)
+    {
+        $score = 0;
+        
+        // Workout completion (40 points max)
+        if ($weekData['workouts_scheduled'] > 0) {
+            $workoutRate = $weekData['workouts_completed'] / $weekData['workouts_scheduled'];
+            $score += $workoutRate * 40;
+        }
+        
+        // Nutrition tracking (30 points max)
+        $nutritionRate = min($weekData['nutrition_days'] / 7, 1);
+        $score += $nutritionRate * 30;
+        
+        // Weight progress (30 points max) - subjective based on goals
+        $score += 30; // Placeholder - could be enhanced with goal-specific logic
+        
+        return round($score);
     }
     
     /**

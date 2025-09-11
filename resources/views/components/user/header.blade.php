@@ -35,7 +35,7 @@
 
                     @if(Auth::user()->profile_image_url)
                         <img 
-                            src="{{ asset('storage/' . Auth::user()->userProfile->profile_image_url) }}" 
+                            src="{{ asset('storage/' . Auth::user()->profile_image_url) }}" 
                             alt="User Profile" 
                             class="h-10 w-10 rounded-full object-cover"
                         >

@@ -72,84 +72,93 @@ class UserProfileController extends Controller
         ));
     }
 
-    /**
-     * Update the user's profile    
-     */
-    public function update(Request $request)
-    {
-        $user = Auth::user();
-        $userProfile = $user->userProfile;
-        
-        // Store original values to check for changes
-        $originalFitnessGoal = $userProfile->fitness_goal_id;
-        $originalExperienceLevel = $userProfile->experience_level_id;
-        $originalPreferredWorkoutType = $userProfile->preferred_workout_type_id;
-        
-        // Validate the request - removed physical stats validation
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date|before:today',
-            'sex' => 'required|in:Male,Female,Other',
-            'fitness_goal_id' => 'required|exists:fitness_goals,id',
-            'experience_level_id' => 'required|exists:experience_levels,id',
-            'preferred_workout_type_id' => 'required|exists:workout_types,id',
-            'allergies' => 'array',
-            'allergies.*' => 'exists:allergies,id',
+   /**
+ * Update the user's profile    
+ */
+public function update(Request $request)
+{
+    $user = Auth::user();
+    $userProfile = $user->userProfile;
+
+    // Store original values to check for changes
+    $originalFitnessGoal = $userProfile->fitness_goal_id;
+    $originalExperienceLevel = $userProfile->experience_level_id;
+    $originalPreferredWorkoutType = $userProfile->preferred_workout_type_id;
+
+    // Validate the request - added profile image
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'date_of_birth' => 'required|date|before:today',
+        'sex' => 'required|in:Male,Female,Other',
+        'fitness_goal_id' => 'required|exists:fitness_goals,id',
+        'experience_level_id' => 'required|exists:experience_levels,id',
+        'preferred_workout_type_id' => 'required|exists:workout_types,id',
+        'allergies' => 'array',
+        'allergies.*' => 'exists:allergies,id',
+        'profile_image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        // Handle profile image upload if provided
+        if ($request->hasFile('profile_image_url')) {
+            $imagePath = $request->file('profile_image_url')->store('profile_images', 'public');
+            $user->profile_image_url = $imagePath;
+        }
+
+        // Update user table
+        $user->update([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'profile_image_url' => $user->profile_image_url,
         ]);
 
-        try {
-            DB::beginTransaction();
-            
-            // Update user table
-            $user->update([
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-            ]);
-            
-            // Update user profile - only editable fields
-            $userProfile->update([
-                'first_name' => $validatedData['first_name'],
-                'last_name' => $validatedData['last_name'],
-                'date_of_birth' => $validatedData['date_of_birth'],
-                'sex' => $validatedData['sex'],
-                'fitness_goal_id' => $validatedData['fitness_goal_id'],
-                'experience_level_id' => $validatedData['experience_level_id'],
-                'preferred_workout_type_id' => $validatedData['preferred_workout_type_id'],
-                'last_profile_update' => Carbon::now(),
-            ]);
-            
-            // Update allergies (sync will remove unchecked and add new ones)
-            $user->allergies()->sync($request->input('allergies', []));
-            
-            // Check if fitness preferences changed and trigger updates
-            $fitnessPreferencesChanged = (
-                $originalFitnessGoal != $validatedData['fitness_goal_id'] || 
-                $originalExperienceLevel != $validatedData['experience_level_id'] || 
-                $originalPreferredWorkoutType != $validatedData['preferred_workout_type_id']
-            );
-            
-            if ($fitnessPreferencesChanged) {
-                // Recalculate nutrition goals
-                $this->updateNutritionGoals($user, $userProfile);
-                
-                // Update workout schedule
-                $this->updateWorkoutSchedule($user, $userProfile);
-            }
-            
-            DB::commit();
-            
-            return redirect()->route('profile.show')
-                ->with('success', 'Profile updated successfully!');
-                
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withInput()
-                ->withErrors(['error' => 'An error occurred while updating your profile. Please try again.']);
+        // Update user profile - only editable fields
+        $userProfile->update([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'date_of_birth' => $validatedData['date_of_birth'],
+            'sex' => $validatedData['sex'],
+            'fitness_goal_id' => $validatedData['fitness_goal_id'],
+            'experience_level_id' => $validatedData['experience_level_id'],
+            'preferred_workout_type_id' => $validatedData['preferred_workout_type_id'],
+            'last_profile_update' => Carbon::now(),
+        ]);
+
+        // Update allergies (sync will remove unchecked and add new ones)
+        $user->allergies()->sync($request->input('allergies', []));
+
+        // Check if fitness preferences changed and trigger updates
+        $fitnessPreferencesChanged = (
+            $originalFitnessGoal != $validatedData['fitness_goal_id'] || 
+            $originalExperienceLevel != $validatedData['experience_level_id'] || 
+            $originalPreferredWorkoutType != $validatedData['preferred_workout_type_id']
+        );
+
+        if ($fitnessPreferencesChanged) {
+            // Recalculate nutrition goals
+            $this->updateNutritionGoals($user, $userProfile);
+
+            // Update workout schedule
+            $this->updateWorkoutSchedule($user, $userProfile);
         }
+
+        DB::commit();
+
+        return redirect()->route('profile.show')
+            ->with('success', 'Profile updated successfully!');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withInput()
+            ->withErrors(['error' => 'An error occurred while updating your profile. Please try again.']);
     }
+}
+
 
     /**
      * Show change password form

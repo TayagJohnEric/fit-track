@@ -23,7 +23,7 @@
             @endphp
             
             @if(Auth::user()->profile_image_url)
-                <img src="{{ asset('storage/' . Auth::user()->userProfile->profile_image_url) }}"
+                <img src="{{ asset('storage/' . Auth::user()->profile_image_url) }}"
                      alt="User Profile"
                      class="h-12 w-12 rounded-full object-cover border-2 border-orange-200">
             @else
