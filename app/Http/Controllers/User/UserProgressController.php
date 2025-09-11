@@ -87,6 +87,56 @@ class UserProgressController extends Controller
         ));
     }
     
+
+     /**
+     * Display the main progress dashboard
+     * Shows Recent Weight Entries and Insights
+     */
+
+     public function weightHistory(Request $request, $id = null){
+   
+   $user = Auth::user();
+        $userProfile = $user->userProfile;
+
+        // Handle edit request via modal (no separate view)
+    if ($id) {
+        $weightEntry = WeightHistory::where('user_id', $user->id)
+            ->findOrFail($id);
+
+        if ($request->ajax()) {
+            return response()->json(['weightEntry' => $weightEntry]);
+        }
+
+        // If not AJAX, fallback to index view but prefill modal data
+        return redirect()->route('progress.weight-history')->with('editEntryId', $id);
+    }
+
+
+// Get date range filter (default to last 30 days)
+        $startDate = $request->get('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->get('end_date', Carbon::now()->format('Y-m-d'));
+        
+        // Get weight history within date range
+        $weightHistory = WeightHistory::where('user_id', $user->id)
+            ->whereBetween('log_date', [$startDate, $endDate])
+            ->orderBy('log_date', 'asc')
+            ->get();
+
+ // Calculate progress metrics
+        $progressMetrics = $this->calculateProgressMetrics($user, $weightHistory);
+
+            // Generate insights
+        $insights = $this->generateInsights($user, $weightHistory, $progressMetrics);
+
+return view('user.my-progress.weight-history', compact(
+            'userProfile',
+            'weightHistory',
+             'progressMetrics',
+            'insights',
+                ));
+}
+
+
     /**
      * Show form to log new weight entry
      */

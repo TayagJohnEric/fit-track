@@ -102,7 +102,8 @@ Route::middleware(['auth'])->prefix('progress')->name('progress.')->group(functi
     
     // Main progress dashboard
     Route::get('/', [App\Http\Controllers\User\UserProgressController::class, 'index'])->name('index');
-    
+    Route::get('/weight/history', [App\Http\Controllers\User\UserProgressController::class, 'weightHistory'])->name('weight-history');
+
     // Weight logging routes
     Route::get('/weight/create', [App\Http\Controllers\User\UserProgressController::class, 'create'])->name('create');
     Route::post('/weight', [App\Http\Controllers\User\UserProgressController::class, 'store'])->name('store');

@@ -45,16 +45,30 @@
         <div class="bg-white rounded-lg shadow p-6 mb-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div class="mb-4 md:mb-0">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Your Fitness Progress</h2>
+                    <h2 class="text-2xl font-bold text-gray-800 ">Your Fitness Progress</h2>
                     <p class="text-gray-600">Track your weight, BMI, and fitness journey over time</p>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3">
                     <!-- Log Weight Button -->
-                    <button type="button"
+                  <button type="button"
                         onclick="openCreateModal()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        class="inline-flex items-center px-4 py-2 bg-orange-600 border border-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 hover:border-orage-600 transition-all duration-200 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                            class="text-white w-4 h-4 mr-2 lucide lucide-plus">
+                            <path d="M5 12h14"/>
+                            <path d="M12 5v14"/>
+                        </svg>
                         Log New Weight
                     </button>
+
+
+            <a href="{{ route('progress.weight-history') }}" 
+               class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2 lucide lucide-calendar-check-icon lucide-calendar-check"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
+                Weight History
+            </a>
                 </div>
             </div>
         </div>
@@ -77,7 +91,7 @@
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <button type="submit" id="filterButton" 
-                        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-md font-medium transition-colors">
+                        class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-2 text-sm font-medium rounded-lg  transition-colors">
                     <span class="filter-text">Apply Filter</span>
                     <span class="filter-loading hidden">Filtering...</span>
                 </button>
@@ -89,14 +103,13 @@
             <!-- Current Weight -->
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center">
-                    <div class="p-2 bg-blue-100 rounded-lg">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16l3-1m-3 1l-3-1"></path>
+                    <div class="p-2 bg-orange-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-600 lucide lucide-weight-icon lucide-weight"><circle cx="12" cy="5" r="3"/><path d="M6.5 8a2 2 0 0 0-1.905 1.46L2.1 18.5A2 2 0 0 0 4 21h16a2 2 0 0 0 1.925-2.54L19.4 9.5A2 2 0 0 0 17.48 8Z"/></svg>
                         </svg>
                     </div>
                     <div class="ml-4">
                         <h3 class="text-lg font-semibold text-gray-800">Current Weight</h3>
-                        <p class="text-2xl font-bold text-blue-600">{{ number_format($userProfile->current_weight_kg ?? 0, 1) }} kg</p>
+                        <p class="text-2xl font-bold text-orange-600">{{ number_format($userProfile->current_weight_kg ?? 0, 1) }} kg</p>
                     </div>
                 </div>
             </div>
@@ -125,14 +138,12 @@
             <!-- Current BMI -->
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center">
-                    <div class="p-2 bg-purple-100 rounded-lg">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
+                    <div class="p-2 bg-orange-100 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-orange-600 lucide lucide-chart-line-icon lucide-chart-line"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                     </div>
                     <div class="ml-4">
                         <h3 class="text-lg font-semibold text-gray-800">Current BMI</h3>
-                        <p class="text-2xl font-bold text-purple-600">{{ number_format($progressMetrics['current_bmi'], 1) }}</p>
+                        <p class="text-2xl font-bold text-orange-600">{{ number_format($progressMetrics['current_bmi'], 1) }}</p>
                         <p class="text-sm text-gray-600">{{ $progressMetrics['bmi_category'] }}</p>
                     </div>
                 </div>
@@ -141,14 +152,14 @@
             <!-- Days Tracked -->
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center">
-                    <div class="p-2 bg-yellow-100 rounded-lg">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="p-2 bg-orange-100 rounded-lg">
+                        <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                     </div>
                     <div class="ml-4">
                         <h3 class="text-lg font-semibold text-gray-800">Days Tracked</h3>
-                        <p class="text-2xl font-bold text-yellow-600">{{ $progressMetrics['days_tracked'] }}</p>
+                        <p class="text-2xl font-bold text-orange-600">{{ $progressMetrics['days_tracked'] }}</p>
                     </div>
                 </div>
             </div>
@@ -419,134 +430,6 @@
             </div>
         @endif
 
-        <!-- Insights Section -->
-        @if($insights)
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Progress Insights</h3>
-                <div class="space-y-3">
-                    @foreach($insights as $insight)
-                        <div class="flex items-start space-x-3 p-3 rounded-lg 
-                            {{ $insight['type'] === 'success' ? 'bg-green-50 border-l-4 border-green-400' : 
-                               ($insight['type'] === 'warning' ? 'bg-yellow-50 border-l-4 border-yellow-400' : 'bg-blue-50 border-l-4 border-blue-400') }}">
-                            <div class="flex-shrink-0">
-                                @if($insight['type'] === 'success')
-                                    <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                @elseif($insight['type'] === 'warning')
-                                    <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                                    </svg>
-                                @else
-                                    <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                                    </svg>
-                                @endif
-                            </div>
-                            <p class="text-sm {{ $insight['type'] === 'success' ? 'text-green-700' : 
-                                  ($insight['type'] === 'warning' ? 'text-yellow-700' : 'text-blue-700') }}">
-                                {{ $insight['message'] }}
-                            </p>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
-        <!-- Weight History Table -->
-        @if($weightHistory->isNotEmpty())
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Recent Weight Entries</h3>
-                    <p class="text-sm text-gray-600">{{ $weightHistory->count() }} entries found</p>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (kg)</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">BMI</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Change</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($weightHistory->reverse() as $index => $entry)
-                                @php
-                                    $bmi = 0;
-                                    if ($userProfile && $userProfile->height_cm > 0) {
-                                        $heightM = $userProfile->height_cm / 100;
-                                        $bmi = $entry->weight_kg / ($heightM * $heightM);
-                                    }
-                                    
-                                    $previousEntry = $weightHistory->reverse()->get($index + 1);
-                                    $weightChange = $previousEntry ? $entry->weight_kg - $previousEntry->weight_kg : 0;
-                                @endphp
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $entry->log_date->format('M j, Y') }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {{ number_format($entry->weight_kg, 1) }} kg
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $bmi > 0 ? number_format($bmi, 1) : '-' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        @if($weightChange != 0)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                {{ $weightChange > 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
-                                                {{ $weightChange > 0 ? '+' : '' }}{{ number_format($weightChange, 1) }} kg
-                                            </span>
-                                        @else
-                                            <span class="text-gray-400">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <button type="button"
-                                                onclick="openEditModal({{ $entry->id }})"
-                                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                                                    Edit
-                                            </button>
-             
-                                            <button onclick="deleteWeightEntry({{ $entry->id }})" 
-                                                    class="text-red-600 hover:text-red-900">Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        @else
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="py-8">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">No weight entries found</h3>
-                    <p class="mt-1 text-sm text-gray-500">Get started by logging your first weight entry.</p>
-                    <div class="mt-6">
-                        <button type="button"
-                        onclick="openCreateModal()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                        Log New Weight
-                    </button>
-                    </div>
-                </div>
-            </div>
-        @endif
-    </div>
-
-    <!-- Render edit modals after the table to avoid invalid HTML nesting inside <tr> -->
-    @if($weightHistory->isNotEmpty())
-        @foreach($weightHistory->reverse() as $entry)
-            @include('user.my-progress.edit-modal')
-        @endforeach
-    @endif
 
     <!-- Chart.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
