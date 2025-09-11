@@ -8,325 +8,434 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\WeightHistory;
-use App\Models\UserNutritionGoal;
+use App\Models\UserProfile;
 use App\Models\UserWorkoutSchedule;
-use App\Services\ProgressService;
+
 
 class UserProgressController extends Controller
 {
-     public function index(Request $request)
+    /**
+     * Display the main progress dashboard
+     * Shows weight overview, BMI trends, and progress metrics
+     */
+    public function index(Request $request)
     {
-        $user = Auth::user();
-        $dateRange = $request->get('date_range', '30'); // Default to 30 days
-        
-        // Calculate date range
-        $endDate = Carbon::now();
-        $startDate = $this->getStartDate($dateRange, $endDate, $user->id);
-        
-        // Get progress data
-        $weightData = $this->getWeightData($user->id, $startDate, $endDate);
-        $nutritionData = $this->getNutritionData($user->id, $startDate, $endDate);
-        $workoutData = $this->getWorkoutData($user->id, $startDate, $endDate);
-        // Build insights for the UI
-        $insights = ProgressService::getProgressInsights($weightData, $nutritionData, $workoutData);
-        // Workout streaks
-        $streak = ProgressService::getWorkoutStreak($user->id);
-        
-        return view('user.my-progress.index', compact(
-            'weightData',
-            'nutritionData', 
-            'workoutData',
-            'dateRange',
-            'insights',
-            'streak'
-        ));
-    }
-
-    public function logWeight(Request $request)
-    {
-        $request->validate([
-            'weight' => 'required|numeric|min:20|max:500',
-            'date' => 'required|date|before_or_equal:today'
-        ]);
-
-        $user = Auth::user();
-        
-        // Check if weight already exists for this date
-        $existingWeight = WeightHistory::where('user_id', $user->id)
-            ->where('log_date', $request->date)
-            ->first();
-
-        if ($existingWeight) {
-            $existingWeight->update(['weight_kg' => $request->weight]);
-        } else {
-            WeightHistory::create([
-                'user_id' => $user->id,
-                'log_date' => $request->date,
-                'weight_kg' => $request->weight
-            ]);
-        }
-
-        // Update current weight in user profile
-        if ($user->userProfile) {
-            $user->userProfile->update(['current_weight_kg' => $request->weight]);
-        }
-
-        return redirect()
-            ->route('progress.index', ['date_range' => $request->input('date_range', '30')])
-            ->with('success', 'Weight logged successfully!');
-    }
-
-    private function getStartDate($dateRange, $endDate, $userId)
-    {
-        switch ($dateRange) {
-            case '7':
-                return $endDate->copy()->subDays(7);
-            case '30':
-                return $endDate->copy()->subDays(30);
-            case '90':
-                return $endDate->copy()->subDays(90);
-            case 'all':
-                // Determine earliest available date from user data
-                $earliestWeight = WeightHistory::where('user_id', $userId)->min('log_date');
-                $earliestMeal = DB::table('user_meal_logs')->where('user_id', $userId)->min('log_date');
-                $earliestWorkout = UserWorkoutSchedule::where('user_id', $userId)->min('assigned_date');
-
-                $candidates = array_filter([
-                    $earliestWeight,
-                    $earliestMeal,
-                    $earliestWorkout,
-                ]);
-
-                if (empty($candidates)) {
-                    return $endDate->copy()->subDays(30);
-                }
-
-                // Convert to Carbon instances and return the minimum
-                $carbonDates = array_map(function ($d) { return Carbon::parse($d); }, $candidates);
-                return collect($carbonDates)->min();
-            default:
-                return $endDate->copy()->subDays(30);
-        }
-    }
-
-    private function getWeightData($userId, $startDate, $endDate)
-    {
-        // Get weight history (use date-only boundaries to avoid time casting issues)
-        $weightHistory = WeightHistory::where('user_id', $userId)
-            ->whereBetween('log_date', [$startDate->toDateString(), $endDate->toDateString()])
-            ->orderBy('log_date')
-            ->get();
-
         $user = Auth::user();
         $userProfile = $user->userProfile;
         
-        // Calculate BMI data if height is available
-        $bmiData = [];
-        if ($userProfile && $userProfile->height_cm) {
-            $heightInMeters = $userProfile->height_cm / 100;
-            $bmiData = $weightHistory->map(function($weight) use ($heightInMeters) {
-                return [
-                    'date' => $weight->log_date->format('Y-m-d'),
-                    'bmi' => round($weight->weight_kg / ($heightInMeters * $heightInMeters), 1)
-                ];
-            });
-        }
-
-        // Calculate weight statistics
-        // Use the last weight BEFORE the period as baseline if available, so change reflects the whole selected period
-        $previousWeight = WeightHistory::where('user_id', $userId)
-            ->where('log_date', '<', $startDate->toDateString())
-            ->orderBy('log_date', 'desc')
-            ->first();
-
-        $firstInRangeWeight = $weightHistory->first()?->weight_kg;
-        $currentWeight = $weightHistory->last()?->weight_kg;
-
-        // Baseline preference: previous before range, otherwise first within range, otherwise null
-        $baselineWeight = $previousWeight->weight_kg
-            ?? ($firstInRangeWeight ?? null);
-
-        // Normalize values so math behaves predictably
-        if ($baselineWeight === null && $currentWeight === null) {
-            // No data at all
-            $baselineWeight = 0.0;
-            $currentWeight = 0.0;
-        } elseif ($baselineWeight === null && $currentWeight !== null) {
-            // Only one point (in-range) exists; set baseline to current for 0 change
-            $baselineWeight = (float) $currentWeight;
-        } elseif ($baselineWeight !== null && $currentWeight === null) {
-            // Only a baseline exists before the range; treat as no change within range
-            $currentWeight = (float) $baselineWeight;
-        }
-
-        $startingWeight = (float) $baselineWeight;
-        $currentWeight = (float) $currentWeight;
-        $weightChange = $currentWeight - $startingWeight;
-
-        // Centralized BMI values for cards
-        $startingBmi = null;
-        $currentBmi = null;
-        if ($userProfile && $userProfile->height_cm) {
-            $startingBmi = ProgressService::calculateBMI($startingWeight, (float) $userProfile->height_cm);
-            $currentBmi = ProgressService::calculateBMI($currentWeight, (float) $userProfile->height_cm);
-        }
-
-        // Recent change (global, regardless of range) - helpful when the range only has one entry
-        $latestTwo = WeightHistory::where('user_id', $userId)
-            ->orderBy('log_date', 'desc')
-            ->limit(2)
+        // Get date range filter (default to last 30 days)
+        $startDate = $request->get('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->get('end_date', Carbon::now()->format('Y-m-d'));
+        
+        // Get weight history within date range
+        $weightHistory = WeightHistory::where('user_id', $user->id)
+            ->whereBetween('log_date', [$startDate, $endDate])
+            ->orderBy('log_date', 'asc')
             ->get();
-        $recentChange = null;
-        if ($latestTwo->count() >= 2) {
-            $recentChange = (float) $latestTwo[0]->weight_kg - (float) $latestTwo[1]->weight_kg;
+        
+        // Calculate progress metrics
+        $progressMetrics = $this->calculateProgressMetrics($user, $weightHistory);
+        
+        // Get weight and BMI chart data
+        $chartData = $this->buildChartData($weightHistory, $userProfile);
+        
+        // Generate insights
+        $insights = $this->generateInsights($user, $weightHistory, $progressMetrics);
+        
+        return view('user.my-progress.index', compact(
+            'userProfile',
+            'weightHistory',
+            'progressMetrics',
+            'chartData',
+            'insights',
+            'startDate',
+            'endDate'
+        ));
+    }
+    
+    /**
+     * Show form to log new weight entry
+     */
+    public function create()
+    {
+        return view('user.my-progress.create');
+    }
+    
+    /**
+     * Store new weight entry
+     * Automatically updates user profile current weight and calculates BMI
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'log_date' => 'required|date|before_or_equal:today',
+            'weight_kg' => 'required|numeric|min:20|max:500'
+        ]);
+        
+        $user = Auth::user();
+        
+        // Check if weight already exists for this date
+        $existingEntry = WeightHistory::where('user_id', $user->id)
+            ->where('log_date', $request->log_date)
+            ->first();
+            
+        if ($existingEntry) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Weight entry already exists for this date. Please update the existing entry instead.'
+            ], 422);
         }
-
+        
+        try {
+            DB::beginTransaction();
+            
+            // Create weight history entry
+            $weightEntry = WeightHistory::create([
+                'user_id' => $user->id,
+                'log_date' => $request->log_date,
+                'weight_kg' => $request->weight_kg
+            ]);
+            
+            // Update user profile current weight if this is the most recent entry
+            $latestEntry = WeightHistory::where('user_id', $user->id)
+                ->orderBy('log_date', 'desc')
+                ->first();
+                
+            if ($latestEntry && $latestEntry->id === $weightEntry->id) {
+                $user->userProfile->update([
+                    'current_weight_kg' => $request->weight_kg,
+                    'last_profile_update' => now()
+                ]);
+            }
+            
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Weight logged successfully!',
+                'redirect' => route('progress.index')
+            ]);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error logging weight. Please try again.'
+            ], 500);
+        }
+    }
+    
+    /**
+     * Show form to edit existing weight entry
+     */
+    public function edit($id)
+    {
+        $weightEntry = WeightHistory::where('user_id', Auth::id())
+            ->findOrFail($id);
+            
+        return view('user.my-progress.edit', compact('weightEntry'));
+    }
+    
+    /**
+     * Update existing weight entry
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'log_date' => 'required|date|before_or_equal:today',
+            'weight_kg' => 'required|numeric|min:20|max:500'
+        ]);
+        
+        $user = Auth::user();
+        $weightEntry = WeightHistory::where('user_id', $user->id)->findOrFail($id);
+        
+        // Check if another entry exists for the new date (excluding current entry)
+        $existingEntry = WeightHistory::where('user_id', $user->id)
+            ->where('log_date', $request->log_date)
+            ->where('id', '!=', $id)
+            ->first();
+            
+        if ($existingEntry) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Another weight entry already exists for this date.'
+            ], 422);
+        }
+        
+        try {
+            DB::beginTransaction();
+            
+            $weightEntry->update([
+                'log_date' => $request->log_date,
+                'weight_kg' => $request->weight_kg
+            ]);
+            
+            // Update user profile current weight if this is the most recent entry
+            $latestEntry = WeightHistory::where('user_id', $user->id)
+                ->orderBy('log_date', 'desc')
+                ->first();
+                
+            if ($latestEntry && $latestEntry->id === $weightEntry->id) {
+                $user->userProfile->update([
+                    'current_weight_kg' => $request->weight_kg,
+                    'last_profile_update' => now()
+                ]);
+            }
+            
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Weight updated successfully!',
+                'redirect' => route('progress.index')
+            ]);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating weight. Please try again.'
+            ], 500);
+        }
+    }
+    
+    /**
+     * Delete weight entry
+     */
+    public function destroy($id)
+    {
+        try {
+            $user = Auth::user();
+            $weightEntry = WeightHistory::where('user_id', $user->id)->findOrFail($id);
+            
+            DB::beginTransaction();
+            
+            $isLatestEntry = WeightHistory::where('user_id', $user->id)
+                ->orderBy('log_date', 'desc')
+                ->first()->id === $weightEntry->id;
+            
+            $weightEntry->delete();
+            
+            // Update user profile current weight if we deleted the latest entry
+            if ($isLatestEntry) {
+                $newLatestEntry = WeightHistory::where('user_id', $user->id)
+                    ->orderBy('log_date', 'desc')
+                    ->first();
+                    
+                if ($newLatestEntry) {
+                    $user->userProfile->update([
+                        'current_weight_kg' => $newLatestEntry->weight_kg,
+                        'last_profile_update' => now()
+                    ]);
+                }
+            }
+            
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Weight entry deleted successfully!'
+            ]);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting weight entry. Please try again.'
+            ], 500);
+        }
+    }
+    
+    /**
+     * Get chart data for AJAX requests
+     */
+    public function getChartData(Request $request)
+    {
+        $user = Auth::user();
+        $userProfile = $user->userProfile;
+        
+        $startDate = $request->get('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->get('end_date', Carbon::now()->format('Y-m-d'));
+        
+        $weightHistory = WeightHistory::where('user_id', $user->id)
+            ->whereBetween('log_date', [$startDate, $endDate])
+            ->orderBy('log_date', 'asc')
+            ->get();
+        
+        $chartData = $this->buildChartData($weightHistory, $userProfile);
+        
+        return response()->json($chartData);
+    }
+    
+    /**
+     * Calculate comprehensive progress metrics
+     */
+    private function calculateProgressMetrics($user, $weightHistory)
+    {
+        $userProfile = $user->userProfile;
+        $metrics = [
+            'days_tracked' => $weightHistory->count(),
+            'weight_change' => 0,
+            'weight_change_percentage' => 0,
+            'current_bmi' => 0,
+            'bmi_category' => 'Normal',
+            'workout_streak' => 0,
+            'total_workouts_completed' => 0
+        ];
+        
+        if ($weightHistory->isNotEmpty()) {
+            $startWeight = $weightHistory->first()->weight_kg;
+            $currentWeight = $weightHistory->last()->weight_kg;
+            
+            $metrics['weight_change'] = $currentWeight - $startWeight;
+            $metrics['weight_change_percentage'] = $startWeight > 0 
+                ? (($currentWeight - $startWeight) / $startWeight) * 100 
+                : 0;
+        }
+        
+        // Calculate current BMI
+        if ($userProfile && $userProfile->height_cm > 0 && $userProfile->current_weight_kg > 0) {
+            $heightM = $userProfile->height_cm / 100;
+            $metrics['current_bmi'] = $userProfile->current_weight_kg / ($heightM * $heightM);
+            $metrics['bmi_category'] = $this->getBMICategory($metrics['current_bmi']);
+        }
+        
+        // Calculate workout metrics
+        $workoutMetrics = $this->calculateWorkoutMetrics($user);
+        $metrics['workout_streak'] = $workoutMetrics['current_streak'];
+        $metrics['total_workouts_completed'] = $workoutMetrics['total_completed'];
+        
+        return $metrics;
+    }
+    
+    /**
+     * Generate chart data for weight and BMI trends
+     */
+    private function buildChartData($weightHistory, $userProfile)
+    {
+        $weightData = [];
+        $bmiData = [];
+        $labels = [];
+        
+        if ($userProfile && $userProfile->height_cm > 0) {
+            $heightM = $userProfile->height_cm / 100;
+            
+            foreach ($weightHistory as $entry) {
+                $labels[] = $entry->log_date->format('M j');
+                $weightData[] = (float) $entry->weight_kg;
+                $bmiData[] = round($entry->weight_kg / ($heightM * $heightM), 1);
+            }
+        }
+        
         return [
-            'history' => $weightHistory->map(function($weight) {
-                return [
-                    'date' => $weight->log_date->format('Y-m-d'),
-                    'weight' => $weight->weight_kg
-                ];
-            }),
-            'bmi_data' => $bmiData,
-            'starting_weight' => $startingWeight,
-            'current_weight' => $currentWeight,
-            'weight_change' => $weightChange,
-            'has_height' => $userProfile && $userProfile->height_cm,
-            'starting_bmi' => $startingBmi,
-            'current_bmi' => $currentBmi,
-            // extra helpers
-            'recent_change' => $recentChange,
+            'labels' => $labels,
+            'weight' => $weightData,
+            'bmi' => $bmiData
         ];
     }
-
-    private function getNutritionData($userId, $startDate, $endDate)
+    
+    /**
+     * Generate insights based on user progress data
+     */
+    private function generateInsights($user, $weightHistory, $progressMetrics)
     {
-        // Get user's nutrition goals
-        $nutritionGoals = UserNutritionGoal::where('user_id', $userId)->latest()->first();
+        $insights = [];
         
-        if (!$nutritionGoals) {
-            return [
-                'has_goals' => false,
-                'averages' => [],
-                'goals' => [],
-                'consistency_score' => 0,
-                'consistent_days' => 0,
-                'total_days' => 0
+        // Weight trend insights
+        if ($progressMetrics['weight_change'] > 0) {
+            $insights[] = [
+                'type' => 'info',
+                'message' => "You've gained " . number_format(abs($progressMetrics['weight_change']), 1) . " kg over the tracked period."
+            ];
+        } elseif ($progressMetrics['weight_change'] < 0) {
+            $insights[] = [
+                'type' => 'success',
+                'message' => "Great progress! You've lost " . number_format(abs($progressMetrics['weight_change']), 1) . " kg over the tracked period."
             ];
         }
-
-        // Get daily nutrition totals for selected range
-        $dailyTotals = DB::table('user_meal_logs')
-            ->join('user_meal_log_entries', 'user_meal_logs.id', '=', 'user_meal_log_entries.meal_log_id')
-            ->join('food_items', 'user_meal_log_entries.food_item_id', '=', 'food_items.id')
-            ->where('user_meal_logs.user_id', $userId)
-            ->whereBetween('user_meal_logs.log_date', [$startDate, $endDate])
-            ->select(
-                'user_meal_logs.log_date',
-                DB::raw('SUM(food_items.calories_per_serving * user_meal_log_entries.quantity_consumed) as total_calories'),
-                DB::raw('SUM(food_items.protein_grams_per_serving * user_meal_log_entries.quantity_consumed) as total_protein'),
-                DB::raw('SUM(food_items.carb_grams_per_serving * user_meal_log_entries.quantity_consumed) as total_carbs'),
-                DB::raw('SUM(food_items.fat_grams_per_serving * user_meal_log_entries.quantity_consumed) as total_fat')
-            )
-            ->groupBy('user_meal_logs.log_date')
+        
+        // BMI insights
+        if ($progressMetrics['current_bmi'] > 0) {
+            $bmiCategory = $progressMetrics['bmi_category'];
+            if ($bmiCategory === 'Normal') {
+                $insights[] = [
+                    'type' => 'success',
+                    'message' => "Your BMI of " . number_format($progressMetrics['current_bmi'], 1) . " is in the healthy range!"
+                ];
+            } elseif ($bmiCategory === 'Overweight') {
+                $insights[] = [
+                    'type' => 'warning',
+                    'message' => "Your BMI indicates you're in the overweight range. Consider consulting with a healthcare provider."
+                ];
+            }
+        }
+        
+        // Consistency insights
+        if ($progressMetrics['days_tracked'] >= 30) {
+            $insights[] = [
+                'type' => 'success',
+                'message' => "Excellent consistency! You've tracked your weight for " . $progressMetrics['days_tracked'] . " days."
+            ];
+        } elseif ($progressMetrics['days_tracked'] < 7) {
+            $insights[] = [
+                'type' => 'info',
+                'message' => "Try to track your weight more regularly for better progress monitoring."
+            ];
+        }
+        
+        // Workout insights
+        if ($progressMetrics['workout_streak'] > 0) {
+            $insights[] = [
+                'type' => 'success',
+                'message' => "Keep it up! You're on a " . $progressMetrics['workout_streak'] . "-day workout streak."
+            ];
+        }
+        
+        return $insights;
+    }
+    
+    /**
+     * Calculate workout-related metrics
+     */
+    private function calculateWorkoutMetrics($user)
+    {
+        $completedWorkouts = UserWorkoutSchedule::where('user_id', $user->id)
+            ->where('status', 'Completed')
+            ->orderBy('assigned_date', 'desc')
             ->get();
-
-        // Calculate averages
-        $averages = [
-            'calories' => $dailyTotals->avg('total_calories') ?? 0,
-            'protein' => $dailyTotals->avg('total_protein') ?? 0,
-            'carbs' => $dailyTotals->avg('total_carbs') ?? 0,
-            'fat' => $dailyTotals->avg('total_fat') ?? 0
-        ];
-
-        // Calculate consistency score (days within ±100 calories of target) across the selected range
-        $consistentDays = $dailyTotals->filter(function($day) use ($nutritionGoals) {
-            return abs($day->total_calories - $nutritionGoals->target_calories) <= 100;
-        })->count();
-
-        $totalDays = $dailyTotals->count();
-        $consistencyScore = $totalDays > 0 ? ($consistentDays / $totalDays) * 100 : 0;
-
-        // Compute today's adherence (resets daily)
-        $today = Carbon::today();
-        $todayTotals = DB::table('user_meal_logs')
-            ->join('user_meal_log_entries', 'user_meal_logs.id', '=', 'user_meal_log_entries.meal_log_id')
-            ->join('food_items', 'user_meal_log_entries.food_item_id', '=', 'food_items.id')
-            ->where('user_meal_logs.user_id', $userId)
-            ->whereDate('user_meal_logs.log_date', $today)
-            ->select(
-                DB::raw('COALESCE(SUM(food_items.calories_per_serving * user_meal_log_entries.quantity_consumed),0) as total_calories'),
-                DB::raw('COALESCE(SUM(food_items.protein_grams_per_serving * user_meal_log_entries.quantity_consumed),0) as total_protein'),
-                DB::raw('COALESCE(SUM(food_items.carb_grams_per_serving * user_meal_log_entries.quantity_consumed),0) as total_carbs'),
-                DB::raw('COALESCE(SUM(food_items.fat_grams_per_serving * user_meal_log_entries.quantity_consumed),0) as total_fat')
-            )
-            ->first();
-
-        $todayCalories = (float)($todayTotals->total_calories ?? 0);
-        $todayProtein = (float)($todayTotals->total_protein ?? 0);
-        $todayCarbs   = (float)($todayTotals->total_carbs ?? 0);
-        $todayFat     = (float)($todayTotals->total_fat ?? 0);
-
-        // Use ProgressService helper to compute adherence with 10% tolerance by default
-        $todayCaloriesAdherence = ProgressService::getNutritionAdherence($todayCalories, (float)$nutritionGoals->target_calories, 0.10);
-        $todayProteinAdherence  = ProgressService::getNutritionAdherence($todayProtein, (float)$nutritionGoals->target_protein_grams, 0.10);
-        $todayCarbsAdherence    = ProgressService::getNutritionAdherence($todayCarbs, (float)$nutritionGoals->target_carb_grams, 0.10);
-        $todayFatAdherence      = ProgressService::getNutritionAdherence($todayFat, (float)$nutritionGoals->target_fat_grams, 0.10);
-
+        
+        $currentStreak = 0;
+        $currentDate = Carbon::now();
+        
+        // Calculate current workout streak
+        foreach ($completedWorkouts as $workout) {
+            if ($workout->assigned_date->diffInDays($currentDate) <= $currentStreak + 1) {
+                $currentStreak++;
+                $currentDate = $workout->assigned_date;
+            } else {
+                break;
+            }
+        }
+        
         return [
-            'has_goals' => true,
-            'averages' => $averages,
-            'goals' => [
-                'calories' => $nutritionGoals->target_calories,
-                'protein' => $nutritionGoals->target_protein_grams,
-                'carbs' => $nutritionGoals->target_carb_grams,
-                'fat' => $nutritionGoals->target_fat_grams
-            ],
-            'consistency_score' => round($consistencyScore, 1),
-            'consistent_days' => $consistentDays,
-            'total_days' => $totalDays,
-            // Today's adherence (resets automatically each day)
-            'today' => [
-                'calories' => $todayCalories,
-                'protein' => $todayProtein,
-                'carbs' => $todayCarbs,
-                'fat' => $todayFat,
-                'adherence' => [
-                    'calories' => round($todayCaloriesAdherence, 1),
-                    'protein'  => round($todayProteinAdherence, 1),
-                    'carbs'    => round($todayCarbsAdherence, 1),
-                    'fat'      => round($todayFatAdherence, 1),
-                ],
-            ],
+            'current_streak' => $currentStreak,
+            'total_completed' => $completedWorkouts->count()
         ];
     }
-
-    private function getWorkoutData($userId, $startDate, $endDate)
+    
+    /**
+     * Get BMI category based on BMI value
+     */
+    private function getBMICategory($bmi)
     {
-        // Get workout schedules within date range
-        $workoutSchedules = UserWorkoutSchedule::where('user_id', $userId)
-            ->whereBetween('assigned_date', [$startDate, $endDate])
-            ->get();
-
-        $totalWorkouts = $workoutSchedules->count();
-        $completedWorkouts = $workoutSchedules->where('status', 'Completed')->count();
-        $skippedWorkouts = $workoutSchedules->where('status', 'Skipped')->count();
-        
-        // Count overdue workouts as skipped
-        $overdueWorkouts = $workoutSchedules->filter(function($workout) {
-            return $workout->status === 'Scheduled' && 
-                   $workout->assigned_date->lt(Carbon::now()->startOfDay());
-        })->count();
-
-        $effectiveSkipped = $skippedWorkouts + $overdueWorkouts;
-        $adherenceRate = $totalWorkouts > 0 ? ($completedWorkouts / $totalWorkouts) * 100 : 0;
-
-        return [
-            'total_workouts' => $totalWorkouts,
-            'completed_workouts' => $completedWorkouts,
-            'skipped_workouts' => $effectiveSkipped,
-            'adherence_rate' => round($adherenceRate, 1)
-        ];
+        if ($bmi < 18.5) {
+            return 'Underweight';
+        } elseif ($bmi >= 18.5 && $bmi < 25) {
+            return 'Normal';
+        } elseif ($bmi >= 25 && $bmi < 30) {
+            return 'Overweight';
+        } else {
+            return 'Obese';
+        }
     }
 }

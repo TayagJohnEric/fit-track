@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthUserController;
 use App\Http\Controllers\Auth\AuthAdminController;
 
 
+
 //Landing Page
 Route::get('/', function () {
     return view('welcome');
@@ -94,11 +95,24 @@ Route::middleware('auth')->group(function () {
         Route::post('/log-meal', [App\Http\Controllers\User\UserMealIdeasController::class, 'logMeal'])->name('log-meal');
     });
     
-//Progress Routes
-    Route::middleware(['auth'])->group(function () {
-    // Progress routes
-    Route::get('/progress', [App\Http\Controllers\User\UserProgressController::class, 'index'])->name('progress.index');
-    Route::post('/progress/log-weight', [App\Http\Controllers\User\UserProgressController::class, 'logWeight'])->name('progress.log-weight');
+
+    
+// User Progress Routes - RESTful resource routes
+Route::middleware(['auth'])->prefix('progress')->name('progress.')->group(function () {
+    
+    // Main progress dashboard
+    Route::get('/', [App\Http\Controllers\User\UserProgressController::class, 'index'])->name('index');
+    
+    // Weight logging routes
+    Route::get('/weight/create', [App\Http\Controllers\User\UserProgressController::class, 'create'])->name('create');
+    Route::post('/weight', [App\Http\Controllers\User\UserProgressController::class, 'store'])->name('store');
+    Route::get('/weight/{id}/edit', [App\Http\Controllers\User\UserProgressController::class, 'edit'])->name('edit');
+    Route::put('/weight/{id}', [App\Http\Controllers\User\UserProgressController::class, 'update'])->name('update');
+    Route::delete('/weight/{id}', [App\Http\Controllers\User\UserProgressController::class, 'destroy'])->name('destroy');
+    
+    // AJAX route for chart data updates
+    Route::get('/chart-data', [App\Http\Controllers\User\UserProgressController::class, 'getChartData'])->name('chart-data');
+    
 });
 
 
