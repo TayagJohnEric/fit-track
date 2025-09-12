@@ -270,7 +270,7 @@
                             </svg>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-3">Fitness Tip</h3>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-3">Did you know</h3>
                             <p class="text-gray-700 text-sm leading-relaxed mb-4">{{ $fitnessFact->fact_text }}</p>
                             @if($fitnessFact->category)
                                 <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded-full border border-orange-200">

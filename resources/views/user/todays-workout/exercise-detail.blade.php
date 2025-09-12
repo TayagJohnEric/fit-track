@@ -3,22 +3,33 @@
 @section('content')
 <div class="max-w-[90rem] mx-auto">
     <!-- Back Button -->
-    <div class="mb-6">
-        <a href="{{ route('workouts.today') }}" 
-           class="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-md hover:bg-gray-700 transition-colors">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Back to Workout
-        </a>
-    </div>
+
+     <!-- Breadcrumbs -->
+    <nav class="flex mb-6" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+                <a href="{{ route('workouts.today') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-orange-600 transition-colors duration-200">
+                    Workout
+                </a>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="ml-1 text-sm font-medium text-orange-600">Workout Detail</span>
+                </div>
+            </li>
+        </ol>
+    </nav>
+
 
     <!-- Exercise Header -->
     <div class="bg-white rounded-lg shadow p-6 mb-6">
         <div class="flex justify-between items-start mb-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ $exercise->name }}</h1>
-                <div class="flex items-center text-sm text-blue-600">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ $exercise->name }}</h1>
+                <div class="flex items-center text-sm text-orange-600">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
@@ -35,16 +46,16 @@
         <!-- Exercise Stats -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
             <div class="text-center">
-                <div class="text-2xl font-bold text-blue-600">{{ $exercise->pivot->sets }}</div>
-                <div class="text-sm text-gray-500">Sets</div>
+                <div class="text-2xl font-bold text-orange-600">{{ $exercise->pivot->sets }}</div>
+                <div class="text-sm text-gray-700">Sets</div>
             </div>
             <div class="text-center">
-                <div class="text-2xl font-bold text-green-600">{{ $exercise->pivot->reps }}</div>
-                <div class="text-sm text-gray-500">Reps</div>
+                <div class="text-2xl font-bold text-orange-600">{{ $exercise->pivot->reps }}</div>
+                <div class="text-sm text-gray-700">Reps</div>
             </div>
             <div class="text-center">
-                <div class="text-2xl font-bold text-purple-600">{{ $exercise->pivot->rest_seconds }}s</div>
-                <div class="text-sm text-gray-500">Rest</div>
+                <div class="text-2xl font-bold text-orange-600">{{ $exercise->pivot->rest_seconds }}s</div>
+                <div class="text-sm text-gray-700">Rest</div>
             </div>
             <div class="text-center">
                 <div class="text-2xl font-bold text-orange-600">
