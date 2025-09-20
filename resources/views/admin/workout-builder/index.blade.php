@@ -35,79 +35,339 @@
         transform: scale(0.7) translateY(-50px);
         opacity: 0;
     }
+
+    .exercise-card {
+        transition: all 0.2s ease;
+        border: 1px solid #f3f4f6;
+    }
+
+    .exercise-card:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-color: #fbbf24;
+    }
+
+    .metric-badge {
+        transition: all 0.2s ease;
+    }
+
+    .metric-badge:hover {
+        transform: scale(1.02);
+    }
 </style>
 
 @section('content')
-<div class="max-w-[90rem] mx-auto">
-    <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Workout Template Exercises</h2>
-        <p class="text-gray-600 mb-4">Manage all exercises associated with workout templates.</p>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-white py-6 sm:py-8">
+    <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header Section -->
+        <div class="mb-8">
+            <div class="flex items-center mb-3">
+                <div class="w-1 h-8 bg-orange-600 rounded-full mr-4"></div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Workout Template Exercises</h1>
+            </div>
+            <p class="text-gray-600 text-sm sm:text-base ml-6">Manage all exercises associated with workout templates</p>
+        </div>
 
+        <!-- Success Message -->
         @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4">
-                {{ session('success') }}
+            <div class="mb-6 bg-gradient-to-r from-orange-50 to-amber-50 border-l-4 border-orange-600 px-6 py-4 rounded-xl shadow-sm">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-orange-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-orange-800 font-medium">{{ session('success') }}</span>
+                </div>
             </div>
         @endif
 
-        <!-- Search Bar -->
-        <form method="GET" class="mb-4">
-            <input type="text" name="search" placeholder="Search by exercise name..." value="{{ request('search') }}"
-                class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-        </form>
-
-        <button onclick="openCreateModal()" class="inline-block bg-blue-600 text-white px-4 py-2 rounded mb-4 hover:bg-blue-700">Add New</button>
-
-        <!-- Table -->
-        <div class="overflow-x-auto">
-            <table class="w-full table-auto border border-gray-200 text-sm">
-                <thead>
-                    <tr class="bg-gray-100 text-left">
-                        <th class="p-2">Template</th>
-                        <th class="p-2">Exercise</th>
-                        <th class="p-2">Sets</th>
-                        <th class="p-2">Reps</th>
-                        <th class="p-2">Duration</th>
-                        <th class="p-2">Rest</th>
-                        <th class="p-2">Order</th>
-                        <th class="p-2">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($exercises as $item)
-                        <tr class="border-t">
-                            <td class="p-2">{{ $item->template->name ?? '-' }}</td>
-                            <td class="p-2">{{ $item->exercise->name ?? '-' }}</td>
-                            <td class="p-2">{{ $item->sets }}</td>
-                            <td class="p-2">{{ $item->reps }}</td>
-                            <td class="p-2">{{ $item->duration_seconds ?? '—' }}</td>
-                            <td class="p-2">{{ $item->rest_seconds }}</td>
-                            <td class="p-2">{{ $item->order_in_workout }}</td>
-                            <td class="p-2 flex space-x-2">
-                                <button onclick="openEditModal({{ $item->id }})" class="text-blue-600 hover:underline">Edit</button>
-                                <button onclick="openDeleteModal({{ $item->id }})" class="text-red-600 hover:underline">Delete</button>
-                            </td>
-
-                             @include('admin.workout-builder.modal.edit-modal')
-                            @include('admin.workout-builder.modal.delete-modal')
-
-                        </tr>
-                    @empty
-                        <tr><td colspan="8" class="p-4 text-center text-gray-500">No records found.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <!-- Controls Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                
+                <!-- Search Form -->
+                <form method="GET" class="flex-1 max-w-md">
+                    <div class="relative group">
+                        <input type="text" 
+                               name="search" 
+                               value="{{ request('search') }}" 
+                               placeholder="Search by exercise name..." 
+                               class="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 text-sm">
+                        <svg class="absolute left-4 top-4 h-4 w-4 text-gray-400 group-focus-within:text-orange-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </form>
+                
+                <!-- Add New Exercise Button -->
+                <button onclick="openCreateModal()" 
+                        class="inline-flex items-center px-6 py-3.5 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Add New Exercise</span>
+                    <span class="sm:hidden">Add</span>
+                </button>
+            </div>
         </div>
 
-        <!-- Pagination -->
-        <div class="mt-4">
-            {{ $exercises->withQueryString()->links() }}
-        </div>
+        <!-- Template Exercises Content -->
+        @if($exercises->count() > 0)
+            <!-- Desktop Table View -->
+            <div class="hidden xl:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-gray-50 to-gray-100">
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Template
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Exercise
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Sets
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Reps
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Duration
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Rest
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Order
+                                </th>
+                                <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            @foreach($exercises as $item)
+                                <tr class="hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100 last:border-b-0">
+                                    <!-- Template Name -->
+                                    <td class="px-6 py-5">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center mr-3">
+                                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-900">{{ $item->template->name ?? '-' }}</span>
+                                        </div>
+                                    </td>
+                                    
+                                    <!-- Exercise Name -->
+                                    <td class="px-6 py-5">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center mr-3">
+                                                <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-900">{{ $item->exercise->name ?? '-' }}</span>
+                                        </div>
+                                    </td>
+                                    
+                                    <!-- Sets -->
+                                    <td class="px-6 py-5">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                            {{ $item->sets }}
+                                        </span>
+                                    </td>
+                                    
+                                    <!-- Reps -->
+                                    <td class="px-6 py-5">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                            {{ $item->reps }}
+                                        </span>
+                                    </td>
+                                    
+                                    <!-- Duration -->
+                                    <td class="px-6 py-5">
+                                        @if($item->duration_seconds)
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">
+                                                {{ $item->duration_seconds }}s
+                                            </span>
+                                        @else
+                                            <span class="text-sm text-gray-400">—</span>
+                                        @endif
+                                    </td>
+                                    
+                                    <!-- Rest -->
+                                    <td class="px-6 py-5">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                            {{ $item->rest_seconds }}s
+                                        </span>
+                                    </td>
+                                    
+                                    <!-- Order -->
+                                    <td class="px-6 py-5">
+                                        <span class="inline-flex items-center justify-center w-8 h-8 bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700">
+                                            {{ $item->order_in_workout }}
+                                        </span>
+                                    </td>
+                                    
+                                    <!-- Actions -->
+                                    <td class="px-6 py-5">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <button onclick="openEditModal({{ $item->id }})" 
+                                                    class="inline-flex items-center justify-center w-9 h-9 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-200"
+                                                    title="Edit Exercise">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                            </button>
+                                            <button onclick="openDeleteModal({{ $item->id }})" 
+                                                    class="inline-flex items-center justify-center w-9 h-9 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 border border-transparent hover:border-red-200"
+                                                    title="Delete Exercise">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @include('admin.workout-builder.modal.edit-modal')
+                                @include('admin.workout-builder.modal.delete-modal')
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tablet/Mobile Card View -->
+            <div class="xl:hidden space-y-4">
+                @foreach($exercises as $item)
+                    <div class="exercise-card bg-white rounded-2xl shadow-sm p-5">
+                        <!-- Card Header -->
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1 min-w-0">
+                                <!-- Template Name -->
+                                <div class="flex items-center mb-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center mr-2">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs font-medium text-blue-600 uppercase tracking-wide">Template</span>
+                                </div>
+                                <h3 class="text-sm font-semibold text-gray-900 mb-2">{{ $item->template->name ?? '-' }}</h3>
+                                
+                                <!-- Exercise Name -->
+                                <div class="flex items-center mb-1">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center mr-2">
+                                        <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs font-medium text-orange-600 uppercase tracking-wide">Exercise</span>
+                                </div>
+                                <p class="text-sm font-medium text-gray-700">{{ $item->exercise->name ?? '-' }}</p>
+                            </div>
+                            
+                            <!-- Actions -->
+                            <div class="flex items-center space-x-2 ml-3">
+                                <button onclick="openEditModal({{ $item->id }})" 
+                                        class="inline-flex items-center justify-center w-9 h-9 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 border border-transparent hover:border-blue-200"
+                                        title="Edit Exercise">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="openDeleteModal({{ $item->id }})" 
+                                        class="inline-flex items-center justify-center w-9 h-9 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 border border-transparent hover:border-red-200"
+                                        title="Delete Exercise">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Exercise Metrics Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <!-- Sets -->
+                            <div class="metric-badge bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                                <div class="text-xs font-medium text-green-600 uppercase tracking-wide mb-1">Sets</div>
+                                <div class="text-lg font-bold text-green-800">{{ $item->sets }}</div>
+                            </div>
+                            
+                            <!-- Reps -->
+                            <div class="metric-badge bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                                <div class="text-xs font-medium text-blue-600 uppercase tracking-wide mb-1">Reps</div>
+                                <div class="text-lg font-bold text-blue-800">{{ $item->reps }}</div>
+                            </div>
+                            
+                            <!-- Duration -->
+                            <div class="metric-badge bg-purple-50 border border-purple-200 rounded-lg p-3 text-center">
+                                <div class="text-xs font-medium text-purple-600 uppercase tracking-wide mb-1">Duration</div>
+                                <div class="text-lg font-bold text-purple-800">
+                                    @if($item->duration_seconds)
+                                        {{ $item->duration_seconds }}s
+                                    @else
+                                        —
+                                    @endif
+                                </div>
+                            </div>
+                            
+                            <!-- Rest -->
+                            <div class="metric-badge bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                                <div class="text-xs font-medium text-yellow-600 uppercase tracking-wide mb-1">Rest</div>
+                                <div class="text-lg font-bold text-yellow-800">{{ $item->rest_seconds }}s</div>
+                            </div>
+                            
+                            <!-- Order -->
+                            <div class="metric-badge bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+                                <div class="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1">Order</div>
+                                <div class="text-lg font-bold text-gray-800">#{{ $item->order_in_workout }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    @include('admin.workout-builder.modal.edit-modal')
+                    @include('admin.workout-builder.modal.delete-modal')
+                @endforeach
+            </div>
+
+            <!-- Pagination -->
+            @if($exercises->hasPages())
+                <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 px-6 py-4">
+                    <div class="flex items-center justify-center">
+                        {{ $exercises->withQueryString()->links() }}
+                    </div>
+                </div>
+            @endif
+
+        @else
+            <!-- Empty State -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 py-16">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-10 h-10 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">No template exercises found</h3>
+                    <p class="text-gray-600 mb-6 max-w-md">Start building your workout templates by adding exercises with specific sets, reps, and rest periods.</p>
+                    <button onclick="openCreateModal()" 
+                            class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Your First Exercise
+                    </button>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
-                            @include('admin.workout-builder.modal.create-modal')
+
+@include('admin.workout-builder.modal.create-modal')
 
 <script>
-
 function openCreateModal() {
     const modal = document.getElementById('create-modal');
     modal.classList.remove('hidden');
@@ -129,46 +389,46 @@ function closeCreateModal() {
     }, 300);
 }
 
- function openEditModal(id) {
-        const modal = document.getElementById('edit-modal-' + id);
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        // Trigger animation
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
-    }
+function openEditModal(id) {
+    const modal = document.getElementById('edit-modal-' + id);
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    // Trigger animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
 
-    function closeEditModal(id) {
-        const modal = document.getElementById('edit-modal-' + id);
-        modal.classList.add('closing');
-        modal.classList.remove('show');
-        // Hide modal after animation completes
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex', 'closing');
-        }, 300);
-    }
+function closeEditModal(id) {
+    const modal = document.getElementById('edit-modal-' + id);
+    modal.classList.add('closing');
+    modal.classList.remove('show');
+    // Hide modal after animation completes
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'closing');
+    }, 300);
+}
 
-    function openDeleteModal(id) {
-        const modal = document.getElementById('delete-modal-' + id);
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        // Trigger animation
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
-    }
+function openDeleteModal(id) {
+    const modal = document.getElementById('delete-modal-' + id);
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    // Trigger animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
 
-    function closeDeleteModal(id) {
-        const modal = document.getElementById('delete-modal-' + id);
-        modal.classList.add('closing');
-        modal.classList.remove('show');
-        // Hide modal after animation completes
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex', 'closing');
-        }, 300);
-    }
+function closeDeleteModal(id) {
+    const modal = document.getElementById('delete-modal-' + id);
+    modal.classList.add('closing');
+    modal.classList.remove('show');
+    // Hide modal after animation completes
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex', 'closing');
+    }, 300);
+}
 </script>
 @endsection

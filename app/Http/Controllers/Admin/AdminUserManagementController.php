@@ -31,13 +31,42 @@ class AdminUserManagementController extends Controller
     }
 
     public function show(User $user)
-    {
-        if ($user->role !== 'user') {
-            abort(403);
-        }
-
-        return view('admin.manage-users.show', compact('user'));
+{
+    if ($user->role !== 'user') {
+        abort(403);
     }
+
+    // Eager load related data to avoid N+1 queries
+    $user->load([
+        'userProfile.fitnessGoal',
+        'userProfile.experienceLevel', 
+        'userProfile.preferredWorkoutType',
+        'mealLogs' => function($query) {
+            $query->orderBy('log_date', 'desc')->take(10);
+        },
+        'workoutSchedules' => function($query) {
+            $query->with('workoutTemplate')
+                  ->orderBy('assigned_date', 'desc')
+                  ->take(10);
+        },
+        'weightHistory' => function($query) {
+            $query->orderBy('log_date', 'desc')->take(5);
+        }
+    ]);
+
+    // Calculate some statistics
+    $stats = [
+        'total_meal_logs' => $user->mealLogs()->count(),
+        'total_workouts' => $user->workoutSchedules()->count(),
+        'completed_workouts' => $user->workoutSchedules()->where('status', 'Completed')->count(),
+        'recent_activity_days' => $user->mealLogs()
+            ->where('log_date', '>=', now()->subDays(30))
+            ->distinct('log_date')
+            ->count('log_date')
+    ];
+
+    return view('admin.manage-users.show', compact('user', 'stats'));
+}
 
     public function edit(User $user)
     {

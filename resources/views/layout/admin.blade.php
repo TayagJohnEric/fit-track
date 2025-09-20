@@ -8,7 +8,9 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+<!-- Development / prototyping version (with “Play CDN”) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
     <!-- Lucide CDN for icons --> 
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
     
