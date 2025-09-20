@@ -36,4 +36,9 @@ class UserWorkoutSchedule extends Model
     {
         return $this->belongsTo(WorkoutTemplate::class, 'template_id');
     }
+    // Alias relationship for compatibility with some views/controllers expecting 'template'
+    public function template()
+    {
+        return $this->belongsTo(WorkoutTemplate::class, 'template_id');
+    }
 }
