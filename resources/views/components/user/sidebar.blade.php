@@ -46,6 +46,7 @@
     <!-- Sidebar Navigation -->
     <nav class="flex-1 overflow-y-auto py-4">
         <ul class="space-y-2 px-4">
+            <!-- OVERVIEW SECTION -->
             <!-- Dashboard -->
             <li>
                 <a href="{{ route('dashboard') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('dashboard') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
@@ -54,38 +55,6 @@
                         <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                     </svg>
                     <span class="ml-3 text-sm font-semibold tracking-tighter">Home</span>
-                </a>
-            </li>
-
-            <!-- Log Meal -->
-            <li>
-                <a href="{{ route('nutrition.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('nutrition*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('nutrition*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
-                        <path d="M7 2v20"/>
-                        <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
-                    </svg>
-                    <span class="ml-3 text-sm font-semibold tracking-tighter">Log Meal</span>
-                </a>
-            </li>
-
-            <!-- Today's Workout -->
-            <li>
-                <a href="{{ route('workouts.today') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('workouts/today') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('workouts/today') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-                    <span class="ml-3 text-sm font-semibold tracking-tighter">Today's Workout</span>
-                </a>
-            </li>
-
-            <!-- Meal Ideas -->
-            <li>
-                <a href="{{ route('meal-ideas.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('meal-ideas*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('meal-ideas*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"/>
-                        <path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"/>
-                        <circle cx="12.5" cy="8.5" r="2.5"/>
-                    </svg>
-                    <span class="ml-3 text-sm font-semibold tracking-tighter">Meal Ideas</span>
                 </a>
             </li>
 
@@ -104,19 +73,41 @@
                 </a>
             </li>
 
-            <!-- Profile -->
+            <!-- NUTRITION SECTION -->
+            <!-- Log Meal -->
             <li>
-                <a href="{{ route('profile.show') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('profile*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('profile*') ? 'text-orange-500' : 'text-gray-500 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M11.5 15H7a4 4 0 0 0-4 4v2"/>
-                        <path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
-                        <circle cx="10" cy="7" r="4"/>
+                <a href="{{ route('nutrition.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('nutrition*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('nutrition*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+                        <path d="M7 2v20"/>
+                        <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
                     </svg>
-                    <span class="ml-3 text-sm font-semibold tracking-tighter">Profile</span>
+                    <span class="ml-3 text-sm font-semibold tracking-tighter">Log Meal</span>
                 </a>
             </li>
 
-              <!-- Exercises -->
+            <!-- Meal Ideas -->
+            <li>
+                <a href="{{ route('meal-ideas.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('meal-ideas*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('meal-ideas*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"/>
+                        <path d="m18.5 6 2.19 4.5a6.48 6.48 0 0 1-2.29 7.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"/>
+                        <circle cx="12.5" cy="8.5" r="2.5"/>
+                    </svg>
+                    <span class="ml-3 text-sm font-semibold tracking-tighter">Meal Ideas</span>
+                </a>
+            </li>
+
+            <!-- FITNESS SECTION -->
+            <!-- Today's Workout -->
+            <li>
+                <a href="{{ route('workouts.today') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('workouts/today') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('workouts/today') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                    <span class="ml-3 text-sm font-semibold tracking-tighter">Today's Workout</span>
+                </a>
+            </li>
+
+            <!-- Exercises -->
             <li>
                 <a href="{{ route('exercises-library.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('exercises-library') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('exercises-library') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -127,6 +118,19 @@
                         <path d="m9.6 14.4 4.8-4.8"/>
                     </svg>
                     <span class="ml-3 text-sm font-semibold tracking-tighter">Exercises</span>
+                </a>
+            </li>
+
+            <!-- ACCOUNT SECTION -->
+            <!-- Profile -->
+            <li>
+                <a href="{{ route('profile.show') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('profile*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('profile*') ? 'text-orange-500' : 'text-gray-500 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M11.5 15H7a4 4 0 0 0-4 4v2"/>
+                        <path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
+                        <circle cx="10" cy="7" r="4"/>
+                    </svg>
+                    <span class="ml-3 text-sm font-semibold tracking-tighter">Profile</span>
                 </a>
             </li>
         </ul>
