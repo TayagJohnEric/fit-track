@@ -125,7 +125,8 @@
                             <!-- Exercise Image/Video Thumbnail -->
                             <div class="relative h-48 bg-gradient-to-br from-orange-500 to-orange-600 overflow-hidden">
                                 @if($exercise->image_url)
-                                    <img src="{{ asset('storage/' . $exercise->image_url) }}" alt="{{ $exercise->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">                                @else
+                                    <img src="{{ $exercise->image_url }}" alt="{{ $exercise->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                @else
                                     <!-- Default placeholder with muscle group -->
                                     <div class="w-full h-full flex items-center justify-center text-white">
                                         <div class="text-center">

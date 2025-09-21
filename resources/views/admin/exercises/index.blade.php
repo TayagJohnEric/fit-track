@@ -154,9 +154,9 @@
                                     <!-- Thumbnail -->
                                     <td class="px-6 py-5">
                                         <div class="flex-shrink-0">
-                                            @if($exercise->thumbnail_url)
+                                            @if($exercise->image_url)
                                                 <a href="{{ $exercise->video_url }}" target="_blank" class="block">
-                                                    <img src="{{ $exercise->thumbnail_url }}" 
+                                                    <img src="{{ $exercise->image_url }}" 
                                                          alt="Exercise thumbnail" 
                                                          class="w-20 h-12 object-cover rounded-lg shadow-sm thumbnail-hover border border-gray-200">
                                                 </a>
@@ -225,9 +225,9 @@
                         <div class="flex items-start space-x-4">
                             <!-- Thumbnail -->
                             <div class="flex-shrink-0">
-                                @if($exercise->thumbnail_url)
+                                @if($exercise->image_url)
                                     <a href="{{ $exercise->video_url }}" target="_blank" class="block">
-                                        <img src="{{ $exercise->thumbnail_url }}" 
+                                        <img src="{{ $exercise->image_url }}" 
                                              alt="Exercise thumbnail" 
                                              class="w-16 h-10 object-cover rounded-lg shadow-sm thumbnail-hover border border-gray-200">
                                     </a>
