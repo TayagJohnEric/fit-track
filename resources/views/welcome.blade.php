@@ -189,8 +189,8 @@
   <!-- Logo -->
   <div class="flex items-center space-x-2">
     
-    <span class="font-bold text-lg tracking-wide text-white">FitTrack</span>
-  </div>
+        <img src="{{ asset('images/logo-white.png') }}" alt="Example" class="h-8 w-auto mx-auto mt-3">
+   </div>
 
   <!-- Centered nav -->
   <nav class="flex-1 flex justify-center space-x-8 ml-12">
@@ -876,7 +876,7 @@
       <div class="col-span-1">
         <div class="flex items-center space-x-2 mb-6">
           
-          <span class="text-2xl font-bold">Fit-Track</span>
+        <img src="{{ asset('images/logo-white.png') }}" alt="Example" class="h-8 w-auto mx-auto mt-3">
         </div>
         <p class="text-gray-400 mb-8 leading-relaxed">
           Personalized fitness and nutrition tracking that fits your budget and lifestyle.

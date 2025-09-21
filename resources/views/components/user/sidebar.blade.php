@@ -4,7 +4,7 @@
     <!-- Sidebar Header -->
     <div class="flex items-center justify-between h-16 px-4">
         <!-- Logo -->
-        <h1 class="ml-4 font-bold text-lg">Logo.</h1>
+        <img src="{{ asset('images/logo-black.png') }}" alt="Example" class="h-8 w-auto mx-auto mt-3">
         
         <!-- Close button (mobile only) -->
         <button id="sidebar-close" class="md:hidden p-2 rounded-lg text-orange-600 hover:text-red-600 hover:bg-red-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-300">

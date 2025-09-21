@@ -28,9 +28,7 @@
             Login
         </button>
 
-        <div class="text-center mt-6">
-            <a href="{{ route('admin.register') }}" class="text-sm text-orange-600 hover:text-orange-700">Register as Admin</a>
-        </div>
+        
     </form>
 </body>
 </html>
