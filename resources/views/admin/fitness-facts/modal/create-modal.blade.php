@@ -7,19 +7,21 @@
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Fact</label>
-                <textarea name="fact_text" class="w-full p-2 border rounded" required>{{ old('fact_text') }}</textarea>
+                <textarea name="fact_text" class="w-full p-2 border rounded focus:border-orange-600 focus:ring focus:ring-orange-200" required>{{ old('fact_text') }}</textarea>
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Category</label>
-                <input type="text" name="category" value="{{ old('category') }}" class="w-full p-2 border rounded">
+                <input type="text" name="category" value="{{ old('category') }}" class="w-full p-2 border rounded focus:border-orange-600 focus:ring focus:ring-orange-200">
             </div>
 
             <div class="flex items-center gap-4">
-                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                <button type="submit" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500">
                     Create
                 </button>
-                <button type="button" onclick="closeCreateModal()" class="text-gray-600 hover:underline">Cancel</button>
+                <button type="button" onclick="closeCreateModal()" class="text-gray-600 hover:underline">
+                    Cancel
+                </button>
             </div>
         </form>
     </div>

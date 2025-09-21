@@ -1,6 +1,6 @@
 <div id="create-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
   <div class="modal-content bg-white rounded-lg p-6 max-w-2xl w-full relative">
-    <button onclick="closeCreateModal()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
+    <button onclick="closeCreateModal()" class="absolute top-2 right-2 text-orange-600 hover:text-orange-800 text-2xl font-bold">
       &times;
     </button>
 
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <button type="submit" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Create</button>
+      <button type="submit" class="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500">Create</button>
     </form>
   </div>
 </div>

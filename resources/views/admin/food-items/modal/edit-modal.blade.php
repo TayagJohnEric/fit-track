@@ -1,6 +1,6 @@
 <div id="edit-modal-{{ $item->id }}" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="modal-content bg-white rounded-lg shadow-lg w-full max-w-3xl p-6 relative">
-        <button onclick="closeEditModal({{ $item->id }})" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
+        <button onclick="closeEditModal({{ $item->id }})" class="absolute top-2 right-2 text-orange-600 hover:text-orange-800">
             &times;
         </button>
 
@@ -72,10 +72,8 @@
             </div>
 
             <div class="flex justify-end">
-                <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Update</button>
+                <button type="submit" class="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500">Update</button>
             </div>
         </form>
     </div>
 </div>
-
-

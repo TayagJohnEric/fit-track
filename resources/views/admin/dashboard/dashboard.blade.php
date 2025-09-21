@@ -2,13 +2,11 @@
 @section('title', 'Admin Dashboard')
 @section('content')
 
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-white">
     <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         <!-- Welcome Header -->
-        <div class="relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 group hover:shadow-md transition-all duration-300">
-            <!-- Subtle orange accent line -->
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600"></div>
+        <div class="relative bg-white rounded-2xl shadow border border-gray-100 overflow-hidden mb-8 group hover:shadow-md transition-all duration-300">
             
             <!-- Content -->
             <div class="px-6 py-8 sm:px-8 sm:py-10">
@@ -74,7 +72,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Total Users -->
             <a href="/users" class="group block transform hover:scale-[1.02] transition-all duration-200">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
+                <div class="bg-white rounded-2xl shadow border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
                     <!-- Orange accent -->
                     <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-50 to-transparent rounded-bl-full opacity-70"></div>
                     <div class="flex items-center justify-between relative">
@@ -110,7 +108,7 @@
 
             <!-- New Sign-ups This Week -->
             <a href="/new-signups" class="group block transform hover:scale-[1.02] transition-all duration-200">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
+                <div class="bg-white rounded-2xl shadow border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-50 to-transparent rounded-bl-full opacity-70"></div>
                     <div class="flex items-center justify-between relative">
                         <div class="flex-1">
@@ -144,7 +142,7 @@
 
             <!-- Daily Active Users -->
             <a href="/active-users" class="group block transform hover:scale-[1.02] transition-all duration-200">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
+                <div class="bg-white rounded-2xl shadow border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-50 to-transparent rounded-bl-full opacity-70"></div>
                     <div class="flex items-center justify-between relative">
                         <div class="flex-1">
@@ -176,7 +174,7 @@
 
             <!-- Total Workouts Logged -->
             <a href="/total-workouts" class="group block transform hover:scale-[1.02] transition-all duration-200">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
+                <div class="bg-white rounded-2xl shadow border border-gray-100 hover:shadow-lg hover:border-orange-100 transition-all duration-200 p-6 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-50 to-transparent rounded-bl-full opacity-70"></div>
                     <div class="flex items-center justify-between relative">
                         <div class="flex-1">
@@ -193,13 +191,7 @@
                         </div>
                         <div class="flex-shrink-0 flex items-center space-x-3">
                             <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center group-hover:bg-orange-100 transition-all duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-600 group-hover:text-orange-700">
-                                    <path d="m6.5 6.5 11 11"/>
-                                    <path d="m21 21-1-1"/>
-                                    <path d="m3 3 1 1"/>
-                                    <path d="M6 6.5a.5.5 0 1 1 1 0 .5.5 0 1 1-1 0z"/>
-                                    <path d="M16.5 16.5a.5.5 0 1 1 1 0 .5.5 0 1 1-1 0z"/>
-                                </svg>
+                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-600 hover:text-orange-700 lucide lucide-dumbbell-icon lucide-dumbbell"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/></svg>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 group-hover:text-orange-500 group-hover:translate-x-1 transition-all duration-200">
                                 <path d="m9 18 6-6-6-6"/>
@@ -211,11 +203,10 @@
         </div>
 
         <!-- Content Library Overview -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 mb-8 overflow-hidden group hover:shadow-lg transition-all duration-300">
+        <div class="bg-white rounded-2xl shadow border border-gray-100 mb-8 overflow-hidden group hover:shadow-lg transition-all duration-300">
             <!-- Header with orange accent -->
             <div class="px-6 py-5 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100 relative">
-                <!-- Orange accent line -->
-                <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600"></div>
+               
                 
                 <div class="relative flex items-center justify-between">
                     <h2 class="text-lg font-semibold text-gray-800 flex items-center">
@@ -286,13 +277,7 @@
                     <!-- Workout Templates Stats Card -->
                     <div class="group/card relative text-center p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl hover:from-orange-50 hover:to-white transition-all duration-300 cursor-pointer border border-gray-100 hover:border-orange-100 hover:shadow-md">
                         <div class="absolute top-4 right-4 opacity-20 group-hover/card:opacity-30 transition-opacity duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-orange-400">
-                                <path d="m6.5 6.5 11 11"/>
-                                <path d="m21 21-1-1"/>
-                                <path d="m3 3 1 1"/>
-                                <path d="M6 6.5a.5.5 0 1 1 1 0 .5.5 0 1 1-1 0z"/>
-                                <path d="M16.5 16.5a.5.5 0 1 1 1 0 .5.5 0 1 1-1 0z"/>
-                            </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-orange-400 lucide lucide-dumbbell-icon lucide-dumbbell"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/></svg>
                         </div>
                         
                         <div class="relative">
@@ -335,7 +320,7 @@
         <!-- Recent Activity Feed -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Latest Sign-ups -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+            <div class="bg-white rounded-2xl shadow border border-gray-100 hover:shadow-lg transition-all duration-300">
                 <div class="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                         <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mr-3 border border-orange-100">
@@ -382,7 +367,7 @@
             </div>
 
             <!-- Recent Completions -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300">
+            <div class="bg-white rounded-2xl shadow border border-gray-100 hover:shadow-lg transition-all duration-300">
                 <div class="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
                         <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center mr-3 border border-orange-100">
