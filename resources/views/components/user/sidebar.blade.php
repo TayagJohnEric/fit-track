@@ -72,13 +72,7 @@
             <!-- Today's Workout -->
             <li>
                 <a href="{{ route('workouts.today') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('workouts/today') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('workouts/today') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/>
-                        <path d="m2.5 21.5 1.4-1.4"/>
-                        <path d="m20.1 3.9 1.4-1.4"/>
-                        <path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/>
-                        <path d="m9.6 14.4 4.8-4.8"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('workouts/today') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
                     <span class="ml-3 text-sm font-semibold tracking-tighter">Today's Workout</span>
                 </a>
             </li>
@@ -119,6 +113,20 @@
                         <circle cx="10" cy="7" r="4"/>
                     </svg>
                     <span class="ml-3 text-sm font-semibold tracking-tighter">Profile</span>
+                </a>
+            </li>
+
+              <!-- Exercises -->
+            <li>
+                <a href="{{ route('exercises-library.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('exercises-library') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {{ request()->is('exercises-library') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/>
+                        <path d="m2.5 21.5 1.4-1.4"/>
+                        <path d="m20.1 3.9 1.4-1.4"/>
+                        <path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/>
+                        <path d="m9.6 14.4 4.8-4.8"/>
+                    </svg>
+                    <span class="ml-3 text-sm font-semibold tracking-tighter">Exercises</span>
                 </a>
             </li>
         </ul>

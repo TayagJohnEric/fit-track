@@ -134,7 +134,29 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-
+Route::middleware(['auth'])->group(function () {
+    
+    // Main exercise listing page with search and filtering
+    Route::get('/exercises-library', [App\Http\Controllers\User\UserExerciseController::class, 'index'])->name('exercises-library.index');
+    
+    // Individual exercise detail page
+    Route::get('/exercises-library/{exercise}', [App\Http\Controllers\User\UserExerciseController::class, 'show'])->name('exercises-library.show');
+    
+    // AJAX Routes for dynamic functionality
+    Route::prefix('api/exercises')->group(function () {
+        
+        // AJAX search endpoint for real-time filtering
+        Route::get('/search', [App\Http\Controllers\User\UserExerciseController::class, 'search'])->name('exercises.search');
+        
+        // Get exercise details for modals/quick view
+        Route::get('/{exercise}/details', [App\Http\Controllers\User\UserExerciseController::class, 'getDetails'])->name('exercises.details');
+        
+        // Filter exercises by muscle group
+        Route::get('/muscle-group', [App\Http\Controllers\User\UserExerciseController::class, 'getByMuscleGroup'])->name('exercises.by-muscle-group');
+        
+    });
+    
+});
 
 
 
