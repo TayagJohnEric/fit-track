@@ -167,16 +167,71 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         searchTimeout = setTimeout(() => {
-            fetch(`{{ route('nutrition.search-food') }}?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
+            // Show loading state
+            displaySearchLoading();
+            
+            fetch(`{{ route('nutrition.search-food') }}?query=${encodeURIComponent(query)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            throw new Error('Please log in to search for foods');
+                        } else if (response.status === 419) {
+                            throw new Error('Session expired. Please refresh the page');
+                        } else {
+                            throw new Error(`Search failed (${response.status})`);
+                        }
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     displaySearchResults(data);
                 })
                 .catch(error => {
                     console.error('Search error:', error);
+                    displaySearchError(error.message);
                 });
         }, 300);
     });
+
+    // Display search loading
+    function displaySearchLoading() {
+        const resultsContainer = searchResults.querySelector('div') || searchResults.appendChild(document.createElement('div'));
+        resultsContainer.className = 'border rounded-lg max-h-60 overflow-y-auto';
+        resultsContainer.innerHTML = `
+            <div class="p-4 text-gray-600 text-center">
+                <div class="flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <span>Searching for foods...</span>
+                </div>
+            </div>
+        `;
+        searchResults.classList.remove('hidden');
+    }
+
+    // Display search error
+    function displaySearchError(message) {
+        const resultsContainer = searchResults.querySelector('div') || searchResults.appendChild(document.createElement('div'));
+        resultsContainer.className = 'border rounded-lg max-h-60 overflow-y-auto';
+        resultsContainer.innerHTML = `
+            <div class="p-4 text-red-600 text-center bg-red-50 border-red-200">
+                <div class="flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            </div>
+        `;
+        searchResults.classList.remove('hidden');
+    }
 
     // Display search results
     function displaySearchResults(foods) {

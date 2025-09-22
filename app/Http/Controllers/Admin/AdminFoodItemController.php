@@ -46,7 +46,8 @@ class AdminFoodItemController extends Controller
     }
 
     $validated['image_url'] = $imagePath;
-    $validated['creator_user_id'] = auth()->id();
+    // Admin-created foods are system foods available to all users
+    $validated['creator_user_id'] = null;
 
     FoodItem::create($validated);
 
@@ -81,8 +82,9 @@ class AdminFoodItemController extends Controller
     }
 
     $validated['image_url'] = $imagePath;
-    $validated['creator_user_id'] = auth()->id();
-
+    // Preserve the original creator_user_id when updating
+    // Don't change ownership of existing foods
+    
     $foodItem->update($validated);
 
     return redirect()->route('food_items.index')->with('success', 'Food item updated successfully.');

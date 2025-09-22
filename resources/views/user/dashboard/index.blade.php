@@ -158,9 +158,11 @@
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">No workout scheduled</h3>
                         <p class="text-gray-600 mb-6">Take a rest day or browse available workouts</p>
-                        <button class="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
+                       <a href="{{ route('exercises-library.index') }}" 
+                        class="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
                             Browse Workouts
-                        </button>
+                        </a>
+
                     </div>
                 @endif
             </div>
