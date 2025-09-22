@@ -160,7 +160,13 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-
+// Custom Food Management Routes
+Route::middleware(['auth', 'role:user'])->group(function () {
+    Route::get('custom-foods', [App\Http\Controllers\User\UserCustomFoodItemController::class, 'index'])->name('custom-foods.index');
+    Route::get('custom-foods/{custom_food}/edit', [App\Http\Controllers\User\UserCustomFoodItemController::class, 'edit'])->name('custom-foods.edit');
+    Route::put('custom-foods/{custom_food}', [App\Http\Controllers\User\UserCustomFoodItemController::class, 'update'])->name('custom-foods.update');
+    Route::delete('custom-foods/{custom_food}', [App\Http\Controllers\User\UserCustomFoodItemController::class, 'destroy'])->name('custom-foods.destroy');
+});
 
 
 

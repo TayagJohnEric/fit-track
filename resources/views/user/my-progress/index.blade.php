@@ -165,7 +165,6 @@
             </div>
         </div>
 
-        <!-- NEW ENHANCED FEATURES -->
         
         <!-- Workout Streak & Goals Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -285,7 +284,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">Nutrition Tracking</h3>
                     <div class="flex items-center space-x-2">
-                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 11-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                         </svg>
                     </div>
@@ -299,7 +298,7 @@
                             <span class="text-sm text-gray-500">{{ $nutritionConsistency['consistency_rate'] }}%</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-green-600 h-2 rounded-full" style="width: {{ $nutritionConsistency['consistency_rate'] }}%"></div>
+                            <div class="bg-orange-600 h-2 rounded-full" style="width: {{ $nutritionConsistency['consistency_rate'] }}%"></div>
                         </div>
                         <p class="text-xs text-gray-600 mt-1">{{ $nutritionConsistency['days_logged'] }}/{{ $nutritionConsistency['total_days'] }} days logged</p>
                     </div>
@@ -363,7 +362,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">Weekly Progress</h3>
                     <div class="flex items-center space-x-2">
-                        <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
                         </svg>
                     </div>

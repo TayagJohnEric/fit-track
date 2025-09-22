@@ -2,11 +2,31 @@
 @section('title', 'Nutrition Tracking')
 @section('content')
 <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <!-- Header Section -->
-    <div class="mb-6 sm:mb-8">
-        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">Today's Nutrition Summary</h1>
-        <p class="text-gray-600 text-sm sm:text-md">Track your daily nutrition for {{ date('F j, Y') }}</p>
+        <!-- Header Section -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
+    <div>
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+            Today's Nutrition Summary
+        </h1>
+        <p class="text-gray-600 text-sm sm:text-md">
+            Track your daily nutrition for {{ date('F j, Y') }}
+        </p>
     </div>
+
+    <a href="{{ route('custom-foods.index') }}"
+       class="mt-4 sm:mt-0 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-full transition duration-200 shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-salad">
+            <path d="M7 21h10"/>
+            <path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/>
+            <path d="M11.38 12a2.4 2.4 0 0 1-.4-4.77 2.4 2.4 0 0 1 3.2-2.77 2.4 2.4 0 0 1 3.47-.63 2.4 2.4 0 0 1 3.37 3.37 2.4 2.4 0 0 1-1.1 3.7 2.51 2.51 0 0 1 .03 1.1"/>
+            <path d="m13 12 4-4"/>
+            <path d="M10.9 7.25A3.99 3.99 0 0 0 4 10c0 .73.2 1.41.54 2"/>
+        </svg>
+        <span>Your Custom Foods</span>
+    </a>
+</div>
+
+    
 
     <!-- Success/Error Messages -->
     @if(session('success'))
