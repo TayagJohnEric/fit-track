@@ -169,7 +169,7 @@
                                             <div class="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
                                                 <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-lg overflow-hidden flex-shrink-0">
                                                     @if($entry->foodItem->image_url)
-                                                        <img src="{{ $entry->foodItem->image_url }}" alt="{{ $entry->foodItem->name }}" class="h-full w-full object-cover">
+                                                        <img src="{{ asset('storage/' . $entry->foodItem->image_url) }}" alt="{{ $entry->foodItem->name }}" class="h-full w-full object-cover">
                                                     @else
                                                         <div class="h-full w-full bg-gray-200 flex items-center justify-center">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-6 sm:w-6 text-gray-400 lucide lucide-utensils-crossed-icon lucide-utensils-crossed"><path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"/><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"/><path d="m2.1 21.8 6.4-6.3"/><path d="m19 5-7 7"/></svg>

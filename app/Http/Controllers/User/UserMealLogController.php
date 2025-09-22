@@ -10,6 +10,7 @@ use App\Models\Allergy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 
@@ -147,6 +148,7 @@ class UserMealLogController extends Controller
             'carb_grams_per_serving' => 'required|numeric|min:0',
             'fat_grams_per_serving' => 'required|numeric|min:0',
             'estimated_cost' => 'required|numeric|min:0',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'allergies' => 'array',
             'allergies.*' => 'exists:allergies,id',
         ]);
@@ -154,6 +156,15 @@ class UserMealLogController extends Controller
         DB::beginTransaction();
         
         try {
+            // Handle image upload
+            $imageUrl = null;
+            if ($request->hasFile('image_url')) {
+                $image = $request->file('image_url');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('food-images', $imageName, 'public');
+                $imageUrl =  $imagePath;
+            }
+            
             $foodItem = FoodItem::create([
                 'creator_user_id' => Auth::id(),
                 'name' => $request->name,
@@ -164,6 +175,7 @@ class UserMealLogController extends Controller
                 'carb_grams_per_serving' => $request->carb_grams_per_serving,
                 'fat_grams_per_serving' => $request->fat_grams_per_serving,
                 'estimated_cost' => $request->estimated_cost,
+                'image_url' => $imageUrl,
             ]);
 
             // Attach allergies if any

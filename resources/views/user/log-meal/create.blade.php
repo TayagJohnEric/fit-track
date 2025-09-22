@@ -248,8 +248,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 foodItem.innerHTML = `
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            ${food.image_url ? 
-                                `<img src="${food.image_url}" alt="${food.name}" class="w-12 h-12 object-cover rounded-lg">` : 
+                           ${food.image_url ? 
+                                `<img src="{{ asset('storage') }}/${food.image_url}" alt="${food.name}" class="w-12 h-12 object-cover rounded-lg">` : 
                                 `<div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
                                         <path d="M2 12h20"/>
@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </svg>
                                 </div>`
                             }
+
                             <div>
                                 <div class="font-medium text-gray-800">${food.name}</div>
                                 <div class="text-sm text-gray-600">${food.serving_size_description} - ${food.calories_per_serving} cal</div>
@@ -350,8 +351,8 @@ document.addEventListener('DOMContentLoaded', function() {
             foodDiv.className = 'bg-gray-50 rounded-lg p-4 flex items-center justify-between';
             foodDiv.innerHTML = `
                 <div class="flex items-center space-x-3 flex-1">
-                    ${food.image_url ? 
-                        `<img src="${food.image_url}" alt="${food.name}" class="w-12 h-12 object-cover rounded-lg">` : 
+                   ${food.image_url ? 
+                        `<img src="{{ asset('storage') }}/${food.image_url}" alt="${food.name}" class="w-12 h-12 object-cover rounded-lg">` : 
                         `<div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400">
                                 <path d="M2 12h20"/>
@@ -361,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </svg>
                         </div>`
                     }
+
                     <div>
                         <div class="font-medium text-gray-800">${food.name}</div>
                         <div class="text-sm text-gray-600">${food.serving_size_description}</div>

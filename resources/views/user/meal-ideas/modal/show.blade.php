@@ -13,13 +13,13 @@
         <!-- Modal Content -->
         <div class="p-6">
             <!-- Meal Items -->
-            <div class="space-y-4 mb-6">
+            <div class="space-y-4 mb-6">    
                 @foreach ($items as $item)
                     <div class="border border-gray-200 rounded-lg p-4">
                         <div class="flex items-center gap-4">
                             <div class="flex-shrink-0">
                                 @if(!empty($item->image_url))
-                                    <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-16 h-16 object-cover rounded-lg" />
+                                    <img src="{{ asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}" class="w-16 h-16 object-cover rounded-lg" />
                                 @else
                                     <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

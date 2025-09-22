@@ -149,9 +149,7 @@
                                     <td class="px-6 py-5">
                                         <div class="flex items-center">
                                             <div class="w-10 h-10 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center mr-3">
-                                                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m8.5-5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
-                                                </svg>
+                                                 <img src="{{ asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}" class="h-full w-full object-cover">
                                             </div>
                                             <div class="text-sm font-semibold text-gray-900">{{ $item->name }}</div>
                                         </div>

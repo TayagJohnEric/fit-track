@@ -21,6 +21,7 @@ class Exercise extends Model
 
     /**
      * Accessor to always return a fully-qualified image URL.
+     * - If value is a YouTube URL, convert to thumbnail URL.
      * - If value is an absolute URL, return as-is.
      * - If value is a storage-relative path, convert via Storage::url().
      */
@@ -36,7 +37,13 @@ class Exercise extends Model
             return null;
         }
 
+        // Check if the value is a YouTube URL and convert to thumbnail
         if (Str::startsWith($value, ['http://', 'https://'])) {
+            // Extract YouTube video ID from various YouTube URL formats
+            if (preg_match('/(?:youtu\\.be\\/|youtube\\.com\\/(?:embed\\/|v\\/|watch\\?v=))([\\w-]{11})/i', $value, $matches)) {
+                return "https://img.youtube.com/vi/{$matches[1]}/hqdefault.jpg";
+            }
+            // If it's not a YouTube URL, return as-is (for other image URLs)
             return $value;
         }
 

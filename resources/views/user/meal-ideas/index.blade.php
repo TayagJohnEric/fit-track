@@ -226,7 +226,7 @@ $(document).ready(function() {
                 }).format(item.estimated_cost);
                 
                 const imageHtml = item.image_url ? 
-                    `<img src="${item.image_url}" alt="${item.name}" class="w-12 h-12 object-cover rounded-lg shadow-sm">` :
+                    `<img src="{{ asset('storage') }}/${item.image_url}" alt="${item.name}" class="w-12 h-12 object-cover rounded-lg shadow-sm">` :
                     `<div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500">
                             <path d="M2 12h20"/>
