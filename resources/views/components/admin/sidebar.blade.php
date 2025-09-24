@@ -62,7 +62,7 @@
 
             <!-- Exercises Management -->
             <li>
-                <a href="/exercises" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('exercises*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <a href="{{ route('exercises.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('exercises*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 {{ request()->is('exercises*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-activity">
@@ -74,7 +74,7 @@
 
             <!-- Food Items -->
             <li>
-                <a href="/food-items" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('food-items*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <a href="{{ route('food_items.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('food-items*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 {{ request()->is('food-items*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-beef">
@@ -86,9 +86,12 @@
                 </a>
             </li>
 
+
+            
+
             <!-- Workout Templates -->
             <li>
-                <a href="/workout-templates" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('workout-templates*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <a href="{{ route('workout_templates.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('workout-templates*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 {{ request()->is('workout-templates*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-dumbbell">
@@ -104,7 +107,7 @@
 
             <!-- Workout Template Exercises -->
             <li>
-                <a href="/workout-template-exercises" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('workout-template-exercises*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <a href="{{ route('workout-template-exercises.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('workout-template-exercises*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('workout-template-exercises*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-blocks">
                         <path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/>
                         <rect x="14" y="2" width="8" height="8" rx="1"/>
@@ -115,7 +118,7 @@
 
             <!-- Fitness Motivation -->
             <li>
-                <a href="/fitness-motivations" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('fitness-motivations*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <a href="{{ route('fitness-motivations.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('fitness-motivations*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('fitness-motivations*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-biceps-flexed">
                         <path d="M12.409 13.017A5 5 0 0 1 22 15c0 3.866-4 7-9 7-4.077 0-8.153-.82-10.371-2.462-.426-.316-.631-.832-.62-1.362C2.118 12.723 2.627 2 10 2a3 3 0 0 1 3 3 2 2 0 0 1-2 2c-1.105 0-1.64-.444-2-1"/>
                         <path d="M15 14a5 5 0 0 0-7.584 2"/>
@@ -127,7 +130,7 @@
 
             <!-- Fitness Facts -->
             <li>
-                <a href="/fitness-facts" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('fitness-facts*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <a href="{{ route('fitness-facts.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('fitness-facts*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('fitness-facts*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-brain">
                         <path d="M12 18V5"/>
                         <path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>
@@ -147,7 +150,7 @@
 
             <!-- User Management -->
             <li>
-                <a href="/users" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('users*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <a href="{{ route('admin.users.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('users*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                         class="w-5 h-5 {{ request()->is('users*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-user-cog">
