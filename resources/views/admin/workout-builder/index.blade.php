@@ -83,32 +83,145 @@
 
         <!-- Controls Section -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                
-                <!-- Search Form -->
-                <form method="GET" class="flex-1 max-w-md">
-                    <div class="relative group">
-                        <input type="text" 
-                               name="search" 
-                               value="{{ request('search') }}" 
-                               placeholder="Search by exercise name..." 
-                               class="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 text-sm">
-                        <svg class="absolute left-4 top-4 h-4 w-4 text-gray-400 group-focus-within:text-orange-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
+            <form method="GET" class="space-y-4">
+                <!-- Top Row: Search and Add Button -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <!-- Search Input -->
+                    <div class="flex-1 max-w-md">
+                        <div class="relative group">
+                            <input type="text" 
+                                   name="search" 
+                                   value="{{ request('search') }}" 
+                                   placeholder="Search exercises or templates..." 
+                                   class="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 text-sm">
+                            <svg class="absolute left-4 top-4 h-4 w-4 text-gray-400 group-focus-within:text-orange-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
                     </div>
-                </form>
-                
-                <!-- Add New Exercise Button -->
-                <button onclick="openCreateModal()" 
-                        class="inline-flex items-center px-6 py-3.5 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    <span class="hidden sm:inline">Add New Exercise</span>
-                    <span class="sm:hidden">Add</span>
-                </button>
-            </div>
+                    
+                    <!-- Add New Exercise Button -->
+                    <button type="button" onclick="openCreateModal()" 
+                            class="inline-flex items-center px-6 py-3.5 bg-orange-600 text-white font-semibold rounded-xl hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        <span class="hidden sm:inline">Add New Exercise</span>
+                        <span class="sm:hidden">Add</span>
+                    </button>
+                </div>
+
+                <!-- Filter Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Template Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Template</label>
+                        <select name="template_filter" 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 text-sm">
+                            <option value="">All Templates</option>
+                            @foreach($templates as $template)
+                                <option value="{{ $template->id }}" {{ request('template_filter') == $template->id ? 'selected' : '' }}>
+                                    {{ $template->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Workout Type Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Workout Type</label>
+                        <select name="workout_type_filter" 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 text-sm">
+                            <option value="">All Workout Types</option>
+                            @foreach($workoutTypes as $workoutType)
+                                <option value="{{ $workoutType->id }}" {{ request('workout_type_filter') == $workoutType->id ? 'selected' : '' }}>
+                                    {{ $workoutType->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Experience Level Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Experience</label>
+                        <select name="experience_level_filter" 
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 text-sm">
+                            <option value="">All Experience Levels</option>
+                            @foreach($experienceLevels as $experienceLevel)
+                                <option value="{{ $experienceLevel->id }}" {{ request('experience_level_filter') == $experienceLevel->id ? 'selected' : '' }}>
+                                    {{ $experienceLevel->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-end space-x-2">
+                        <button type="submit" 
+                                class="flex-1 px-4 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 transition-all duration-200 text-sm">
+                            Apply Filters
+                        </button>
+                        <a href="{{ route('workout-template-exercises.index') }}" 
+                           class="px-4 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 text-sm">
+                            Clear
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Active Filters Display -->
+                @if(request('search') || request('template_filter') || request('workout_type_filter') || request('experience_level_filter'))
+                    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100">
+                        <span class="text-sm font-medium text-gray-600">Active filters:</span>
+                        
+                        @if(request('search'))
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 border border-orange-200">
+                                Search: "{{ request('search') }}"
+                                <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}" class="ml-1 text-orange-600 hover:text-orange-800">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </span>
+                        @endif
+
+                        @if(request('template_filter'))
+                            @php $selectedTemplate = $templates->find(request('template_filter')) @endphp
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                Template: {{ $selectedTemplate->name ?? 'Unknown' }}
+                                <a href="{{ request()->fullUrlWithQuery(['template_filter' => null]) }}" class="ml-1 text-blue-600 hover:text-blue-800">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </span>
+                        @endif
+
+                        @if(request('workout_type_filter'))
+                            @php $selectedWorkoutType = $workoutTypes->find(request('workout_type_filter')) @endphp
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                Type: {{ $selectedWorkoutType->name ?? 'Unknown' }}
+                                <a href="{{ request()->fullUrlWithQuery(['workout_type_filter' => null]) }}" class="ml-1 text-green-600 hover:text-green-800">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </span>
+                        @endif
+
+                        @if(request('experience_level_filter'))
+                            @php $selectedExperienceLevel = $experienceLevels->find(request('experience_level_filter')) @endphp
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">
+                                Level: {{ $selectedExperienceLevel->name ?? 'Unknown' }}
+                                <a href="{{ request()->fullUrlWithQuery(['experience_level_filter' => null]) }}" class="ml-1 text-purple-600 hover:text-purple-800">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </span>
+                        @endif
+                    </div>
+                @endif
+            </form>
         </div>
 
         <!-- Template Exercises Content -->

@@ -13,20 +13,54 @@ class AdminWorkoutTemplateExerciseController extends Controller
      public function index(Request $request)
     {
         $search = $request->input('search');
+        $templateFilter = $request->input('template_filter');
+        $workoutTypeFilter = $request->input('workout_type_filter');
+        $experienceLevelFilter = $request->input('experience_level_filter');
 
-        $exercises = WorkoutTemplateExercise::with(['template', 'exercise'])
+        $exercises = WorkoutTemplateExercise::with(['template.workoutType', 'template.experienceLevel', 'exercise'])
             ->when($search, function ($query) use ($search) {
-                $query->whereHas('exercise', function ($q) use ($search) {
-                    $q->where('name', 'like', "%$search%");
+                $query->where(function ($q) use ($search) {
+                    // Search in exercise names
+                    $q->whereHas('exercise', function ($exerciseQuery) use ($search) {
+                        $exerciseQuery->where('name', 'like', "%$search%");
+                    })
+                    // Also search in template names
+                    ->orWhereHas('template', function ($templateQuery) use ($search) {
+                        $templateQuery->where('name', 'like', "%$search%");
+                    });
                 });
             })
+            ->when($templateFilter, function ($query) use ($templateFilter) {
+                $query->where('template_id', $templateFilter);
+            })
+            ->when($workoutTypeFilter, function ($query) use ($workoutTypeFilter) {
+                $query->whereHas('template', function ($q) use ($workoutTypeFilter) {
+                    $q->where('workout_type_id', $workoutTypeFilter);
+                });
+            })
+            ->when($experienceLevelFilter, function ($query) use ($experienceLevelFilter) {
+                $query->whereHas('template', function ($q) use ($experienceLevelFilter) {
+                    $q->where('experience_level_id', $experienceLevelFilter);
+                });
+            })
+            ->orderBy('template_id')
             ->orderBy('order_in_workout')
-            ->paginate(10);
+            ->paginate(15);
+
+        // Get filter options
+        $templates = WorkoutTemplate::with(['workoutType', 'experienceLevel'])->get();
+        $workoutTypes = \App\Models\WorkoutType::all();
+        $experienceLevels = \App\Models\ExperienceLevel::all();
 
         return view('admin.workout-builder.index', [
             'exercises' => $exercises,
             'search' => $search,
-            'templates' => WorkoutTemplate::all(),
+            'templateFilter' => $templateFilter,
+            'workoutTypeFilter' => $workoutTypeFilter,
+            'experienceLevelFilter' => $experienceLevelFilter,
+            'templates' => $templates,
+            'workoutTypes' => $workoutTypes,
+            'experienceLevels' => $experienceLevels,
             'allExercises' => Exercise::all(),
             'editing' => null
         ]);
