@@ -244,3 +244,19 @@ Route::prefix('users')->name('admin.users.')->middleware(['auth', 'role:admin'])
     Route::put('/{user}', [App\Http\Controllers\Admin\AdminUserManagementController::class, 'update'])->name('update');
     Route::delete('/{user}', [App\Http\Controllers\Admin\AdminUserManagementController::class, 'destroy'])->name('destroy');
 });
+
+// Manage Allergy
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/allergies', [App\Http\Controllers\Admin\AdminAllergyController::class, 'index'])->name('allergies.index');
+    Route::post('/allergies', [App\Http\Controllers\Admin\AdminAllergyController::class, 'store'])->name('allergies.store');
+    Route::put('/allergies/{allergy}', [App\Http\Controllers\Admin\AdminAllergyController::class, 'update'])->name('allergies.update');
+    Route::delete('/allergies/{allergy}', [App\Http\Controllers\Admin\AdminAllergyController::class, 'destroy'])->name('allergies.destroy');
+});
+
+    // Food Item Allergies Routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/food-item-allergies', [App\Http\Controllers\Admin\AdminFoodItemAllergyController::class, 'index'])->name('food_item_allergies.index');
+    Route::post('/food-item-allergies', [App\Http\Controllers\Admin\AdminFoodItemAllergyController::class, 'store'])->name('food_item_allergies.store');
+    Route::put('/food-item-allergies/{foodItemAllergy}', [App\Http\Controllers\Admin\AdminFoodItemAllergyController::class, 'update'])->name('food_item_allergies.update');
+    Route::delete('/food-item-allergies/{foodItemAllergy}', [App\Http\Controllers\Admin\AdminFoodItemAllergyController::class, 'destroy'])->name('food_item_allergies.destroy');
+});

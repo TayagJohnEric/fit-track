@@ -86,6 +86,22 @@
                 </a>
             </li>
 
+              <!-- Allergies -->
+            <li>
+                <a href="{{ route('admin.allergies.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('admin/allergies*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('admin/allergies*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }} lucide lucide-triangle-alert-icon lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                    <span class="ml-3 text-sm font-semibold tracking-tighter {{ request()->is('admin/allergies*') ? 'text-orange-500' : 'text-gray-800 group-hover:text-orange-500' }}">Allergies</span>
+                </a>
+            </li>
+
+             <!-- Food Allergies -->
+            <li>
+                <a href="{{ route('admin.food_item_allergies.index') }}" class="group flex items-center font-semibold p-3 rounded-lg transition-all duration-200 {{ request()->is('admin/food-item-allergies*') ? 'bg-orange-100 text-orange-500' : 'hover:bg-orange-100 hover:text-orange-500' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 {{ request()->is('admin/food-item-allergies*') ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500' }}lucide lucide-bean-off-icon lucide-bean-off"><path d="M9 9c-.64.64-1.521.954-2.402 1.165A6 6 0 0 0 8 22a13.96 13.96 0 0 0 9.9-4.1"/><path d="M10.75 5.093A6 6 0 0 1 22 8c0 2.411-.61 4.68-1.683 6.66"/><path d="M5.341 10.62a4 4 0 0 0 6.487 1.208M10.62 5.341a4.015 4.015 0 0 1 2.039 2.04"/><line x1="2" x2="22" y1="2" y2="22"/></svg>                 
+                    <span class="ml-3 text-sm font-semibold tracking-tighter {{ request()->is('admin/food-item-allergies*') ? 'text-orange-500' : 'text-gray-800 group-hover:text-orange-500' }}">Food Allergies</span>
+                </a>
+            </li>
+
 
             
 
