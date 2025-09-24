@@ -264,30 +264,48 @@ class OnboardingController extends Controller
         ]);
     }
 
+    
+
     private function assignInitialWorkout($user, $userProfile)
     {
-        // Find a suitable workout template randomly from the matching ones
-        $workoutTemplate = WorkoutTemplate::where('workout_type_id', $userProfile->preferred_workout_type_id)
+        // Find all suitable workout templates matching the user's preferences
+        $workoutTemplates = WorkoutTemplate::where('workout_type_id', $userProfile->preferred_workout_type_id)
             ->where('experience_level_id', $userProfile->experience_level_id)
-            ->inRandomOrder() // Adds variety
-            ->first();
+            ->get();
 
-        if ($workoutTemplate) {
-            // A more realistic schedule with rest days (e.g., Day 0, Day 2, Day 4)
-            $scheduleDays = [0, 2, 4]; 
-
-            foreach ($scheduleDays as $day) {
-                UserWorkoutSchedule::create([
-                    'user_id'       => $user->id,
-                    'template_id'   => $workoutTemplate->id,
-                    'assigned_date' => now()->addDays($day)->toDateString(), // Starts today
-                    'status'        => 'Scheduled',
-                ]);
-            }
-        } else {
-            // Log a warning if no template is found so you can add one later
-            Log::warning('No workout template found for workout_type_id: ' . $userProfile->preferred_workout_type_id . ' and experience_level_id: ' . $userProfile->experience_level_id);
+        if ($workoutTemplates->isEmpty()) {
+            // Log a warning if no templates are found
+            Log::warning('No workout templates found for workout_type_id: ' . $userProfile->preferred_workout_type_id . ' and experience_level_id: ' . $userProfile->experience_level_id);
+            return;
         }
+
+        // Create a 7-day schedule with 6 workout days and 1 rest day
+        // Rest day will be on day 3 (Wednesday, 0-indexed)
+        $restDay = 3;
+        $templateIndex = 0;
+        $templateCount = $workoutTemplates->count();
+
+        for ($day = 0; $day < 7; $day++) {
+            // Skip the rest day
+            if ($day === $restDay) {
+                continue;
+            }
+
+            // Rotate through available templates
+            $currentTemplate = $workoutTemplates[$templateIndex % $templateCount];
+            
+            UserWorkoutSchedule::create([
+                'user_id'       => $user->id,
+                'template_id'   => $currentTemplate->id,
+                'assigned_date' => now()->addDays($day)->toDateString(),
+                'status'        => 'Scheduled',
+            ]);
+
+            // Move to next template for variety
+            $templateIndex++;
+        }
+
+        Log::info('Created 7-day workout schedule for user ' . $user->id . ' with ' . $templateCount . ' different templates, rest day on day ' . $restDay);
     }
 
     // ===== INTEGRATED PROGRESS SERVICE METHODS =====
